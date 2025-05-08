@@ -278,6 +278,24 @@ ssh <NUC3 username>@nuc03
 sudo swapoff -a
 ```
 
+위의 명령어는 일시적으로 swap memory의 사용을 비활성화 하기 때문에, NUC을 재부팅하면 매번 같은 명령어를 실행해서 다시 swap memory 사용을 비활성화 해야 한다는 번거로움이 있습니다.  
+따라서 아래의 파일을 수정하여 재부팅 이후에도 swap memory가 비활성화되도록 만들겠습니다. 파일을 열어주시기 바랍니다.
+
+```shell
+sudo vim /etc/fstab
+```
+
+파일의 내용 중 다음과 같은 형식을 갖는 부분을 찾아 `#`기호를 맨 앞에 붙여 주석처리 합니다.
+
+> [!CAUTION]
+>
+> swap memory와 관련된 부분이 아닌, 다른 부분을 잘못 수정하면 치명적인 오류가 밣생할 수 있습니다.  
+> 주의하여 진행해주시기 바랍니다.
+
+```text
+#UUID=xxxx-xxxx-xxxx none swap sw 0 0 # 이 예시와 같이, line의 맨 앞에 # 기호를 붙여주시기 바랍니다.
+```
+
 ### 2-3-2. Install Kubernetes
 
 > [!warning]

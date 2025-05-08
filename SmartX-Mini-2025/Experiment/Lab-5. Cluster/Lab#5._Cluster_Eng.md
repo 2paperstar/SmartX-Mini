@@ -284,6 +284,23 @@ ssh <NUC3 username>@nuc03
 sudo swapoff -a
 ```
 
+The above command temporarily disables the use of swap memory. Therefore, after rebooting the NUC, you would need to run the same command again to disable swap memory, which can be inconvenient.  
+To make swap memory remain disabled even after reboot, we will modify the following file. Please open the file.
+
+```shell
+sudo vim /etc/fstab
+```
+
+In the contents of the file, look for a line with the following format and add a # symbol at the beginning to comment it out.
+
+> [!CAUTION]
+>
+> Be very careful not to modify anything other than the line related to swap memory, as making a mistake here can lead to critical system errors.
+
+```text
+#UUID=xxxx-xxxx-xxxx none swap sw 0 0 # As shown in this example, please add a `#` symbol at the beginning of the line.
+```
+
 ### 2-3-2. Install Kubernetes
 
 > [!warning]
