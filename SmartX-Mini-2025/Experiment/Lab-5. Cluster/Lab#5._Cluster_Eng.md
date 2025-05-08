@@ -311,6 +311,37 @@ Now let’s build the Kubernetes cluster.
 
 ### 2-4-1. Kubernetes Master Setting(For NUC1)
 
+Please execute the following command to open the file.
+In Kubernetes, a module is required to enable iptables rules for bridged traffic. If this module is missing, kubeadm initialization will fail.
+Let’s add the necessary configuration related to this.
+
+```shell
+sudo vim /etc/modules-load.d/modules.conf
+```
+
+If the `br_netfilter` entry is not present in the file, please add it.  
+**Please enter only br_netfilter as shown in the example, without the ... .**
+
+```text
+...
+
+br_netfilter #If this part is not present in the file, please add it.
+
+...
+```
+
+By adding this entry, the bridge-nf-call-iptables kernel module will automatically load even after the NUC is rebooted.
+Since this change will take effect only after a reboot, let’s manually load the bridge-nf-call-iptables kernel module for now using the following commands.
+
+```shell
+sudo modprobe br_netfilter
+lsmod | grep br_netfilter
+```
+
+If `br_netfilter` appears in the terminal output, it means the module has been successfully loaded.
+
+Now, proceed with the following commands to configure the master node:
+
 ```shell
 # From NUC1
 sudo kubeadm init --pod-network-cidr=10.244.0.0/16

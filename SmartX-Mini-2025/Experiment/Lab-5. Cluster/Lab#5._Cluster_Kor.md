@@ -305,6 +305,38 @@ sudo apt install -y kubeadm=1.28.1-1.1 kubelet=1.28.1-1.1 kubectl=1.28.1-1.1
 
 ### 2-4-1. Kubernetes Master Setting(For NUC1)
 
+다음의 명령어를 실행하여 파일을 열어주시기 바랍니다.  
+kubernetes에서는 bridges traffic에 대한 iptables 규칙을 활성화하기 위한 모듈이 필요하며, 이 모듈이 누락되면 kubeadm 초기화에 실패합니다.  
+이와 관련된 내용을 추가하겠습니다.
+
+```shell
+sudo vim /etc/modules-load.d/modules.conf
+```
+
+해당 파일에 `br_netfilter` 항목이 없다면, 추가하시기 바랍니다.  
+**예시에서 보이는 ...은 제외하고 `br_netfilter`만 입력하시기 바랍니다.**
+
+```text
+...
+
+br_netfilter
+
+...
+```
+
+해당 내용을 입력하면 이후에 NUC이 재부팅 되어도 bridge-nf-call-iptables kernel module이 자동으로 로드됩니다.  
+위 내용은 재부팅 이후부터 적용되기 때문에, 지금은 편의를 위해서 명령어를 통해 bridge-nf-call-iptables kernel module을 로드하겠습니다.  
+아래의 명령어를 입력해시기 바랍니다.
+
+```shell
+sudo modprobe br_netfilter
+lsmod | grep br_netfilter
+```
+
+터미널에 `br_netfilter`가 출력되면 성공적으로 로드된 것입니다.
+
+이제 아래의 명령어를 입력하여 master node의 설정을 진행합니다.
+
 ```shell
 # From NUC1
 sudo kubeadm init --pod-network-cidr=10.244.0.0/16
