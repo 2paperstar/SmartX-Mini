@@ -293,7 +293,7 @@ sudo vim /etc/fstab
 > 주의하여 진행해주시기 바랍니다.
 
 ```text
-#UUID=xxxx-xxxx-xxxx none swap sw 0 0 # 이 예시와 같이, line의 맨 앞에 # 기호를 붙여주시기 바랍니다.
+# /swapfile      none   swap  sw    0  0 # 이 예시와 같이, line의 맨 앞에 # 기호를 붙여주시기 바랍니다.
 ```
 
 ### 2-3-2. Install Kubernetes

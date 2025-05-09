@@ -298,7 +298,7 @@ In the contents of the file, look for a line with the following format and add a
 > Be very careful not to modify anything other than the line related to swap memory, as making a mistake here can lead to critical system errors.
 
 ```text
-#UUID=xxxx-xxxx-xxxx none swap sw 0 0 # As shown in this example, please add a `#` symbol at the beginning of the line.
+# /swapfile      none   swap  sw    0  0 # As shown in this example, please add a `#` symbol at the beginning of the line.
 ```
 
 ### 2-3-2. Install Kubernetes
