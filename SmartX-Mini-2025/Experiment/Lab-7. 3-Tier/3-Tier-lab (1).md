@@ -345,43 +345,45 @@ cd <your_directory>
 이를 위해 본인의 실습 디렉토리 아래 명령어를 입력하여 Github Repository에 준비된 실습 템플릿을 cloning해주세요!
 
 ```bash
-git clone <추후 github repository url link 추가하기>
-cd <repository name>
-ls # 실습 템플릿 확인
+git clone https://github.com/SmartX-Labs/SmartX-Mini.git
+cp -r SmartX-Mini/SmartX-Mini-2025/Experiment/Lab-7.\ 3-Tier/* ./
+
+# 실습 템플릿 확인
+ls
 ```
 
 ### 2-5-2. Directory Architecture
 
-(추후, 최신 상황에 맞게 업데이트 필요.)
-
 ```bash
 .
 ├── backend
-│   ├── dist
-│   ├── Dockerfile
-│   ├── eslint.config.mjs
-│   ├── nest-cli.json
-│   ├── node_modules
-│   ├── package-lock.json
-│   ├── package.json
-│   ├── prisma
-│   ├── README.md
-│   ├── src
-│   ├── tsconfig.build.json
-│   └── tsconfig.json
+│   ├── Dockerfile
+│   ├── eslint.config.mjs
+│   ├── nest-cli.json
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── prisma
+│   ├── README.md
+│   ├── src
+│   ├── tsconfig.build.json
+│   └── tsconfig.json
 ├── frontend
-│   ├── eslint.config.js
-│   ├── index.html
-│   ├── package-lock.json
-│   ├── package.json
-│   ├── public
-│   ├── README.md
-│   ├── src
-│   └── vite.config.js
+│   ├── app.conf
+│   ├── deploy.sh
+│   ├── Dockerfile
+│   ├── eslint.config.js
+│   ├── index.html
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── public
+│   ├── README.md
+│   ├── src
+│   └── vite.config.js
 ├── kubernetes
-│   ├── backend
-│   └── database
-└── README.md
+│   ├── backend
+│   ├── container
+│   ├── database
+│   └── frontend
 ```
 
 # 3. Database & Backend Deployment on Kubernetes
@@ -401,7 +403,7 @@ ls # 실습 템플릿 확인
 **우선, 미리 정의된 Persistent Volume template file을 각자 사용하는 namespace에 맞게 수정합니다.**
 
 ```bash
-cd ~/<your_directory\>/3-tier-lab/kubernetes/database
+cd ~/<your_directory\>/kubernetes/database
 vim postgres-pv.yaml
 ```
 
@@ -548,7 +550,7 @@ kubectl get statefulset -n <your_namespace>
 DB 접속 정보에는 Database에 접근하기 위한 **URL**과 인증을 위한 **Password**가 필요하며, Backend Service가 이 정보를 사용할 수 있도록 Kubernetes의 Secret 자원을 생성합니다.
 
 ```bash
-cd ~/3-tier-lab/kubernetes/backend
+cd ~/<your_directory\>/kubernetes/backend
 vim secret.yaml
 ```
 
@@ -711,7 +713,7 @@ NGINX는 이러한 목적을 위해 사용할 수 있는 프록시 서버로, �
 다음의 명령어로 `fe-proxy-cm.yaml` 파일을 열도록 하겠습니다.
 
 ```bash
-cd ~/3-tier-lab/kubernetes/frontend
+cd ~/<your_directory\>/kubernetes/frontend
 vim fe-proxy-cm.yaml
 ```
 
