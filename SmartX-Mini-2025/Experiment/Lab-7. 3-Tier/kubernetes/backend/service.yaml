@@ -1,0 +1,13 @@
+# service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-svc
+  namespace: <your_namespace> # You need to replace this with your own namespace
+spec:
+  selector:
+    app: backend-api
+  ports:
+    - port: 80
+      targetPort: 3000
+  type: ClusterIP

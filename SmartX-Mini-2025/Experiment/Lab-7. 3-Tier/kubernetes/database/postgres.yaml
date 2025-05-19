@@ -1,0 +1,64 @@
+# postgres.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-secret
+  namespace: <your_namespace> # You need to replace this with your own namespace
+type: Opaque
+stringData:
+  POSTGRES_USER: myuser
+  POSTGRES_PASSWORD: mypassword # Don't use this kind of password in real life. It's just for study.
+  POSTGRES_DB: mydb
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: <your_namespace> # You need to replace this with your own namespace
+spec:
+  selector:
+    app: postgres
+  ports:
+    - port: 5432
+      targetPort: 5432
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+  namespace: <your_namespace> # You need to replace this with your own namespace
+spec:
+  serviceName: postgres
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:16
+          envFrom:
+            - secretRef:
+                name: postgres-secret
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql/data
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: standard
+        selector:
+          matchLabels:
+            volume: postgres-pv-<your_namespace>
+        resources:
+          requests:
+            storage: 5Gi

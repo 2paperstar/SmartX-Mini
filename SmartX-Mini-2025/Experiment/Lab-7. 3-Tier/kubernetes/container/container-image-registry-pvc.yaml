@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: container-image-registry-pvc-<your_namespace>
+  namespace: <your_namespace>
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: manual
+  selector:
+    matchLabels:
+      volume: container-image-registry-pv-<your_namespace>
+  resources:
+    requests:
+      storage: 5Gi

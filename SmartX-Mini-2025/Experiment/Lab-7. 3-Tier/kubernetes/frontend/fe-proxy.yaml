@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-proxy
+  namespace: <your_namespace>
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-proxy
+  template:
+    metadata:
+      labels:
+        app: nginx-proxy
+    spec:
+      volumes:
+        - name: fe-serving-config
+          configMap:
+            name: nginx-proxy-cm
+            items:
+              - key: app.conf
+                path: app.conf
+      containers:
+        - name: nginx
+          image: "tori209/smartx-fe:latest"
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: fe-serving-config
+              mountPath: /etc/nginx/conf.d
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi

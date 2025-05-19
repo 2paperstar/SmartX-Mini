@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: container-image-registry
+  namespace: <your_namespace>
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: container-image-registry
+  template:
+    metadata:
+      labels:
+        app: container-image-registry
+    spec:
+      containers:
+        - name: registry
+          image: registry:2
+          ports:
+            - containerPort: 5000
+          volumeMounts:
+            - name: registry-storage
+              mountPath: /var/lib/registry
+      volumes:
+        - name: registry-storage
+          persistentVolumeClaim:
+            claimName: container-image-registry-pvc-<your_namespace>
+      nodeSelector:
+        kubernetes.io/hostname: <your_namespace>
