@@ -57,13 +57,13 @@
 
 ### 기존 구조와의 차이점
 
-| 항목           | Monolithic Architecture | 3-Tier Architecture        |
-| -------------- | ----------------------- | -------------------------- |
-| 코드 분리      | X (기능이 섞여 있음)    | O (기능별 계층 분리)       |
-| 유지보수       | 오류 원인 파악이 어려움 | 계층 단위로 관리 가능      |
-| 스케일링       | 전체 확장이 필요        | 계층 단위로 독립 확장 가능 |
-| 장애 영향 범위 | 전체 서비스로 전파 가능 | 단일 계층에서 격리 가능    |
-| 배포 전략      | 단일 배포               | 계층별 독립 배포 가능      |
+| 항목           | Monolithic Architecture | 3-Tier Architecture            |
+| -------------- | ----------------------- | ------------------------------ |
+| 코드 분리      | X (기능이 섞여 있음)    | O (기능별 계층 분리)           |
+| 유지보수       | 오류 원인 파악이 어려움 | 계층 단위로 관리 가능          |
+| 스케일링       | 전체 확장이 필요        | 계층 단위로 독립 확장 가능     |
+| 장애 영향 범위 | 전체 서비스로 전파 가능 | 단일 계층에서 일부분 격리 가능 |
+| 배포 전략      | 단일 배포               | 계층별 독립 배포 가능          |
 
 ### 이점
 
@@ -159,7 +159,10 @@
 ```bash
 ssh <username>@nuc01
 # 컴시이실 실습자의 경우 username은 gist
+# 해당 명령어 입력 후 password를 입력합니다.
 ```
+
+## 2-2. Kubernetes Cluster 상태 확인하기 (For all NUCs)
 
 Kubernetes Cluster의 Master node에 접속했으면, 다음의 명령어를 입력하여 Kubernetes Cluster의 node와 pod 상태를 확인하여 Kubernetes Cluster가 정상적으로 작동 중인지 확인합니다.
 
@@ -177,7 +180,7 @@ kubectl get pods -A
 >
 > `Ready` 상태가 아닌 Node나 `Running` 상태가 아닌 Pod가 있다면 추후 실습이 정상적으로 진행되지 않을 수 있습니다.
 
-## 2-2. Kubernetes Namespace 생성하기 (For all NUCs)
+## 2-3. Kubernetes Namespace 생성하기 (For all NUCs)
 
 이번 실습은 모든 실습자가 각자의 NUC에서 Kubernetes Master Node에 원격 접속하여 진행되는 만큼, Kubernetes의 자원을 여러 사용자에게 논리적으로 나누는 `namespace`를 활용합니다.
 
@@ -202,7 +205,7 @@ kubectl create namespace <your_namespace>
 kubectl get namespace
 ```
 
-## 2-3. Kubernetes Basic Manuals 연습
+## 2-4. Kubernetes Basic Manuals 연습
 
 이 섹션에서는 Kubernetes 클러스터를 다루는 데 필요한 기본적인 명령어들을 직접 실습하며 익힙니다. 실습 중 배포할 리소스들은 대부분 `kubectl`을 통해 조작하게 됩니다. 아래 명령어는 자주 사용되는 명령어들이며, 이후 실습의 기본이 됩니다.
 
@@ -266,7 +269,7 @@ kubectl delete -f deployment.yaml # 해당 리소스를 삭제
 
 이러한 명령어들은 이후 실습의 모든 단계에서 반복적으로 사용됩니다. 완벽하게 외우진 못하더라도 익숙해지는 것이 중요합니다.
 
-## 2-4.YAML 파일이란?
+## 2-5.YAML 파일이란?
 
 쿠버네티스에서 리소스들은 모두 **"선언형(Declarative)"** 방식으로 관리되며, 그 핵심은 **YAML 파일**입니다.
 
@@ -328,9 +331,9 @@ spec:
 
 > 실습에서 사용하는 모든 `.yaml` 파일은 Git Repository에 포함되어 있으며, 이를 수정하거나 새로운 파일로 작성하게 됩니다.
 
-## 2-5. Cloning the git Repository
+## 2-6. Cloning the git Repository
 
-### 2-5-1. 디렉토리 생성하고 Git Clone하기
+### 2-6-1. 디렉토리 생성하고 Git Clone하기
 
 우선 본인이 사용하는 PC에 맞게 아래 명령어를 입력하여 실습 디렉토리(폴더)를 생성해주세요.
 
@@ -352,7 +355,7 @@ cp -r SmartX-Mini/SmartX-Mini-2025/Experiment/Lab-7.\ 3-Tier/* ./
 ls
 ```
 
-### 2-5-2. Directory Architecture
+### 2-6-2. Directory Architecture
 
 ```bash
 .
