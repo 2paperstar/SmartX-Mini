@@ -5,7 +5,7 @@ metadata:
   name: backend-api
   namespace: <your_namespace> # You need to replace this with your own namespace
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: backend-api

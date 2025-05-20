@@ -425,7 +425,7 @@ spec:
     - ReadWriteOnce
   storageClassName: standard
   hostPath:
-    path: /mnt/data/postgres
+    path: /mnt/data/<your_namespace>/postgres
   persistentVolumeReclaimPolicy: Retain
 ```
 
@@ -457,6 +457,8 @@ vim postgres.yaml
 > **Secret**: 외부에 노출되어선 안 되는 민감한 정보(예: 비밀번호, API 키)를 저장하기 위한 리소스입니다. 여기서는 PostgreSQL의 사용자 이름과 비밀번호를 안전하게 저장하여 다른 리소스에서 참조할 수 있도록 합니다.
 >
 > **StatefulSet**: 상태를 가지는 어플리케이션(예: DB) 배포를 위한 리소스입니다. 일반 Deployment와 달리, 고정된 이름과 스토리지 볼륨을 보장하며, 각 인스턴스가 고유한 ID를 가지고 안정적인 스토리지 연결이 필요한 상황에 적합합니다.
+
+아래에 입력한 `POSTGRES_PASSWORD`
 
 ```yaml
 # postgres.yaml
@@ -519,7 +521,7 @@ spec:
         storageClassName: standard
         selector:
           matchLabels:
-            volume: postgres-pv-<your_namespace>
+            volume: postgres-pv-<your_namespace> # You need to replace this with your own namespace
         resources:
           requests:
             storage: 5Gi
