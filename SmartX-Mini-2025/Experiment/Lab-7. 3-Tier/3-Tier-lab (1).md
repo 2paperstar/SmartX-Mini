@@ -672,7 +672,7 @@ kubectl get svc -n <your_namespace>
 1. `ConfigMap`을 컨테이너의 환경 변수로 사용
 2. `ConfigMap`을 컨테이너 내부에 파일로 마운트 (공식 문서 명칭으로 ConfigMap을 `Projection`(투사)한다고 말합니다.)
 
-이번 실습의 Frontend 배포에서 Configmap은 후술할 NGINX의 설정 파일을 추가하는 데에 사용되며, 이를 파일 형태로 가져오기 위한 방법을 `kubernetes/frontend/fe-proxy.yaml` 파일에서 확인핧 수 있습니다.
+이번 실습의 Frontend 배포에서 Configmap은 후술할 NGINX의 설정 파일을 추가하는 데에 사용되며, 이를 파일 형태로 가져오기 위한 방법을 `kubernetes/frontend/fe-proxy.yaml` 파일에서 확인할 수 있습니다.
 
 > [!note]
 >
@@ -855,7 +855,7 @@ kubectl get pod -n <your_namespace> -o wide
 
 ![Deploy List](./img/deploy-complete.png)
 
-위의 예시의 경우, 접근할 IP 주소는 `10.2.1.73`입니다.
+위의 예시의 경우, 접근할 IP 주소는 `10.244.2.107`입니다.
 
 > [!NOTE]
 >
@@ -933,7 +933,7 @@ NGINX가 어떻게 요청을 처리했는지 확인하려면 이의 로그를 �
 
 ```bash
 # 이름을 모를 경우 `kubectl -n <your_namespace> get po`로 확인합니다.
-kubectl -n <your_namespace> logs po <nginx-proxy-pod>
+kubectl -n <your_namespace> logs <nginx-proxy-pod>
 ```
 
 로그를 통해 어떤 요청이 다른 서버에게 포워딩되었으며, 어떤 요청을 직접 처리했는지 확인할 수 있습니다.
@@ -982,7 +982,7 @@ kubectl -n <your_namespace> exec -it po/postgres-0 -- psql -U myuser -d mydb
 
 ```SQL
 -- ※ SQL은 `;`으로 끝맺어야 명령 입력이 완료되었다고 인식합니다.
-SELECT * FROM "POST";     -- Post 전체 조회
+SELECT * FROM "Post";     -- Post 전체 조회
 SELECT * FROM "Comment";  -- Comment 전체 조회
 ```
 
