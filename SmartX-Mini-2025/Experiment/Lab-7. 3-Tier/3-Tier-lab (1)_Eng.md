@@ -665,77 +665,99 @@ At this point, you’ve completed the deployment of the Data Tier (PostgreSQL) a
 
 # 4. Frontend Deployment on Kubernetes
 
-## 4-1. Frontend Deployment 배경지식 요약
+## 4-1. Background on Frontend Deployment
 
 ### 4-1-1. Kubernetes Object: ConfigMap
 
-`4.2.1`에서 `ConfigMap`을 이용하여 설정 파일을 컨테이너에 삽입합니다. 그런데 여기서 사용하는 `ConfigMap`은 무엇일까요?
+In section `4.2.1`, we'll use a `ConfigMap` to inject configuration files into containers. But what exactly is a ConfigMap?
 
-`ConfigMap`이란 평문으로 설정값을 저장하는 쿠버네티스 오브젝트입니다. Backend에서 활용했던 `Secret`과는 다르게, 외부에 노출되어도 괜찮은 정보들, 가령 URL이나 Port 번호, Log Level 등을 저장하여 여러 Container에서 환경 변수나 파일 형태로 가져와 활용할 수 있습니다.
+A `ConfigMap` is a Kubernetes object that stores non-sensitive configuration data in plain text.  
+Unlike `Secret`, which stores sensitive information (like passwords), `ConfigMap` stores data such as URLs, port numbers, or log levels that are safe to expose.  
+You can use them in two main ways:
 
-`Secret`과 비슷하게, `ConfigMap`은 크게 2가지 방법으로 활용할 수 있습니다.
+1. Inject `ConfigMap` data as environment variables
+2. Mount `ConfigMap` as files inside the container (also called a “projection”)
 
-1. `ConfigMap`을 컨테이너의 환경 변수로 사용
-2. `ConfigMap`을 컨테이너 내부에 파일로 마운트 (공식 문서 명칭으로 ConfigMap을 `Projection`(투사)한다고 말합니다.)
-
-이번 실습의 Frontend 배포에서 Configmap은 후술할 NGINX의 설정 파일을 추가하는 데에 사용되며, 이를 파일 형태로 가져오기 위한 방법을 `kubernetes/frontend/fe-proxy.yaml` 파일에서 확인할 수 있습니다.
+In this lab, the Frontend deployment uses a `ConfigMap` to inject NGINX configuration files.  
+This configuration is mounted as a file using the `fe-proxy.yaml` in `kubernetes/frontend`.
 
 > [!note]
 >
-> 본 내용은 "시작하세요! 도커/쿠버네티스:친절한 설명으로 쉽게 이해하는 컨테이너 관리"(용찬호 저. 위키북스). pp 344~355의 내용을 일부 활용했습니다. 자세한 사항은 해당 도서를 참고해주시기 바랍니다.
+> This explanation references “Start with Docker & Kubernetes” by Chanho Yong (Wikibooks), pp. 344–355.  
+> For more detailed information, please consult the book.
 
 ### 4-1-2. React
 
-Meta에서 개발한 Javascript 기반 Frontend 개발 라이브러리입니다. Angular와 Vue와 함께 Frontend 개발을 위해 주로 사용하는 라이브러리입니다.
+React is a JavaScript-based frontend library developed by Meta.  
+It is widely used along with Angular and Vue for building modern web frontends.
 
-단일 HTML 페이지에서 Javascript를 통해 페이지를 부분적으로 변경하여 서비스를 제공하는 SPA(Single Page Application) 방식의 웹서비스를 개발할 때 사용하며, 페이지의 구성요소를 Component라는 단위로 쪼개어 개발하고, 웹페이지를 동적으로 구성할 때 페이지 전체를 새로 구성하는 대신, 변경된 부분만을 수정합니다.
+It enables SPA (Single Page Application) development by modifying only specific parts of the page using JavaScript, without reloading the entire page.  
+React components divide the UI into modular pieces and update only the changed elements.
 
-웹서비스 뿐만 아니라, 모바일 환경과 같은 네이티브 환경에서 UI를 개발할 때에 사용할 수 있습니다.
+In addition to web services, React can be used for developing native UIs for mobile apps as well.
 
 > [!note]
 >
-> 본 실습을 진행하기 위해 React 프로젝트의 소스코드를 이해하지 않아도 되기에 많은 내용을 기술하지는 않았습니다. 하지만 React 코드가 궁금한 경우 `frontend/README.md`에 코드를 이해하는 데에 필요한 정보를 적어두었으니 참고하시기 바랍니다.
+> You don’t need to understand the full React source code to complete this lab.  
+> However, if you're interested, refer to `frontend/README.md` for more information.
 
 ### 4-1-3. NGINX
 
-사용자나 브라우저에게 HTML 및 Javascript를 제공하려면, Backend 서버가 사용자 요청에 따라 파일을 전달해주거나 Proxy 서버가 대신 파일을 전달해야 합니다. 전자의 경우 NestJS 서버에 별도의 설정을 통해 HTML 파일을 전달하도록 구성하며, 후자의 경우 NGINX를 도입하여 사용자의 요청을 NGINX가 대신 받고, 요청에 따라 파일을 전달해주거나, Backend 서버에게 요청을 포워딩합니다.
+To serve HTML and JavaScript files to users or browsers, either:
+
+- The Backend server must be configured to serve static files, or
+- A Proxy server (e.g., NGINX) must be placed in front to serve the files and forward requests
+
+In the second case, NGINX receives the requests, serves the files, or forwards the request to the appropriate Backend server.
 
 ![What-is-proxy](img/proxy.png)
 
-Proxy 서버를 배치할 경우, Backend 서버는 파일을 제공하는 로직을 신경쓰지 않고 서비스에만 집중할 수 있게 되며, Proxy가 일부 요청을 대신 처리하므로 부하 감소를 얻을 수 있습니다.
+By placing a proxy server, the backend can focus solely on service logic and reduce load, while the proxy handles file delivery and request routing.
 
-NGINX는 이러한 목적을 위해 사용할 수 있는 프록시 서버로, 특정 요청에 대해 HTML과 같은 Static File을 대신 전달하거나, 요청에 알맞은 서버에게 요청을 포워딩하거나, 포워딩 과정에서 요청을 적절히 분산하여 부하를 고르게 부여하는 로드밸런싱을 수행할 수 있습니다.
+NGINX can:
 
-본 실습에서는 React 프로젝트로 생성된 HTML 및 Javascript 파일을 사용자에게 전달하고, 요청을 Backend Server에게 포워딩하는 역할을 수행합니다. 이를 위해 사전에 빌드된 Docker 이미지를 활용할 예정입니다.
+- Serve static files like HTML
+- Forward requests to specific backend services
+- Distribute load (load balancing)
+
+In this lab, NGINX will:
+
+- Serve the HTML and JavaScript files built from the React project
+- Forward API requests to the backend server
+
+We’ll use a pre-built Docker image for this purpose.
 
 ## 4-2. Frontend Deployment on Kubernetes
 
 > [!note]
 >
-> 본 실습은 사전에 빌드된 이미지파일을 사용합니다.  
-> 만약 웹UI를 수정하여 배포하고자 하는 경우, `./frontend` 경로에 프로젝트 원본 및 Dockerfile이 저장되어있으므로, 이를 활용하여 코드 수정 후 이미지를 새로 빌드해 활용하시기 바랍니다.
+> This lab uses a pre-built image.  
+> If you want to modify the web UI, source code and Dockerfile are located under `./frontend`, which you can modify and rebuild.
 
-### 4-2-1. Frontend ConfigMap 생성
+### 4-2-1. Creating the Frontend ConfigMap
 
-먼저, HTML 및 Javascript 파일을 NGINX를 통해 브라우저에게 전달할 수 있도록 설정하기 위해, ConfigMap을 생성하도록 하겠습니다.
+To allow NGINX to serve HTML/JS files properly, we need to configure it using a `ConfigMap`.
 
-다음의 명령어로 `fe-proxy-cm.yaml` 파일을 열도록 하겠습니다.
+Open the `fe-proxy-cm.yaml` file:
 
 ```bash
-cd ~/<your_directory\>/kubernetes/frontend
+cd ~/<your_directory>/kubernetes/frontend
 vim fe-proxy-cm.yaml
 ```
 
-`fe-proxy-cm.yaml` 파일에서 Namespace를 자신의 Namespace로 수정하고, `upstream` 부분의 URL을 Backend 서버의 URL로 수정하겠습니다. 파일 내용은 다음과 같이 구성됩니다.
+In this file:
 
-```YAML
+- Replace `metadata.namespace` with your namespace
+- Modify the `upstream backend-svc` block to match your Backend Service URL
+
+```yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: nginx-proxy-cm
-  namespace: <your_namespace>    # EDIT THIS
+  namespace: <your_namespace> # EDIT THIS
 data:
-  app.conf: |    # EDIT THIS
+  app.conf: | # EDIT THIS
     upstream backend-svc {
       server backend-svc.<your_namespace>.svc.cluster.local:80;
     }
@@ -759,42 +781,39 @@ data:
         try_files $uri /index.html;
       }
     }
-
 ```
 
-위의 내용에서 `metadata.namespace`의 값을 자신의 Namespace로 수정하고, `data."app.conf"`의 `upstream.server`의 값을 Backend Service의 URL로 수정해주십시오. (참고: 동일 Cluster 내 Service의 FQDN: `<svc-name>.<namespace>.svc.cluster.local`)
-
-수정 후, 다음의 명령어를 입력하여 ConfigMap을 생성합니다.
+After saving the file, apply it:
 
 ```bash
 kubectl apply -f ./fe-proxy-cm.yaml
 ```
 
-이후, 제대로 생성되었는지 확인하기 위해 다음의 명령어를 입력합니다.
+Verify that it was created correctly:
 
 ```bash
-kubectl get cm -n <your_namespace>  # 네임스페이스에 존재하는 ConfigMap 목록 확인
-kubectl describe cm nginx-proxy-cm -n <your_namespace> # nginx-proxy-cm의 내용 확인
+kubectl get cm -n <your_namespace>
+kubectl describe cm nginx-proxy-cm -n <your_namespace>
 ```
 
-### 4-2-2. Frontend Deployment 생성
+### 4-2-2. Creating the Frontend Deployment
 
-다음으로, HTML 파일이 포함된 NGINX Deployment를 생성하도록 하겠습니다.
+Now we’ll deploy the NGINX server that serves the HTML files.
 
-하단의 명령어를 입력하여 `fe-proxy.yaml` 파일을 열도록 하겠습니다.
+Open the `fe-proxy.yaml` file:
 
 ```bash
 vim ./fe-proxy.yaml
 ```
 
-`fe-proxy.yaml` 파일의 내용은 다음과 같습니다. 파일 내용에서 `metadata.namespace`의 값을 자신의 Namespace로 수정합니다.
+Replace `metadata.namespace` with your namespace:
 
-```YAML
+```yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nginx-proxy
-  namespace: <your_namespace>    # EDIT THIS
+  namespace: <your_namespace> # EDIT THIS
 spec:
   replicas: 1
   selector:
@@ -830,183 +849,221 @@ spec:
               memory: 512Mi
 ```
 
-수정 후, 다음의 명령어를 입력하여 NGINX Deployment를 생성합니다.
+Apply the deployment:
 
 ```bash
 kubectl apply -f ./fe-proxy.yaml
 ```
 
-이후, 제대로 생성되었는지 확인하기 위해 다음의 명령어를 입력합니다.
+Check the deployment:
 
 ```bash
-kubectl get deploy -n <your_namespace>  # 네임스페이스에 존재하는 Deployment 목록 확인
-kubectl describe deploy nginx-proxy -n <your_namespace> # nginx-proxy의 내용 확인
-kubectl get pod -n <your_namespace> # Deployment에 의한 Pod 생성 확인
+kubectl get deploy -n <your_namespace>
+kubectl describe deploy nginx-proxy -n <your_namespace>
+kubectl get pod -n <your_namespace>
 ```
 
-# 5. 배포된 웹 서비스 확인
+# 5. Verifying the Deployed Web Service
 
-## 5-1. 브라우저 접근
+## 5-1. Browser Access
 
-### 5-1-1. 웹서버 IP 확인
+### 5-1-1. Check Web Server IP
 
-이제, 브라우저를 통해 배포된 웹 서비스에 접근하기 위해 다음을 입력하여 접근할 IP 주소를 확인하겠습니다.
+To access the deployed web service via a browser, first check the IP address of the Pod:
 
 ```bash
-# `-o wide`: 출력에 더 많은 정보(Cluster-wide IP, Node Name, ...)를 표시합니다.
+# `-o wide` shows more information such as IP address and node name
 kubectl get pod -n <your_namespace> -o wide
 ```
 
-위의 명령을 통해 다음과 같이 출력됩니다. 이 중에서 `nginx-proxy`로 시작하는 Pod의 IP를 복사합니다.
+From the output, find the Pod that starts with `nginx-proxy` and copy its IP address.
 
 ![Deploy List](./img/deploy-complete.png)
 
-위의 예시의 경우, 접근할 IP 주소는 `10.244.2.107`입니다.
+In the example above, the IP address is `10.244.2.107`.
 
 > [!NOTE]
 >
-> 일반적으로 Pod의 Cluster 내부 IP를 이용하여 Pod에 접근할 수 없으나, 장비가 Cluster의 Node로 포함된 경우에 한하여 직접 접근이 가능합니다.
-> 이는 각 Node에서 Pod에게 패킷을 전달하기 위해, Kernel Routing Table과 IPTables에 Pod에게 패킷을 전달할 방법을 명시하기 때문입니다.
+> Usually, you cannot access Pods directly using their internal IPs.  
+> However, since the device you are using is also part of the cluster nodes, direct access is possible.  
+> This works because the node's kernel routing table and iptables are configured to deliver packets to the Pod.
 
-### 5-1-2. 웹서비스 확인
+### 5-1-2. Check Web Service
 
-브라우저의 주소창에 `http://<nginx-ip-addr>`을 입력해 접근합니다. 그러면 다음과 같은 화면이 표시됩니다.
+In your browser, go to:
+
+```
+http://<nginx-ip-addr>
+```
+
+You should see a page like the one below:
 
 ![WebPage_Main](./img/webpage.png)
 
-우리가 배포한 것은 익명 게시판 서비스로, 회원가입 없이 누구나 게시글을 작성하고 조회할 수 있습니다. 현재는 어떠한 게시글도 등록되지 않아 게시글이 보이지 않는 상태입니다. '게시글 작성' 버튼을 눌러 게시글을 추가해보도록 하겠습니다. 버튼을 클릭하면 다음과 같은 화면이 보입니다.
+This is an anonymous message board service. Anyone can create and view posts without logging in.  
+Currently, no posts exist, so the list is empty. Click the “Create Post” button to add a post.  
+You’ll see a screen like this:
 
 ![WebPage_Write](./img/write.png)
 
-원하는 제목과 닉네임, 패스워드, 본문 내용을 작성한 뒤, "작성" 버튼을 클릭합니다. <br>
-그러면 다음과 같이, 자신이 작성한 글을 확인할 수 있습니다.
+Enter a title, nickname, password, and post content. Then click the “Submit” button.
+
+You will now see your newly created post.
 
 > [!Note]
 >
-> Ubuntu 설치 과정에서 한글 입력기를 별도로 추가하지 않았다면, 한글을 입력할 수 없으니 유의 바랍니다. <br>
-> 설정 방법은 이번 실습과 무관하므로 별도로 설명하지 않지만, 인터넷에 다양한 참고 자료가 있으니 이를 활용하시기 바랍니다.
+> If you didn’t install a Korean input method during Ubuntu installation, you may not be able to type Korean.  
+> This isn’t covered in this lab, but you can find instructions online if needed.
 
 ![WebPage_with_post](./img/list-with-post.png)
 
-다음으로, 검색 기능을 확인해보겠습니다. 현 검색 기능은 제목+본문 검색을 수행하니 참고 바랍니다.
+Next, try using the search function.  
+This search performs a combined search across titles and content.
 
 ![WebPage_Search](./img/post-search.png)
 
-확인이 끝났다면 "게시판 목록"을 클릭하여 되돌아오겠습니다. <br>
-다음으로 자신이 작성한 글을 클릭하여 확인해보겠습니다.
+Once finished, click “Post List” to go back to the list.  
+Now click on your post to view it:
 
 ![WebPage_Detail](./img/post-without-comment.png)
 
-화면과 같이 작성했던 제목과 닉네임, 본문 내용을 볼 수 있으며, 댓글 작성칸, 댓글 목록을 확인할 수 있습니다.
+You’ll see the title, nickname, and post content, along with the comment section.
 
-이제 댓글을 추가하겠습니다. 원하는 내용을 적고 "댓글 작성" 버튼을 누르면 다음과 같이 확인할 수 있습니다.
+Write a comment and click “Submit Comment”.  
+You’ll see the comment appear like this:
 
 ![WebPage_WithComment](./img/post-with-comment.png)
 
-이제 게시글을 수정해보겠습니다. "수정" 버튼을 클릭하면 다음과 같은 수정 페이지를 확인할 수 있습니다.
+Let’s edit the post. Click the “Edit” button to open the post editor:
 
 ![WebPage_Edit](./img/edit-post.png)
 
-원하는 문구로 수정한 뒤, 올바른 패스워드를 입력하면 수정이 완료됩니다. <br>
-만약 패스워드 오류, 혹은 서버 오류 발생 시 오류 메세지가 출력되니 참고 바랍니다.
+Modify the text and enter the correct password to update it.  
+If you enter the wrong password or encounter a server error, an error message will appear.
 
-추가로, 패스워드도 동일한 방법으로 수정이 가능합니다.
+You can also change the password in the same way.
 
 ![WebPage_Editing](./img/comment-editing.png)
 
-수정이 완료되면 다음과 같이 확인할 수 있습니다.
+Once editing is complete, the result will look like this:
 
 ![WebPage_AfterEdit](./img/post-after-edit.png)
 
-마지막으로 Post를 삭제하겠습니다. "삭제" 버튼을 누른 뒤, 게시글 패스워드를 입력하여 삭제해주십시오.
-그러면 다음과 같이 삭제된 것을 확인할 수 있습니다.
+Finally, let’s delete the post. Click “Delete” and enter the post password to delete it.
+
+You’ll see the board return to the empty state:
 
 ![WebPage_AfterDel](./img/webpage.png)
 
-이것으로 익명게시판의 기능을 모두 점검해보았습니다. 추가로 다른 조원의 서비스에 접근해 확인해보는 것을 권장합니다.
+You have now tested all features of the anonymous message board.  
+We also recommend accessing your teammates’ services to test theirs as well.
 
-## 5-2. Server 확인하기
+## 5-2. Checking Server-Side Behavior
 
 > [!TIP]
 >
-> 후술할 과정으로 하나의 사용자 동작을 처리하기 위해 어떻게 요청이 전달되고 처리되는지 엿볼 수 있습니다. <br>
-> 더 나은 체험을 위해, 직접 웹서비스를 사용해보며 실시간 동작을 확인해보는 것을 권장합니다.
+> The steps below show how requests are handled in real-time by the system.  
+> For a better understanding, use the web service while checking logs simultaneously.
 
-### 5-2-1. NGINX 확인
+### 5-2-1. Check NGINX Logs
 
-앞서 언급했듯, NGINX는 요청을 대신 받아 직접 처리하거나, 다른 서버에게 요청을 넘겨주는 역할을 합니다.  
-NGINX가 어떻게 요청을 처리했는지 확인하려면 이의 로그를 확인해야 합니다. 이는 다음의 명령어로 확인할 수 있습니다.
+As described earlier, NGINX acts as a proxy that serves static files and forwards requests to the backend.
+
+To check how NGINX handled requests, view its logs with:
 
 ```bash
-# 이름을 모를 경우 `kubectl -n <your_namespace> get po`로 확인합니다.
+# If you're unsure of the Pod name, use: kubectl -n <your_namespace> get po
 kubectl -n <your_namespace> logs <nginx-proxy-pod>
 ```
 
-로그를 통해 어떤 요청이 다른 서버에게 포워딩되었으며, 어떤 요청을 직접 처리했는지 확인할 수 있습니다.
+The logs will show which requests were forwarded and which were served directly.
 
-### 5-2-2. DB 확인
+### 5-2-2. Check Database
 
-웹서버는 데이터를 저장하기 위해 DB를 사용합니다. <br>
-여러분이 작성한 댓글이나 게시글은 DB에 저장되고, 사용자가 요청을 보낼 때마다 이를 꺼내어 전달해줍니다.
+The web server stores data (posts and comments) in the database.  
+Whenever a user sends a request, the server fetches data from the database and returns it.
 
-그렇기에, DB의 Table을 확인하면 여러분의 웹서비스 화면에 보여졌던 것과 동일한 내용을 확인할 수 있습니다.
+So if you inspect the database tables, you’ll see the exact content that appeared in the web interface.
 
-먼저, PostgreSQL DB에 접근하기 위해, DB Pod에 접근하여 CLI 도구를 실행하도록 하겠습니다. 명령은 다음과 같이 입력합니다.
+To access PostgreSQL, open a terminal session in the database Pod and start the CLI:
 
 ```bash
-# 현 설정에서 PostgreSQL Pod의 이름은 postgres-0 입니다. 아닐 경우 `kubectl -n <your_namespace> get po`로 확인합니다.
-# `-U`: PostgreSQL에 등록된 사용자 ID 지정
-# `-d`: 접근 시 연결할 database 이름
+# The default PostgreSQL pod name is postgres-0
+# Use: kubectl -n <your_namespace> get po to confirm
+# `-U`: Specifies the PostgreSQL user
+# `-d`: Specifies the database to connect to
 kubectl -n <your_namespace> exec -it po/postgres-0 -- psql -U myuser -d mydb
 ```
 
 > [!note]
 >
-> 위의 명령은 "지정한 Pod에서 다음의 명령을 실행한다"는 의미입니다. 옵션은 다음과 같습니다.
+> The command means “execute the following inside the specified Pod.”  
+> Options:
 >
-> | Option           | Description                                                                                                                                                                                             |
-> | :--------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-> | `-n <namespace>` | Pod가 위치한 namespace를 지정합니다.                                                                                                                                                                    |
-> | `-it`            | `--stdin`(`-i`)와 `--tty`(`-t`) 옵션으로, 사용자 입력(키보드 등)을 `exec` 실행 동안 Pod에게 전달하기 위해 필요합니다.<br>(간단하게, TTY=로컬 콘솔 접근을 위한 드라이버 / PTY=원격 접속을 위한 드라이버) |
-> | `-- <cmd>`       | Pod 내부에서 실행할 명령어를 지정합니다. `--`와 `<cmd>` 사이에 공백이 있으므로 주의합니다.                                                                                                              |
+> | Option           | Description                                                                     |
+> | ---------------- | ------------------------------------------------------------------------------- |
+> | `-n <namespace>` | Specifies the namespace of the Pod                                              |
+> | `-it`            | Combines `--stdin (-i)` and `--tty (-t)` for interactive shell access           |
+> | `-- <cmd>`       | The command to run inside the Pod (note the space between `--` and the command) |
 
-그러면 PostgreSQL CLI 도구가 활성화된 것을 볼 수 있습니다.
+If successful, you’ll see the PostgreSQL CLI prompt:
+
 ![psql_start](img/psql_img.png)
 
-다음으로, 존재하는 Table 목록을 조회하기 위해 `\d`을 입력합니다. <br>
+To list the tables, enter:
+
+```sql
+\\d
+```
+
 ![psql_tables](./img/psql_tables.png)
 
 > [!TIP]
 >
-> PostgreSQL에서 `\d`는 연결된 Database 내 Table 목록을 출력합니다. <br>
-> 그리고 `\d <table_name>`을 입력하면 Table의 Column 정보를 출력합니다.
->
-> 또한, `\d`는 기본 정보만 출력하지만, `\d+`는 여러 세부 정보를 추가로 보여줍니다.
+> In PostgreSQL, `\\d` lists tables in the connected database.  
+> `\\d <table_name>` shows column details.  
+> `\\d+` provides more detailed metadata.
 
-여기서 `Post`가 작성한 게시글을 저장하는 Table이며, `Comment`가 댓글을 저장하는 Table입니다. <br>
-내용을 보기 위해, 다음의 명령을 입력합니다.
+Here:
 
-```SQL
--- ※ SQL은 `;`으로 끝맺어야 명령 입력이 완료되었다고 인식합니다.
-SELECT * FROM "Post";     -- Post 전체 조회
-SELECT * FROM "Comment";  -- Comment 전체 조회
+- `Post` is the table for posts
+- `Comment` is the table for comments
+
+To view the content, run:
+
+```sql
+-- SQL statements must end with a semicolon
+SELECT * FROM "Post";     -- Show all posts
+SELECT * FROM "Comment";  -- Show all comments
 ```
 
-그러면 여러분이 입력했던 데이터가 출력될 것입니다.<br>
-참고로 Password는 보안을 위해 Hash Function으로 평문을 알아볼 수 없게 처리하니 유의하기 바랍니다.
+You should now see the data you submitted through the web interface.
 
-종료는 `\q`, 혹은 `ctrl+d`를 입력하면 됩니다.
+Note: Passwords are hashed, so the raw text is not viewable.
+
+To exit PostgreSQL, type `\\q` or press `Ctrl + D`.
 
 # 6. Lab Review
 
-이번 Lab에서는 `3-tier 구조`의 웹 서비스를 kubernetes 환경에서 배포하는 경험을 해보았습니다.
+In this lab, we deployed a **3-Tier architecture** web service in a Kubernetes environment.
 
-3-tier 구조는 사용자와 직접 상호작용하는 `Presentation Tier`, Presentation tier에서 발생한 요청을 처리하고 데이터베이스와 통신하는 `Application Tier`, 생성된 데이터를 영구적으로 저장 및 관리하는 `Data Tier`의 형태를 나타냅니다.
+The 3-Tier structure consists of:
 
-이러한 구조를 가진 서비스를 container orchestration 도구인 kubernetes를 이용하여 배포해보았습니다. 실습을 위해 적은 수의 pod가 생성되도록 했지만, 규모있는 실제 서비스를 운영하게 된다면 kubernetes 환경에서 손쉽게 scaling을 할 수 있다는 특성을 바탕으로 적은 노력을 들여 안정적인 서비스를 운영할 수 있을 것입니다.
+- `Presentation Tier`: directly interacts with users
+- `Application Tier`: processes user requests and communicates with the database
+- `Data Tier`: stores and manages generated data persistently
 
-우리는 yaml 파일을 통한 `선언형` 방식을 통해, kubernetes의 다양한 리소스를 생성할 수 있었고 Frontend, Backend, Database를 배포하여 서비스의 작동을 확인할 수 있었습니다.
+We used Kubernetes, a container orchestration tool, to deploy each component.  
+Although we deployed only a small number of Pods for this lab, if you were to operate a real, large-scale service, Kubernetes would allow you to scale easily and manage services reliably with minimal effort.
 
-또한, Frontend(Presentation Tier)와 Backend(Application Tier) 사이의 proxy server 역할을 하는 NGINX도 사용해보았습니다.
+Using declarative `YAML` files, we created various Kubernetes resources, deployed the Frontend, Backend, and Database, and verified the system functionality.
 
-이번 실습을 응용한다면, 여러분은 각자 본인만의 Frontend, Backend 서비스를 개발하고, 이를 Database와 함께 container image로 만든 후, kubernetes 환경에서 배포할 수 있을 것입니다. 이를 통해 구조를 갖춘 하나의 서비스를 개발하는 경험을 해볼 수 있을 것입니다.
+We also experimented with **NGINX**, which acts as a proxy server between the Frontend (Presentation Tier) and Backend (Application Tier).
+
+By extending this lab:
+
+- You could develop your own custom Frontend and Backend services
+- Package them as container images
+- Deploy them along with a Database in a Kubernetes environment
+
+This will allow you to gain real experience in designing and deploying a well-structured, production-ready service.
