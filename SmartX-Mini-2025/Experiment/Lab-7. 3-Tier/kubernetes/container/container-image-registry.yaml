@@ -13,11 +13,18 @@ spec:
       labels:
         app: container-image-registry
     spec:
+      nodeSelector:
+        kubernetes.io/hostname: <your_hostname>
+      tolerations:
+        - key: "node-role.kubernetes.io/master"
+          operator: "Exists"
+          effect: "NoSchedule"
       containers:
         - name: registry
           image: registry:2
           ports:
             - containerPort: 5000
+              hostPort: 5000
           volumeMounts:
             - name: registry-storage
               mountPath: /var/lib/registry
@@ -25,5 +32,3 @@ spec:
         - name: registry-storage
           persistentVolumeClaim:
             claimName: container-image-registry-pvc-<your_namespace>
-      nodeSelector:
-        kubernetes.io/hostname: <your_namespace>
