@@ -22,7 +22,25 @@
 
 # 1. Concept
 
-## 1-1. (강현 채워넣기 ㄱㄱ)
+## 1-1. Container Image Registry
+
+Container image registry는 container image를 저장하고 배포하기 위한 중앙 저장소의 역할을 합니다.  
+Docker, Kubernetes 환경에서 container image를 push 하고 pull 해오는 대상이라고 생각할 수 있습니다.  
+
+주요 container image registry의 예시는 다음과 같습니다.
+
+1. Docker Hub  
+   Docker에서 운영하는 공개 container image registry입니다. 지금까지 실습에서 주로 사용했습니다.
+2. Amazon ECR  
+   AWS에서 제공하는 container image registry입니다.
+3. GitHub Container Registry (GHCR)  
+   GitHub에서 제공하는 container image registry입니다. 
+4. Harbor  
+   CNCF(Cloud Native Computing Foundation) Graduated Project로서, on-premise 환경에서 registry를 구축하기 위해 사용됩니다.
+5. 자체 구축 Docker Registry  
+   Docker에서 공식적으로 제공하는 registry:2 container image를 바탕으로 구축할 수 있는 registry입니다.
+
+이번 실습에서는 registry:2 container image를 바탕으로, 지금까지 구축한 kubernetes cluster에서 private container registry를 배포합니다.
 
 ## 1-2. 쿠버네티스 클러스터 모니터링의 중요성
 
