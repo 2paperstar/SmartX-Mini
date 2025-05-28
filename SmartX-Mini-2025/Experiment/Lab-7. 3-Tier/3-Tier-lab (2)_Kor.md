@@ -329,7 +329,7 @@ spec:
       nodeSelector:
         kubernetes.io/hostname: <your_hostname>
       tolerations:
-        - key: "node-role.kubernetes.io/master"
+        - key: "node-role.kubernetes.io/control-plane"
           operator: "Exists"
           effect: "NoSchedule"
       containers:
@@ -540,7 +540,7 @@ helm repo update
 
 ```bash
 helm list -n monitoring
-helm install prometheus prometheus-community/kube-prometheus-stack -n monitoring --create-namespace
+helm install prometheus prometheus-community/kube-prometheus-stack -n monitoring --create-namespace --set prometheus.prometheusSpec.maximumStartupDurationSeconds=300
 helm list -n monitoring
 ```
 
@@ -560,7 +560,7 @@ kubectl get svc -n monitoring
 Grafana의 기본 로그인 정보는 Helm 설치 시 자동으로 Secret에 저장됩니다. 아래의 명령어로 비밀번호를 확인합니다.
 
 ```bash
-kubectl get secret --namespace <your_namespace> monitoring-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+kubectl get secret --namespace monitoring prometheus-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
 ```
 
 기본 ID는 `admin`, 비밀번호는 위 명령어로 출력된 값입니다.
@@ -570,7 +570,7 @@ kubectl get secret --namespace <your_namespace> monitoring-grafana -o jsonpath="
 Prometheus Stack이 생성한 `prometheus-grafana` 서비스에 부여된 Cluster IP를 확인합니다.
 
 ```bash
-kubectl get svc -n <your_namespace>
+kubectl get svc -n monitoring
 ```
 
 `prometheus-grafana` 항목의 `CLUSTER-IP` 주소를 복사하여 웹 브라우저에서 접속합니다.
