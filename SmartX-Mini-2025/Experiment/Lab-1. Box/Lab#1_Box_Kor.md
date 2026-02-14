@@ -51,13 +51,10 @@ Box Lab에서는 \*베어 메탈에 운영체제(OS)를 직접 설치해보고
 >
 >   스위치는 네트워크 장치들을 연결하고, 데이터 패킷을 전달하는 역할을 하는 장비입니다. 어느 네트워크 계층에서 작동하는지에 따라 L2, L3 스위치 등이 존재합니다.
 >   스위치의 주요 특징은 다음과 같습니다.
->
 >   1. 패킷 전달  
 >      L2 스위치의 경우, MAC 주소를 기반으로 패킷을 전달합니다. 기본적인 네트워크 스위치의 역할을 합니다. L3 스위치의 경우, IP 라우팅 기능을 갖추어 라우터의 일부 기능을 수행합니다.
->
 >   2. Full Duplex 통신  
 >      스위치는 Full Duplex를 지원하여 송수신이 동시에 이루어집니다. 이로 인해 빠른 네트워크 통신이 가능합니다.
->
 >   3. VLAN(Virtual Local Area Network) 기능 지원  
 >      일부 고급 기능을 지원하는 스위치에서는 VLAN 기능을 바탕으로 논리적인 네트워크 분할을 할 수 있습니다. VLAN을 사용하면 같은 물리적 네트워크 환경 내에서도 논리적인 네트워크 구분을 할 수 있습니다.
 >
@@ -110,7 +107,6 @@ OS : Ubuntu Desktop 22.04 LTS(64bit)
 6. Write the changes to disks? 창이 뜨면 Continue를 눌러 계속 진행합니다.
 7. Location 설정 화면에서 "Seoul"을 선택합니다.
 8. User 정보와 Computer 정보를 입력하는 "Who are you" 단계에 진입했다면 다음과 같이 설정합니다.
-
    - Your name: gist
    - Your computer's name: nuc<NUC IP주소의 마지막 3자리 숫자>  
      -> ex. XXX.XXX.XXX.109의 경우, nuc109
@@ -132,15 +128,12 @@ OS : Ubuntu Desktop 22.04 LTS(64bit)
 - Add Etc4 partition on leave memory
 
 - Select Boot loader
-
   - BIOS: Ext4 partition
   - UEFI: EFI partition
 
 - LVM 관련 오류 발생 시
-
   1. 뒤로 이동하여, 첫 Installation type 화면으로 이동
   2. select Erase disk
-
      - choose none in advance.
 
   3. 시간대 선택 화면까지 진행
@@ -151,7 +144,7 @@ OS : Ubuntu Desktop 22.04 LTS(64bit)
 ### 2-1-3. Basic Network Configuration after OS Installation
 
 > [!CAUTION]  
-> <b>⚠️ (중요. 로그인 뒤에 Ubuntu를 업데이트할 것인지 묻는 창이 뜬다면 반드시 Don't Upgrade를 선택해야합니다!) ⚠️</b>
+> **⚠️ (중요. 로그인 뒤에 Ubuntu를 업데이트할 것인지 묻는 창이 뜬다면 반드시 Don't Upgrade를 선택해야합니다!) ⚠️**
 
 - 로그인 화면이 보이면, 계정 정보를 입력하여 로그인합니다. 이제부터는 초기 네트워크 설정을 진행할 것입니다.
 - ‘Temporary’ Network Configuration using GUI
@@ -159,32 +152,23 @@ OS : Ubuntu Desktop 22.04 LTS(64bit)
   ![Network Configuration](./img/network_configuration.png)
 
 - 화면 우측 상단을 클릭하여 "Ethernet(enp88s0 or enp89s0) Connected" 부분을 선택합니다. 그리고 "Wired Settings"를 누릅니다.
-
-  <p align="center">
-    <img src="./img/network_setting1.png" />
-  </p><br>
+  ![network setting 1](./img/network_setting1.png)
 
 - Ethernet 부분에서 오른쪽에 있는 톱니바퀴 아이콘을 눌러 설정 탭에 들어갑니다.
-  <p align="center">
-    <img src="./img/network_setting2.png" />
-  </p><br>
+  ![network setting 2](./img/network_setting2.png)
 
 - IPv4 탭으로 전환하고, 각자 할당받은 네트워크 정보를 입력합니다.
-
   - IPv4 Method: Manual
   - Address: 할당받은 NUC의 IP 주소 (IP가 적힌 종이를 참고합니다.)
   - Netmask와 Gateway, DNS 정보도 입력합니다. (조교의 안내를 바탕으로 설정합니다.)
-  <p align="center">
-    <img src="./img/network_setting3.png" />
-  </p><br>
+    ![network setting 3](./img/network_setting3.png)
 
 ## 2-2. NUC: Network Configuration using Virtual Switch
 
 > [!CAUTION]  
-> <b>⚠️ (중요. 로그인 뒤에 Ubuntu를 업데이트할 것인지 묻는 창이 뜬다면 반드시 Don't Upgrade를 선택해야합니다!) ⚠️</b>
+> **⚠️ (중요. 로그인 뒤에 Ubuntu를 업데이트할 것인지 묻는 창이 뜬다면 반드시 Don't Upgrade를 선택해야합니다!) ⚠️**
 
 1. apt Update & Upgrade
-
    - Lab에서는 패키지 관리자인 apt를 사용합니다. 앞으로 사용할 패키지들을 설치하기 위해 패키지 목록을 최신으로 업데이트하고, 업데이트 가능한 패키지를 실제로 업데이트합니다.
    - 명령어를 실행하기 위해 터미널을 엽니다. 터미널은 화면 좌하단에 위치한 앱 리스트 아이콘을 누르고, 리스트에서 터미널 아이콘을 눌러 실행할 수 있습니다.
 
@@ -194,7 +178,6 @@ OS : Ubuntu Desktop 22.04 LTS(64bit)
    ```
 
 2. Install vim text editor
-
    - 앞으로 vim editor를 사용하여 파일의 내용을 수정하겠습니다. vim을 설치합니다.
 
    ```bash
@@ -202,7 +185,6 @@ OS : Ubuntu Desktop 22.04 LTS(64bit)
    ```
 
 3. Install net-tools & ifupdown
-
    - network 관련 유틸리티를 실행하기 위해 net-tools와 ifupdown을 설치합니다. 그리고 `ifconfig -a` 명령어를 통해 network interface 정보를 확인합니다.
 
    ```bash
@@ -213,7 +195,6 @@ OS : Ubuntu Desktop 22.04 LTS(64bit)
    ![Network Configuration](./img/ifconfig.png)
 
 4. Install openvswitch-switch & make br0 bridge
-
    - 가상 네트워크 스위치를 만들기 위해 openvswitch-switch를 설치합니다. 그리고 br0이라는 OVS(Open vSwitch) 브릿지를 만듭니다. OVS 브릿지는 여러 가상 네트워크 인터페이스를 연결하는 가상의 스위치 역할을 합니다. 최종적으로 OVS의 설정 상태를 확인합니다.
 
    ```bash
@@ -225,7 +206,6 @@ OS : Ubuntu Desktop 22.04 LTS(64bit)
    ![Ovs Vsctl Show](./img/ovs_vsctl_show.png)
 
 5. Disable netplan
-
    - Open vSwitch(OVS)를 기반으로 수동 네트워크 관리 방법을 사용하기 위해서 systemd-networkd 및 Netplan을 비활성화하고 제거합니다.
 
    ```bash
@@ -250,7 +230,6 @@ OS : Ubuntu Desktop 22.04 LTS(64bit)
    > DNS=203.237.32.100 203.237.32.101
    >
    > …
-
    - Network interface configuration
 
    /etc/network/interfaces 파일을 엽니다.
@@ -272,7 +251,7 @@ OS : Ubuntu Desktop 22.04 LTS(64bit)
 
 > [!CAUTION]
 > ⚠️ **주의!** ⚠️  
-> <b>NUC에 이더넷 포트가 두 개 있는 경우 `eno1`이라는 인터페이스가 없습니다. `ifconfig` 명령으로 네트워크에 연결된 인터페이스(`enp88s0` 또는 `enp89s0`)를 확인합니다. (예를 들어, 터미널에 `ifconfig -a` 명령어를 입력하고 RX 및 TX 패킷이 0이 아닌 인터페이스를 선택합니다.) 그리고 아래 텍스트의 `eno1`을 모두 `enp88s0` 또는 `enp89s0`으로 변경합니다.</b>
+> **NUC에 이더넷 포트가 두 개 있는 경우 `eno1`이라는 인터페이스가 없습니다. `ifconfig` 명령으로 네트워크에 연결된 인터페이스(`enp88s0` 또는 `enp89s0`)를 확인합니다. (예를 들어, 터미널에 `ifconfig -a` 명령어를 입력하고 RX 및 TX 패킷이 0이 아닌 인터페이스를 선택합니다.) 그리고 아래 텍스트의 `eno1`을 모두 `enp88s0` 또는 `enp89s0`으로 변경합니다.**
 
 아래의 내용을 추가합니다.(참고: 실습 환경에 따라 `address`, `netmask`, `gateway`, `dns-nameservers`의 값이 달라질 수 있습니다.)
 
@@ -342,7 +321,7 @@ iface vport_vFunction inet manual
 
 > [!CAUTION]
 > ⚠️ **주의!** ⚠️  
-> <b> 만약 NUC에 2개의 ethernet port가 있다면, `eno1` interface가 없습니다. 그러므로 하단의 block에서 `eno1`을 위에서 선택한 interface 중 하나로 변경해주시기 바랍니다.(`enp88s0` 또는 `enp89s0` 중에서 현재 사용중인 것을 선택하면 됩니다.)</b>
+> **만약 NUC에 2개의 ethernet port가 있다면, `eno1` interface가 없습니다. 그러므로 하단의 block에서 `eno1`을 위에서 선택한 interface 중 하나로 변경해주시기 바랍니다.(`enp88s0` 또는 `enp89s0` 중에서 현재 사용중인 것을 선택하면 됩니다.)**
 
 ```bash
 sudo systemctl restart systemd-resolved.service
@@ -363,7 +342,7 @@ vport_vFunction을 연결한 가상 머신(VM)을 만들겠습니다. 이 TAP(vp
 
 > [!CAUTION]
 > ⚠️ **주의!** ⚠️  
-> <b> 만약 NUC에 2개의 ethernet port가 있다면, `eno1` interface가 없습니다. 그러므로 하단의 block에서 `eno1`을 위에서 선택한 interface 중 하나로 변경해야합니다.(`enp88s0` 또는 `enp89s0` 중에서 현재 사용 중인 것을 선택합니다.)</b>
+> **만약 NUC에 2개의 ethernet port가 있다면, `eno1` interface가 없습니다. 그러므로 하단의 block에서 `eno1`을 위에서 선택한 interface 중 하나로 변경해야합니다.(`enp88s0` 또는 `enp89s0` 중에서 현재 사용 중인 것을 선택합니다.)**
 
 ```bash
 sudo ovs-vsctl add-port br0 eno1   #change this if you are using two-port NUC
@@ -390,7 +369,6 @@ sudo systemctl restart networking
 - Install required packages to set up and manage KVM
 
   KVM을 설정하고 관리하기 위한 dependency를 설치하고, VM 안에서 사용할 Ubuntu 22.04.5 image를 다운받습니다.
-
   - qemu-kvm: QEMU(Quick Emulator) 기반으로 KVM(커널 기반 가상화)을 지원합니다.
   - libvirt-daemon-system: libvirtd 데몬을 실행하여 가상 머신을 관리할 수 있도록 지원합니다.
   - libvirt-clients: VM 관리 명령어를 제공합니다.
@@ -447,7 +425,6 @@ sudo systemctl restart networking
   ![Install Ubuntu](./img/install_ubuntu.png)
 
   설치 단계 (Enter키와 방향키를 사용하여 설치를 진행합니다.)
-
   1. 언어 설정 화면에서 English로 설정합니다.
   2. "Keyboard configuration" 화면에서는 모든 부분을 English(US)로 설정합니다.
   3. "Choose the type of installation" 화면에서는 "Ubuntu Server" 부분에 (X) 표시가 되어있는지 확인하고 Done을 누릅니다.
@@ -616,8 +593,8 @@ sudo ovs-docker add-port br0 veno1 c1 --ipaddress=<docker_container_IP>/24 --gat
 > 예를 들어, --ipaddress=172.29.0.X/24 --gateway=172.29.0.254
 
 > [!NOTE]  
-> <b> ⚠️ 아무 문제가 없었다면, 이 부분(Note block)은 생략합니다. ⚠️  
-> 만약, `sudo ovs-docker add-port br0 veno1 c1 --ipaddress=<docker_container_IP>/24 --gateway=<gateway_IP>` 명령어를 실행하는 과정에서 오타나 실수가 있었다면 `sudo ovs-docker del-port br0 veno1 c1` 명령어를 실행하고 다시 `sudo ovs-docker add-port br0 veno1 c1 --ipaddress=<docker_container_IP>/24 --gateway=<gateway_IP>`를 실행합니다.</b>
+> **⚠️ 아무 문제가 없었다면, 이 부분(Note block)은 생략합니다. ⚠️**
+> **만약, `sudo ovs-docker add-port br0 veno1 c1 --ipaddress=<docker_container_IP>/24 --gateway=<gateway_IP>` 명령어를 실행하는 과정에서 오타나 실수가 있었다면 `sudo ovs-docker del-port br0 veno1 c1` 명령어를 실행하고 다시 `sudo ovs-docker add-port br0 veno1 c1 --ipaddress=<docker_container_IP>/24 --gateway=<gateway_IP>`를 실행합니다.**
 
 Docker container 안으로 진입합니다.
 

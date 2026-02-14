@@ -4,7 +4,8 @@
 
 ![Final Goal](./img/final_goal.png)
 
-In the Box Lab, we will install the operating system(OS) directly on \*bare metal, then launch virtual machines and containers within it, and connect them to each other using a virtual switch.
+In the Box Lab, we will install the operating system(OS) directly on \*bare metal,
+then launch virtual machines and containers within it, and connect them to each other using a virtual switch.
 
 \*Bare metal: a hardware without any installed software
 
@@ -51,14 +52,11 @@ Let's take a close look at the overall structure.
 >   A switch is a network device that connects and transmits data packets between network devices. Depending on the network layer at which it operates, there are L2, L3 switches, and others.
 >
 >   The key features of a switch are as follows:
->
 >   1. Packet Forwarding  
 >      An L2 switch forwards packets based on MAC addresses, serving as a fundamental network switch.
 >      An L3 switch has IP routing capabilities, performing some functions of a router.
->
 >   2. Full-Duplex Communication  
 >      Switches support full-duplex communication, allowing simultaneous transmission and reception of data. This enhances network efficiency and speed.
->
 >   3. VLAN Support  
 >      Some advanced switches support VLAN (Virtual Local Area Network) functionality, enabling logical network segmentation. With VLANs, separate logical networks can exist within the same physical network environment.
 >
@@ -113,7 +111,6 @@ Reference: Download Site - <https://releases.ubuntu.com/22.04/>
 6. When the “Write the changes to disks?” prompt appears, click “Continue” to proceed.
 7. On the Location settings screen, select "Seoul".
 8. In the “Who are you?” step, enter the User and Computer information as follows.
-
    - Your name: gist
    - Your computer's name: nuc<The last three digits of the NUC’s IP address.>  
      -> If the IP address is XXX.XXX.XXX.109, then the hostname should be nuc109.
@@ -139,15 +136,12 @@ If an issue related to booting occurs, follow these steps.
 - Add Etc4 partition on leave memory
 
 - Select Boot loader
-
   - BIOS: Ext4 partition
   - UEFI: EFI partition
 
 - If an issue related to LVM occurs, follow these steps.
-
   1. Go back to first installation type display.
   2. Select Erase disk
-
      - Choose none in advance.
 
   3. Do the steps up to 'where are you?'
@@ -160,7 +154,7 @@ If an issue related to booting occurs, follow these steps.
 ### 2-1-3. Basic Network Configuration after OS Installation
 
 > [!CAUTION]  
-> <b>⚠️(Important: If a window appears asking whether to update Ubuntu after logging in, make sure to select “Don’t Upgrade”!)⚠️</b>
+> **⚠️(Important: If a window appears asking whether to update Ubuntu after logging in, make sure to select “Don’t Upgrade”!)⚠️**
 
 - When the login screen appears, enter your account information to log in. You will now proceed with the initial network configuration.
 - ‘Temporary’ Network Configuration using GUI
@@ -168,32 +162,23 @@ If an issue related to booting occurs, follow these steps.
   ![Network Configuration](./img/network_configuration.png)
 
 - Click on the upper right corner of the screen and select “Ethernet (enp88s0 or enp89s0) Connected”. Then, click “Wired Settings”.
-
-  <p align="center">
-    <img src="./img/network_setting1.png" />
-  </p><br>
+  ![network setting 1](./img/network_setting1.png)
 
 - In the Ethernet section, click the gear icon on the right to enter the settings tab.
-  <p align="center">
-    <img src="./img/network_setting2.png" />
-  </p><br>
+  ![network setting 2](./img/network_setting2.png)
 
 - Switch to the IPv4 tab and enter the assigned network information.
-
   - IPv4 Method: Manual
   - Address: The assigned IP address of the NUC. (Refer to the paper with the written IP addresses.)
   - Enter the Netmask, Gateway, and DNS information as well. (Configure it based on the TA’s instructions.)
-  <p align="center">
-    <img src="./img/network_setting3.png" />
-  </p><br>
+    ![network setting 3](./img/network_setting3.png)
 
 ## 2-2. NUC: Network Configuration using Virtual Switch
 
 > [!CAUTION]  
-> <b>⚠️(Important: If a window appears asking whether to update Ubuntu after logging in, make sure to select “Don’t Upgrade”!)⚠️</b>
+> **⚠️(Important: If a window appears asking whether to update Ubuntu after logging in, make sure to select “Don’t Upgrade”!)⚠️**
 
 1. apt Update & Upgrade
-
    - In this lab, we will use apt, the package manager. To install the necessary packages, first, update the package list to the latest version and then upgrade any available packages.
    - To execute a command, open the terminal. You can do this by clicking the app list icon located at the bottom left of the screen and selecting the terminal icon from the list.
 
@@ -203,7 +188,6 @@ If an issue related to booting occurs, follow these steps.
    ```
 
 2. Install vim text editor
-
    - We will use the Vim editor to modify file contents. Install Vim with the following command.
 
    ```bash
@@ -211,8 +195,7 @@ If an issue related to booting occurs, follow these steps.
    ```
 
 3. Install net-tools & ifupdown
-
-   - nstall net-tools and ifupdown to run network-related utilities. Then, use the following command to check network interface information:
+   - install net-tools and ifupdown to run network-related utilities. Then, use the following command to check network interface information:
 
    ```bash
    sudo apt install -y net-tools ifupdown
@@ -222,7 +205,6 @@ If an issue related to booting occurs, follow these steps.
    ![Network Configuration](./img/ifconfig.png)
 
 4. Install openvswitch-switch & make br0 bridge
-
    - To create a virtual network switch, install openvswitch-switch. Then, create an OVS (Open vSwitch) bridge named br0. The OVS bridge acts as a virtual switch that connects multiple virtual network interfaces. Finally, verify the OVS configuration.
 
    ```bash
@@ -281,7 +263,7 @@ If an issue related to booting occurs, follow these steps.
 
 > [!CAUTION]  
 > ⚠️ **Caution!** ⚠️  
-> <b>If the NUC has two Ethernet ports, the `eno1` interface may not be available. Use the ifconfig command to check the network-connected interfaces (`enp88s0` or `enp89s0`). For example, enter `ifconfig -a` in the terminal and select the interface where RX and TX packets are not zero. Then, replace all occurrences of `eno1` in the text with either `enp88s0` or `enp89s0`, depending on the active interface.</b>
+> \*_If the NUC has two Ethernet ports, the `eno1` interface may not be available. Use the ifconfig command to check the network-connected interfaces (`enp88s0` or `enp89s0`). For example, enter `ifconfig -a` in the terminal and select the interface where RX and TX packets are not zero. Then, replace all occurrences of `eno1` in the text with either `enp88s0` or `enp89s0`, depending on the active interface._
 
 Add the contents below. (Note: The values of `address`, `netmask`, `gateway`, and `dns-nameservers` may vary depending on the lab environment.)
 
@@ -351,7 +333,7 @@ iface vport_vFunction inet manual
 
 > [!CAUTION]  
 > ⚠️ **Caution!** ⚠️  
-> <b>If the NUC has two Ethernet ports, the `eno1` interface will not be available. Therefore, in the block below, replace `eno1` with the interface you selected earlier (`enp88s0` or `enp89s0`), choosing the one currently in use.</b>
+> **If the NUC has two Ethernet ports, the `eno1` interface will not be available. Therefore, in the block below, replace `eno1` with the interface you selected earlier (`enp88s0` or `enp89s0`), choosing the one currently in use.**
 
 ```bash
 sudo systemctl restart systemd-resolved.service
@@ -372,7 +354,7 @@ Add the ports 'eno1' and 'vport_vFunction' to 'br0'.
 
 > [!CAUTION]  
 > ⚠️ **Caution!** ⚠️  
-> <b>If the NUC has two Ethernet ports, the `eno1` interface will not be available. Therefore, in the block below, replace `eno1` with the interface you selected earlier (`enp88s0` or `enp89s0`), choosing the one currently in use.</b>
+> **If the NUC has two Ethernet ports, the `eno1` interface will not be available. Therefore, in the block below, replace `eno1` with the interface you selected earlier (`enp88s0` or `enp89s0`), choosing the one currently in use.**
 
 ```bash
 sudo ovs-vsctl add-port br0 eno1   #change this if you are using two-port NUC
@@ -399,7 +381,6 @@ sudo systemctl restart networking
 - Install required packages to set up and manage KVM
 
   Install the dependencies required to set up and manage KVM, and download the Ubuntu 22.04.5 image for use inside the VM.
-
   - qemu-kvm: Provides KVM (Kernel-based Virtualization) support based on QEMU (Quick Emulator).
   - libvirt-daemon-system: Runs the libvirtd daemon, enabling the management of virtual machines.
   - libvirt-clients: Provides command-line tools for managing virtual machines.
@@ -456,7 +437,6 @@ sudo systemctl restart networking
   ![Install Ubuntu](./img/install_ubuntu.png)
 
   Installation Steps (Control using the 'Enter key' and the 'arrow keys'.)
-
   1. On the language selection screen, set the language to English.
   2. On the “Keyboard configuration” screen, set all options to English (US).
   3. On the “Choose the type of installation” screen, ensure that “Ubuntu Server” is selected (marked with an (X)), then click Done.
@@ -625,8 +605,8 @@ sudo ovs-docker add-port br0 veno1 c1 --ipaddress=<docker_container_IP>/24 --gat
 > For example: --ipaddress=172.29.0.X/24 --gateway=172.29.0.254
 
 > [!NOTE]  
-> <b> ⚠️ If there were no issues, skip this part(Note block). ⚠️  
-> If there was a typo or mistake while executing the `sudo ovs-docker add-port br0 veno1 c1 --ipaddress=<docker_container_IP>/24 --gateway=<gateway_IP>` command, execute `sudo ovs-docker del-port br0 veno1 c1` and then re-run `sudo ovs-docker add-port br0 veno1 c1 --ipaddress=<docker_container_IP>/24 --gateway=<gateway_IP>`.</b>
+> **⚠️ If there were no issues, skip this part(Note block). ⚠️**
+> **If there was a typo or mistake while executing the `sudo ovs-docker add-port br0 veno1 c1 --ipaddress=<docker_container_IP>/24 --gateway=<gateway_IP>` command, execute `sudo ovs-docker del-port br0 veno1 c1` and then re-run `sudo ovs-docker add-port br0 veno1 c1 --ipaddress=<docker_container_IP>/24 --gateway=<gateway_IP>`.**
 
 Enter to docker container
 
