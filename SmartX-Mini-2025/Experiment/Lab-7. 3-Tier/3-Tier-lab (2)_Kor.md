@@ -14,18 +14,18 @@
 
 > [!note]
 >
-> 이번 Lab은 <b>Lab#5 (Cluster Lab)</b>에서 구성한 Kubernetes Cluster 위에서 진행되며, 클러스터는 다음과 같은 구성입니다.
+> 이번 Lab은 **Lab#5 (Cluster Lab)**에서 구성한 Kubernetes Cluster 위에서 진행되며, 클러스터는 다음과 같은 구성입니다.
 >
 > ![Kubernetes Installation](img/nuc-prep.png)
 >
-> 각 실습자는 각자의 PC에서 <b>NUC1(master node)</b>에 원격 접속(SSH)하여 Kubernetes namespace를 생성하고, namespace로 분리된 환경에서 실습을 진행합니다.
+> 각 실습자는 각자의 PC에서 **NUC1(master node)**에 원격 접속(SSH)하여 Kubernetes namespace를 생성하고, namespace로 분리된 환경에서 실습을 진행합니다.
 
 # 1. Concept
 
 ## 1-1. Container Image Registry
 
 Container image registry는 container image를 저장하고 배포하기 위한 중앙 저장소의 역할을 합니다.  
-Docker, Kubernetes 환경에서 container image를 push 하고 pull 해오는 대상이라고 생각할 수 있습니다.  
+Docker, Kubernetes 환경에서 container image를 push 하고 pull 해오는 대상이라고 생각할 수 있습니다.
 
 주요 container image registry의 예시는 다음과 같습니다.
 
@@ -34,7 +34,7 @@ Docker, Kubernetes 환경에서 container image를 push 하고 pull 해오는 �
 2. Amazon ECR  
    AWS에서 제공하는 container image registry입니다.
 3. GitHub Container Registry (GHCR)  
-   GitHub에서 제공하는 container image registry입니다. 
+   GitHub에서 제공하는 container image registry입니다.
 4. Harbor  
    CNCF(Cloud Native Computing Foundation) Graduated Project로서, on-premise 환경에서 registry를 구축하기 위해 사용됩니다.
 5. 자체 구축 Docker Registry  
@@ -90,10 +90,9 @@ Grafana는 다양한 데이터 소스로부터 데이터를 시각화하는 대�
 
 이러한 구조를 통해 시스템의 성능, 자원 사용량, 오류 상태 등을 실시간으로 모니터링하고, 문제 발생 시 신속하게 대응할 수 있습니다.
 
-**참고자료**
-
-- **Prometheus 공식 문서**: https://prometheus.io/docs/introduction/overview/
-- **Grafana 공식 문서**: https://grafana.com/docs/grafana/latest/
+- **참고자료**
+  - **Prometheus 공식 문서**: <https://prometheus.io/docs/introduction/overview/>
+  - **Grafana 공식 문서**: <https://grafana.com/docs/grafana/latest/>
 
 ### 요약
 
@@ -204,7 +203,7 @@ sudo vim /etc/containerd/config.toml
 sudo systemctl restart containerd
 ```
 
-## 이제부터 NUC02, NUC03 사용자는 다시 ssh로 접속한 NUC01에서 실습을 진행합니다.
+## 이제부터 NUC02, NUC03 사용자는 다시 ssh로 접속한 NUC01에서 실습을 진행합니다
 
 ## 2.2 Persistent Volume(PV) 생성
 
@@ -602,19 +601,19 @@ http://<CLUSTER-IP>:80
 >
 > 우분투 화면 스크린샷 단축키: `Shift + Ctrl + PrtScn`
 
-### Mission 1.
+### Mission 1
 
 자신의 namespace(nuc01, nuc02, or nuc03)에 속한 모든 Pod 목록을 Grafana에서 찾아보세요. 1주차 실습에서 배포한 backend-api, nginx-proxy, postgres 등이 해당됩니다.
 
-### Mission 2.
+### Mission 2
 
 특정 Pod의 CPU 및 메모리 사용량을 시계열 그래프로 확인해보세요. `backend-api`나 `postgres` 등 자주 요청이 발생하는 Pod을 선택해보면 좋습니다.
 
-### Mission 3.
+### Mission 3
 
 현재 본인이 조작하고 있는 NUC PC의 CPU/Memory 전체 사용률을 확인해보세요. `Node Exporter`에서 제공하는 대시보드를 통해 확인할 수 있습니다.
 
-### Mission 4.
+### Mission 4
 
 Kubernetes Cluster 전체 상태를 요약해서 보여주는 대시보드를 찾아보세요. 클러스터 리소스 현황, 경고 발생 여부 등을 포함합니다.
 

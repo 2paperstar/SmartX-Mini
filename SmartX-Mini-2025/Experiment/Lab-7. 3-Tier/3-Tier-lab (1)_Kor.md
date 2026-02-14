@@ -11,11 +11,11 @@
 
 > [!note]
 >
-> 이번 Lab은 <b>Lab#5 (Cluster Lab)</b>에서 구성한 Kubernetes Cluster 위에서 진행되며, 클러스터는 다음과 같은 구성입니다.
+> 이번 Lab은 **Lab#5 (Cluster Lab)**에서 구성한 Kubernetes Cluster 위에서 진행되며, 클러스터는 다음과 같은 구성입니다.
 >
 > ![Kubernetes Installation](img/nuc-prep.png)
 >
-> 각 실습자는 각자의 PC에서 <b>NUC1(master node)</b>에 원격 접속(SSH)하여 Kubernetes namespace를 생성하고, namespace로 분리된 환경에서 실습을 진행합니다.
+> 각 실습자는 각자의 PC에서 **NUC1(master node)**에 원격 접속(SSH)하여 Kubernetes namespace를 생성하고, namespace로 분리된 환경에서 실습을 진행합니다.
 
 # 1. Concept
 
@@ -83,23 +83,18 @@
 3-Tier 구조를 쿠버네티스 환경에서 운영할 경우 **현대적인 클라우드 네이티브** 관점에서 많은 이점을 얻을 수 있으며, 다음은 그 일부에 대한 설명입니다.
 
 1. **배포 자동화**
-
    - 각 계층을 별도 Deployment로 관리하여 독립적으로 롤링 업데이트 가능
 
 2. **자가 복구(Self-healing)**
-
    - 특정 계층의 일부 Pod가 비정상적으로 종료되면 자동으로 복구됨
 
 3. **수평 확장(Horizontal Scaling)**
-
    - 특정 계층의 부하가 증가하면 자동으로 수평 확장하여 부하 분산 가능
 
 4. **관측 및 로깅 통합**
-
    - Prometheus, Grafana 등을 활용한 계층 통합 모니터링
 
 5. **인프라 독립성**
-
    - 클라우드, 온프레미스 어디서든 동일한 배포 방식 사용 가능
 
 6. **네임스페이스 기반 격리 환경**
@@ -109,7 +104,7 @@
 
 ## 1-2. 왜 기업들이 Kubernetes 환경에서 서비스를 운영하는가?
 
-<b>Lab#5 (Cluster Lab)</b>에서도 여러 번 언급했지만, 많은 기업들이 Kubernetes 기반의 인프라로 전환하는 이유는 다음과 같습니다.
+**Lab#5 (Cluster Lab)**에서도 여러 번 언급했지만, 많은 기업들이 Kubernetes 기반의 인프라로 전환하는 이유는 다음과 같습니다.
 
 ### 1. **서비스 가용성 극대화**
 
@@ -433,7 +428,7 @@ spec:
 # PostgreSQL DB를 위한 Persistent Volume 배포
 kubectl apply -f postgres-pv.yaml
 
-# postgres-pv-<your_namespace> 형태로 생성된 Persisten Volume 확인
+# postgres-pv-<your_namespace> 형태로 생성된 Persistent Volume 확인
 # 다른 실습자의 PV도 함께 보일 수 있습니다.
 kubectl get pv
 ```
@@ -872,12 +867,12 @@ kubectl get pod -n <your_namespace> -o wide
 
 ![WebPage_Write](./img/write.png)
 
-원하는 제목과 닉네임, 패스워드, 본문 내용을 작성한 뒤, "작성" 버튼을 클릭합니다. <br>
+원하는 제목과 닉네임, 패스워드, 본문 내용을 작성한 뒤, "작성" 버튼을 클릭합니다.  
 그러면 다음과 같이, 자신이 작성한 글을 확인할 수 있습니다.
 
 > [!Note]
 >
-> Ubuntu 설치 과정에서 한글 입력기를 별도로 추가하지 않았다면, 한글을 입력할 수 없으니 유의 바랍니다. <br>
+> Ubuntu 설치 과정에서 한글 입력기를 별도로 추가하지 않았다면, 한글을 입력할 수 없으니 유의 바랍니다.  
 > 설정 방법은 이번 실습과 무관하므로 별도로 설명하지 않지만, 인터넷에 다양한 참고 자료가 있으니 이를 활용하시기 바랍니다.
 
 ![WebPage_with_post](./img/list-with-post.png)
@@ -886,7 +881,7 @@ kubectl get pod -n <your_namespace> -o wide
 
 ![WebPage_Search](./img/post-search.png)
 
-확인이 끝났다면 "게시판 목록"을 클릭하여 되돌아오겠습니다. <br>
+확인이 끝났다면 "게시판 목록"을 클릭하여 되돌아오겠습니다.  
 다음으로 자신이 작성한 글을 클릭하여 확인해보겠습니다.
 
 ![WebPage_Detail](./img/post-without-comment.png)
@@ -901,7 +896,7 @@ kubectl get pod -n <your_namespace> -o wide
 
 ![WebPage_Edit](./img/edit-post.png)
 
-원하는 문구로 수정한 뒤, 올바른 패스워드를 입력하면 수정이 완료됩니다. <br>
+원하는 문구로 수정한 뒤, 올바른 패스워드를 입력하면 수정이 완료됩니다.  
 만약 패스워드 오류, 혹은 서버 오류 발생 시 오류 메세지가 출력되니 참고 바랍니다.
 
 추가로, 패스워드도 동일한 방법으로 수정이 가능합니다.
@@ -923,7 +918,7 @@ kubectl get pod -n <your_namespace> -o wide
 
 > [!TIP]
 >
-> 후술할 과정으로 하나의 사용자 동작을 처리하기 위해 어떻게 요청이 전달되고 처리되는지 엿볼 수 있습니다. <br>
+> 후술할 과정으로 하나의 사용자 동작을 처리하기 위해 어떻게 요청이 전달되고 처리되는지 엿볼 수 있습니다.  
 > 더 나은 체험을 위해, 직접 웹서비스를 사용해보며 실시간 동작을 확인해보는 것을 권장합니다.
 
 ### 5-2-1. NGINX 확인
@@ -940,7 +935,7 @@ kubectl -n <your_namespace> logs <nginx-proxy-pod>
 
 ### 5-2-2. DB 확인
 
-웹서버는 데이터를 저장하기 위해 DB를 사용합니다. <br>
+웹서버는 데이터를 저장하기 위해 DB를 사용합니다.  
 여러분이 작성한 댓글이나 게시글은 DB에 저장되고, 사용자가 요청을 보낼 때마다 이를 꺼내어 전달해줍니다.
 
 그렇기에, DB의 Table을 확인하면 여러분의 웹서비스 화면에 보여졌던 것과 동일한 내용을 확인할 수 있습니다.
@@ -967,17 +962,17 @@ kubectl -n <your_namespace> exec -it po/postgres-0 -- psql -U myuser -d mydb
 그러면 PostgreSQL CLI 도구가 활성화된 것을 볼 수 있습니다.
 ![psql_start](img/psql_img.png)
 
-다음으로, 존재하는 Table 목록을 조회하기 위해 `\d`을 입력합니다. <br>
+다음으로, 존재하는 Table 목록을 조회하기 위해 `\d`을 입력합니다.  
 ![psql_tables](./img/psql_tables.png)
 
 > [!TIP]
 >
-> PostgreSQL에서 `\d`는 연결된 Database 내 Table 목록을 출력합니다. <br>
+> PostgreSQL에서 `\d`는 연결된 Database 내 Table 목록을 출력합니다.  
 > 그리고 `\d <table_name>`을 입력하면 Table의 Column 정보를 출력합니다.
 >
 > 또한, `\d`는 기본 정보만 출력하지만, `\d+`는 여러 세부 정보를 추가로 보여줍니다.
 
-여기서 `Post`가 작성한 게시글을 저장하는 Table이며, `Comment`가 댓글을 저장하는 Table입니다. <br>
+여기서 `Post`가 작성한 게시글을 저장하는 Table이며, `Comment`가 댓글을 저장하는 Table입니다.  
 내용을 보기 위해, 다음의 명령을 입력합니다.
 
 ```SQL
@@ -986,7 +981,7 @@ SELECT * FROM "Post";     -- Post 전체 조회
 SELECT * FROM "Comment";  -- Comment 전체 조회
 ```
 
-그러면 여러분이 입력했던 데이터가 출력될 것입니다.<br>
+그러면 여러분이 입력했던 데이터가 출력될 것입니다.  
 참고로 Password는 보안을 위해 Hash Function으로 평문을 알아볼 수 없게 처리하니 유의하기 바랍니다.
 
 종료는 `\q`, 혹은 `ctrl+d`를 입력하면 됩니다.

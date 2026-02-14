@@ -14,17 +14,17 @@ This lab emphasizes the following elements:
 
 > [!note]
 >
-> This Lab is conducted on the Kubernetes Cluster configured in <b>Lab#5 (Cluster Lab)</b>, and the cluster has the following configuration:
+> This Lab is conducted on the Kubernetes Cluster configured in **Lab#5 (Cluster Lab)**, and the cluster has the following configuration:
 >
 > ![Kubernetes Installation](img/nuc-prep.png)
 >
-> Each participant remotely accesses <b>NUC1(master node)</b> from their PC via SSH, creates a Kubernetes namespace, and conducts the lab in an environment separated by namespace.
+> Each participant remotely accesses **NUC1(master node)** from their PC via SSH, creates a Kubernetes namespace, and conducts the lab in an environment separated by namespace.
 
 # 1. Concept
 
 ## 1-1. Container Image Registry
 
-Container image registry serves as a central repository for storing and distributing container images. In Docker and Kubernetes environments, you can think of it as the target for pushing and pulling container images.  
+Container image registry serves as a central repository for storing and distributing container images. In Docker and Kubernetes environments, you can think of it as the target for pushing and pulling container images.
 
 Examples of major container image registries are as follows:
 
@@ -55,7 +55,6 @@ The necessity of Kubernetes cluster monitoring tools is as follows:
 > 📈 **Monitoring Market**  
 > According to the CNCF Survey (2024), "Prometheus + Grafana Stack" has been adopted by **77% of production Kubernetes clusters**. Commercial SaaS (New Relic, Datadog, Dynatrace, etc.) also support the Prometheus Remote-Write protocol as a standard, establishing it as the de facto standard.
 
-
 ## 1-3. Working Principles of Prometheus and Grafana
 
 ### 1-3-1. Working Principle of Prometheus
@@ -68,7 +67,6 @@ Prometheus is a monitoring tool specialized in collecting and storing time-serie
 - **Data Storage**: Collected metrics are stored in Prometheus's built-in time-series database. This data is stored with time information, allowing analysis of changes over time.
 - **Data Query**: Prometheus provides its own query language, `PromQL`, to query and analyze metric data in various ways.
 - **Alert Function**: You can send alerts via email, Slack, etc., by integrating with Alertmanager according to set conditions.
-
 
 ### 1-3-2. Role and Function of Grafana
 
@@ -91,10 +89,9 @@ The integration of these two tools has the following structure:
 
 Through this structure, you can monitor system performance, resource usage, error states, etc. in real-time, and respond quickly when problems occur.
 
-**References**
-
-- **Prometheus Official Documentation**: https://prometheus.io/docs/introduction/overview/
-- **Grafana Official Documentation**: https://grafana.com/docs/grafana/latest/
+- **References**
+  - **Prometheus Official Documentation**: <https://prometheus.io/docs/introduction/overview/>
+  - **Grafana Official Documentation**: <https://grafana.com/docs/grafana/latest/>
 
 ### Summary
 
@@ -168,7 +165,7 @@ sudo systemctl restart docker
 
 ## For All NUCs
 
-> [!WARNING] 
+> [!WARNING]
 > **Containerd configuration must be done on all NUCs.**  
 > **Participants should open a terminal on each of their respective NUCs, not on NUC01 accessed via ssh, and proceed with the Containerd configuration.**
 
@@ -208,7 +205,7 @@ After modifying everything, enter the command below to restart containerd:
 sudo systemctl restart containerd
 ```
 
-## From now on, NUC02 and NUC03 users will continue the lab on NUC01 accessed via ssh.
+## From now on, NUC02 and NUC03 users will continue the lab on NUC01 accessed via ssh
 
 ## 2.2 Creating a Persistent Volume(PV)
 
@@ -464,7 +461,7 @@ Once all Pods have been recreated, enter the IP address of the NGINX Pod in your
 
 Helm is a package manager that helps deploy applications in Kubernetes more **simply and consistently.**
 
-In the **traditional manual deployment method**, you had to d**irectly manage multiple YAML files** and **apply them in the correct order**. However, with Helm, you can **package these YAML files into a single Chart for deployment** and **manage variables and configurations uniformly.**
+In the **traditional manual deployment method**, you had to **directly manage multiple YAML files** and **apply them in the correct order**. However, with Helm, you can **package these YAML files into a single Chart for deployment** and **manage variables and configurations uniformly.**
 
 That is, Helm works similarly to Linux/Unix package managers like `apt`, `yum`, `brew`, defining applications as packages for easy installation, upgrading, and deletion.
 
@@ -606,19 +603,19 @@ From now on, explore the Grafana dashboards according to the given missions with
 >
 > Ubuntu screen screenshot shortcut: `Shift + Ctrl + PrtScn`
 
-### Mission 1.
+### Mission 1
 
 Find all Pods belonging to your namespace (nuc01, nuc02, or nuc03) in Grafana. These include backend-api, nginx-proxy, postgres, etc., deployed in the Week 1 of 3-Tier Lab.
 
-### Mission 2.
+### Mission 2
 
 Check the CPU and memory usage of a specific Pod in a time-series graph. It's good to select a Pod that receives frequent requests, such as `backend-api` or `postgres`.
 
-### Mission 3.
+### Mission 3
 
 Check the overall CPU/Memory usage of the NUC PC you are currently operating. This can be checked through the dashboard provided by `Node Exporter`.
 
-### Mission 4.
+### Mission 4
 
 Find a dashboard that summarizes the overall status of the Kubernetes Cluster. It includes cluster resource status, alert occurrence, etc.
 

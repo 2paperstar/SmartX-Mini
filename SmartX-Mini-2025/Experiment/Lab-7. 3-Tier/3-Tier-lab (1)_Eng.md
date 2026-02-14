@@ -10,7 +10,7 @@ In this lab, we will go through the process of deploying a web service based on 
 
 > [!note]
 >
-> This Lab is conducted on a Kubernetes Cluster set up in <b>Lab#5 (Cluster Lab)</b> and consists of the following structure:
+> This Lab is conducted on a Kubernetes Cluster set up in **Lab#5 (Cluster Lab)** and consists of the following structure:
 >
 > ![Kubernetes Installation](img/nuc-prep.png)
 >
@@ -82,23 +82,18 @@ To solve these issues, separating each layer and enabling independent deployment
 Using 3-Tier Architecture in Kubernetes provides several modern cloud-native benefits:
 
 1. **Automated Deployment**
-
    - Each tier is a separate Deployment, allowing independent rolling updates
 
 2. **Self-Healing**
-
    - If a Pod in any tier crashes, it is automatically restarted
 
 3. **Horizontal Scaling**
-
    - High-load tiers can scale automatically to distribute traffic
 
 4. **Unified Observability**
-
    - Prometheus, Grafana, and other tools allow cross-tier monitoring
 
 5. **Infrastructure Independence**
-
    - Consistent deployments across cloud and on-prem environments
 
 6. **Namespace-Based Isolation**
@@ -108,7 +103,7 @@ In conclusion, 3-Tier Architecture works very well with Kubernetes and is founda
 
 ## 1-2. Why Companies Use Kubernetes?
 
-As mentioned in <b>Lab#5 (Cluster Lab)</b>, many companies are migrating to Kubernetes-based infrastructure for the following reasons:
+As mentioned in **Lab#5 (Cluster Lab)**, many companies are migrating to Kubernetes-based infrastructure for the following reasons:
 
 ### 1. **High Availability**
 
@@ -613,7 +608,7 @@ spec:
           envFrom:
             - secretRef:
                 name: backend-secret
-          resources:  # You can limit container's resource usage by doing like this:
+          resources: # You can limit container's resource usage by doing like this:
             requests:
               cpu: 100m
               memory: 128Mi
@@ -897,13 +892,7 @@ In the example above, the IP address is `10.244.2.107`.
 >
 > Sorry for your inconvenience.
 
-In your browser, go to:
-
-```
-http://<nginx-ip-addr>
-```
-
-You should see a page like the one below:
+In your browser, go to: `http://<nginx-ip-addr>`. You should see a page like the one below:
 
 ![WebPage_Main](./img/webpage.png)
 
