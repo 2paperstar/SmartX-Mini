@@ -1,11 +1,41 @@
 {
   "markdownlint.config": {
     "MD025": false,
+    "MD028": false,
     "MD033": {
       "allowed_elements": ["details", "summary", "ins"],
       "table_allowed_elements": ["br"]
     }
   },
   "editor.rulers": [160],
-  "cSpell.words": []
+  "cSpell.words": [
+    "buildx",
+    "cdrom",
+    "cgroupdriver",
+    "cpus",
+    "dearmor",
+    "dpkg",
+    "iface",
+    "ifname",
+    "ifup",
+    "keyrings",
+    "killall",
+    "libvirtd",
+    "netdev",
+    "netplan",
+    "networkd",
+    "nowait",
+    "nplan",
+    "nvme",
+    "openvswitch",
+    "qcow",
+    "tigervnc",
+    "tuntap",
+    "UEFI",
+    "veno",
+    "virtio",
+    "vncviewer",
+    "vport",
+    "vsctl"
+  ]
 }
