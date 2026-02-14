@@ -269,7 +269,7 @@ If an issue related to booting occurs, follow these steps.
 
 > [!CAUTION]  
 > ⚠️ **Caution!** ⚠️  
-> **\_If the NUC has two Ethernet ports, the `eno1` interface may not be available. Use the ifconfig command to check the network-connected interfaces (`enp88s0` or `enp89s0`). For example, enter `ifconfig -a` in the terminal and select the interface where RX and TX packets are not zero. Then, replace all occurrences of `eno1` in the text with either `enp88s0` or `enp89s0`, depending on the active interface.**
+> **If the NUC has two Ethernet ports, the `eno1` interface may not be available. Use the ifconfig command to check the network-connected interfaces (`enp88s0` or `enp89s0`). For example, enter `ifconfig -a` in the terminal and select the interface where RX and TX packets are not zero. Then, replace all occurrences of `eno1` in the text with either `enp88s0` or `enp89s0`, depending on the active interface.**
 
 Add the contents below. (Note: The values of `address`, `netmask`, `gateway`, and `dns-nameservers` may vary depending on the lab environment.)
 
