@@ -57,6 +57,8 @@ Topic들은 여러 Partition으로 분할하여 관리됩니다. 만약 하나�
 > Apache Kafka 3.5 이후로 Zookeeper는 Deprecated로 지정되었으며, 이를 한층 보완한 KRaft가 제안되었습니다.  
 > 현재는 호환성 문제 및 실습 목적으로 Zookeeper를 사용하지만, 추후에 자신의 환경에 Apache Kafka를 배포하여 사용하실 예정이라면 KRaft를 사용하시는 것을 권장합니다.
 
+<!-- -->
+
 > [!tip]  
 > Apache Kafka를 더 자세히 알고 싶다면 [Apache Kafka Docs](https://kafka.apache.org/documentation/#intro_concepts_and_terms)를 참고해주세요.
 
@@ -86,6 +88,8 @@ Net-SNMP는 리눅스 시스템에 SNMP Manager와 SNMP Agent 역할을 수행�
 
 > [!note]
 > 수집될 상태 정보는 실습 과정 중 Flume 배치 때 확인할 `flume-conf.properties` 파일의 `agent.sources.sources1.oidN`에 기록된 OID를 통해 확인 가능합니다.
+
+<!-- -->
 
 > [!tip]
 > SNMP를 더 자세히 알고 싶다면 [GeeksForGeeks](https://www.geeksforgeeks.org/simple-network-management-protocol-snmp/)를 참고해주세요.
@@ -258,6 +262,8 @@ ls -alh # Check all files
 >
 > 참조: <https://cloudinit.readthedocs.io/en/stable/reference/datasources/nocloud.html#source-files>
 
+<!-- -->
+
 > [!note]
 >
 > 주제: `cloud-init`이란 무엇이며, 이것이 어떻게 OS를 초기화하는가?
@@ -331,6 +337,8 @@ flash -u hypriotos-init.yaml -F network-config -d <Your SD Card Directory> hypri
 > | `-d <path>`, `--device`          | OS를 설치할 장치를 지정합니다.                                                     |
 > | `~.img`, `~.img.zip`             | OS의 이미지 파일을 의미합니다. (Raspberry OS Image File)                           |
 
+<!-- -->
+
 > [!note]
 >
 > 주제: `BLKRRPART failed: Device or resource busy` 해결 방법
@@ -363,6 +371,8 @@ flash -u hypriotos-init.yaml -F network-config -d <Your SD Card Directory> hypri
 >    d   # 모든 파티션이 삭제될 때까지 반복 입력한다.
 >    w   # 변경사항 저장
 >    ```
+
+<!-- -->
 
 > [!note]
 >
@@ -561,6 +571,8 @@ sudo vim /etc/hosts
 >
 > 일치하지 않을 경우, 추후에 진행할 Kafka 실습 과정에서 차질이 발생할 수 있습니다.
 
+<!-- -->
+
 > [!note]
 >
 > 참고: Hostname 수정 (⚠️경고⚠️: 본 실습 과정 중에 적용하는 것은 권장하지 않습니다.)
@@ -601,6 +613,8 @@ sudo vim /etc/hosts
 >
 > Pi의 `/etc/hosts`는 `cloud-init`에 의해 부팅 과정에서 초기화됩니다.  
 > 만약 종료 이후에도 `/etc/hosts`를 유지하고 싶을 경우, 후술할 참고 영역을 따릅니다.
+
+<!-- -->
 
 > [!tip]
 >

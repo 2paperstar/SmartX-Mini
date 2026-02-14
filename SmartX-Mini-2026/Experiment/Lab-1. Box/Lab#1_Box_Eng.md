@@ -76,6 +76,8 @@ Let's take a close look at the overall structure.
 > When you hover over the code block, a copy button appears in the upper right corner. You can click this button to copy the content. This feature is provided for convenience. However, during the practice, you should not simply copy and paste everything as it is. Each student may need to modify certain parts of the commands or files. Therefore, carefully review the document and make sure to adjust the necessary parts accordingly.
 > ![copy button](img/copy.png)
 
+<!-- -->
+
 > [!IMPORTANT]
 > Please check allocated IP address of your NUC, VM, and container in the ribbon paper.  
 > **NUC** stands for `Next Unit of Computing`, a compact computer developed by Intel. We will be using NUCs for our lab sessions.  
@@ -257,9 +259,13 @@ If an issue related to booting occurs, follow these steps.
 >
 > By connecting a TAP interface to a bridge network like br0, you can configure a bridge network that allows the VM and the host to operate on the same subnet. This setup enables the VM to function as if it were physically connected to the network.
 
+<!-- -->
+
 > [!CAUTION]  
 > **Caution! One tab for indentation**  
 > Type your NUC's IP in `<your nuc ip>` and gateway IP in `<gateway ip>`. (At this time, the parentheses should be excluded when entering.)
+
+<!-- -->
 
 > [!CAUTION]  
 > ⚠️ **Caution!** ⚠️  
@@ -330,6 +336,8 @@ iface vport_vFunction inet manual
 >       up ip link set dev vport_vFunction up
 >       post-down ip link del dev vport_vFunction
 >   ```
+
+<!-- -->
 
 > [!CAUTION]  
 > ⚠️ **Caution!** ⚠️  
@@ -603,6 +611,8 @@ sudo ovs-docker add-port br0 veno1 c1 --ipaddress=<docker_container_IP>/24 --gat
 > ⚠️ For this Lab only, use the PI’s IP written on the paper as the docker_container_IP. ⚠️  
 > When writing --ipaddress=<docker_container_IP>/24 --gateway=<gateway_IP>, remove the brackets `<>` and use the format 172.29.0.X.  
 > For example: --ipaddress=172.29.0.X/24 --gateway=172.29.0.254
+
+<!-- -->
 
 > [!NOTE]  
 > **⚠️ If there were no issues, skip this part(Note block). ⚠️**

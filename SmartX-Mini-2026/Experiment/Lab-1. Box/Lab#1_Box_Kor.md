@@ -72,6 +72,8 @@ Box Lab에서는 \*베어 메탈에 운영체제(OS)를 직접 설치해보고
 > 마우스를 코드 블럭 위에 올리게 되면 우측 상단에 복사하기 버튼이 뜹니다. 해당 버튼을 눌러 내용을 복사할 수 있습니다.해당 기능은 편의를 위해 제공됩니다. 그러나 Lab을 진행하는 과정에서 모든 것을 그대로 붙여넣기 해서는 안 됩니다. 수강생 개인마다 명령어의 일부, 또는 파일의 일부 내용을 수정해야 하기 때문에, 문서의 내용을 꼼꼼히 살펴보고 수정해야 하는 부분은 꼭 수정해주시기 바랍니다.  
 > ![copy button](img/copy.png)
 
+<!-- -->
+
 > [!IMPORTANT]
 > 사용하는 NUC과 가상 머신(VM), 그리고 container의 IP가 적힌 종이를 참고하여 Lab을 진행해주시길 바랍니다.  
 > **NUC**은 `Next Unit of Computing`의 약자로, Intel에서 개발한 초소형 컴퓨터입니다. 우리는 NUC을 이용하여 lab을 진행합니다.  
@@ -245,9 +247,13 @@ OS : Ubuntu Desktop 22.04 LTS(64bit)
 >
 > TAP 인터페이스를 `br0`과 같은 브리지 네트워크에 연결하여 bridge 네트워크를 구성하면 VM과 Host가 같은 서브넷에서 동작하게 만들 수 있습니다. 그렇게 되면, 해당 VM이 물리적으로 네트워크에 연결된 것처럼 동작하도록 만들 수 있습니다.
 
+<!-- -->
+
 > [!CAUTION]  
 > **!!!들여쓰기는 Tab 한번입니다!!!**  
 > `<your nuc ip>`에 현재 nuc의 ip와 `<gateway ip>`에 gateway ip를 입력해주시기 바랍니다. (이때 괄호는 제외하고 입력해야 합니다.)
+
+<!-- -->
 
 > [!CAUTION]
 > ⚠️ **주의!** ⚠️  
@@ -318,6 +324,8 @@ iface vport_vFunction inet manual
 >     up ip link set dev vport_vFunction up
 >     post-down ip link del dev vport_vFunction
 >   ```
+
+<!-- -->
 
 > [!CAUTION]
 > ⚠️ **주의!** ⚠️  
@@ -591,6 +599,8 @@ sudo ovs-docker add-port br0 veno1 c1 --ipaddress=<docker_container_IP>/24 --gat
 > ⚠️ 이번 Lab에 한하여 docker_container_IP는 종이에 적힌 **PI의 IP를 사용**합니다. ⚠️  
 > 위의 --ipaddress=<docker_container_IP>/24 --gateway=<gateway_IP> 작성 시에 `<>`은 빼고, 172.29.0.X의 형식으로 작성해주시기 바랍니다.  
 > 예를 들어, --ipaddress=172.29.0.X/24 --gateway=172.29.0.254
+
+<!-- -->
 
 > [!NOTE]  
 > **⚠️ 아무 문제가 없었다면, 이 부분(Note block)은 생략합니다. ⚠️**
