@@ -36,12 +36,13 @@ Kafka was developed to address these issues by providing a unified transmission 
 Kafka follows the publish-subscribe (Pub/Sub) pattern, which can be likened to the relationship between YouTubers and subscribers. Consumers subscribe to specific topics they are interested in, while producers publish messages to these topics. The Kafka broker then enables consumers to retrieve messages from the topics they have subscribed to.
 
 Below table is summary of the key members of Apache Kafka.
-| Name | Description |
-|---|:---|
-|`Producer`| A component that creates events and sends them to Kafka. |
-|`Consumer`| A component that subscribes to topics and fetches events from Kafka for processing. |
-|`Topics`| The unit of event subscription. Similar to folders in a file system, it is used to store/manage events. |
-|`Broker`| A component that stores and manages events. It distributes and replicates events stored in topics. |
+
+| Name       | Description                                                                                             |
+| ---------- | :------------------------------------------------------------------------------------------------------ |
+| `Producer` | A component that creates events and sends them to Kafka.                                                |
+| `Consumer` | A component that subscribes to topics and fetches events from Kafka for processing.                     |
+| `Topics`   | The unit of event subscription. Similar to folders in a file system, it is used to store/manage events. |
+| `Broker`   | A component that stores and manages events. It distributes and replicates events stored in topics.      |
 
 Apache Kafka is commonly used as a Messaging System, but unlike traditional messaging queues, Events do not disappear immediately when a Consumer reads them, and it can be read as many times as needed. Instead, Kafka manages events by defining the event's lifetime for each Topic.
 
@@ -56,7 +57,7 @@ Zookeeper continuously communicates with brokers to monitor their status. It man
 In this Lab, we will see that data-interconnects can be achieved by confirming that Apache Kafka delivers Pi events to NUC's Consumer.
 
 > [!warning]
-> 
+>
 > As of Apache Kafka 3.5, Zookeeper is deprecated and replaced by KRaft, which provides enhanced capabilities. While we use Zookeeper in this lab for compatibility purposes, it is recommended to use KRaft for future deployments.
 
 > [!tip]
@@ -73,12 +74,12 @@ Simple Network Management Protocol (SNMP) is an L7 protocol used to manage and m
 SNMP consists of the following key components:
 ![SNMP Enumeration](./img/snmp_enumeration.jpg)
 
-|Component|Description|
-|---|---|
-|SNMP Manager| Central system that monitors the network. <br> Also known as the Network Management Station (NMS). <br> SNMP Client in Host works as SNMP Manager. |
-|SNMP Agent| Collects, stores, and modifies system information in response to commands from the SNMP Manager. <br> SNMP Server in Network device works as SNMP Agent. |
-|Managed Device| A device with an SNMP agent installed that can be centrally managed via SNMP. |
-|MIB(Management Information Base)| stores network status information and settings of managed devices. <br> consists of a total of eight categories (system, interface, address translation, IP, UDP, TCP, EGP, and ICMP). <br> each MIB Object has unique OID(Object ID) <br> (e.g. `1.3.6.1.2.1.2.2.1.16.2`: size of received bytes at the 2nd network interface) |
+| Component                        | Description                                                                                                                                                                                                                                                                                                      |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| SNMP Manager                     | Central system that monitors the network. Also known as the Network Management Station (NMS). SNMP Client in Host works as SNMP Manager.                                                                                                                                                                         |
+| SNMP Agent                       | Collects, stores, and modifies system information in response to commands from the SNMP Manager. SNMP Server in Network device works as SNMP Agent.                                                                                                                                                              |
+| Managed Device                   | A device with an SNMP agent installed that can be centrally managed via SNMP.                                                                                                                                                                                                                                    |
+| MIB(Management Information Base) | stores network status information and settings of managed devices. consists of a total of eight categories (system, interface, address translation, IP, UDP, TCP, EGP, and ICMP). each MIB Object has unique OID(Object ID) (e.g. `1.3.6.1.2.1.2.2.1.16.2`: size of received bytes at the 2nd network interface) |
 
 Net-SNMP is a suite of applications that allows for monitoring network devices, computers, and small devices using the SNMP protocol on Linux operating systems.
 
@@ -101,11 +102,12 @@ Apache Flume is a distributed, reliable service designed for efficiently collect
 Flume's data flow model consists of three main components:
 
 ![Apache Flume](./img/flume.png)
-|Component|Description|
-|---|---|
-|Source| Collects events from external systems. <br> Event format must have to be recognized by Flume. |
-|Channel| A passive store that temporarily holds events until they are retrieved by the sink. <br> Event comes from the `Source`. <br> e.g. File Channel (Local File System based) |
-|Sink| Retrieves events from the channel and sends them to an external storage system or agent. |
+
+| Component | Description                                                                                                                                                    |
+| --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Source    | Collects events from external systems. Event format must have to be recognized by Flume.                                                                       |
+| Channel   | A passive store that temporarily holds events until they are retrieved by the sink. Event comes from the `Source`. e.g. File Channel (Local File System based) |
+| Sink      | Retrieves events from the channel and sends them to an external storage system or agent.                                                                       |
 
 In this lab, Flume will be used to gather system status data from `snmpd` via SNMP and send it to Kafka.
 
@@ -138,8 +140,8 @@ In this lab, Flume will be used to gather system status data from `snmpd` via SN
 
 > [!warning]
 >
-> To prevent IP confilct, if VM and Docker Container are running, please turn off both.
-> 
+> To prevent IP conflict, if VM and Docker Container are running, please turn off both.
+>
 > ```bash
 > sudo docker stop <container_name>
 > sudo killall -9 qemu-system-x86_64  # if can not kill it, use sudo killall -9 kvm
@@ -151,17 +153,18 @@ To install HypriotOS, insert the Micro SD card into a reader, and insert into th
 
 > [!caution]
 >
-> **Please ensure that the Pi is <U>completely powered off</U>** before removing the SD card.
+> **Please ensure that the Pi is <ins>completely powered off</ins>** before removing the SD card.
 >
 > Raspberry Pi uses SD card as a storage device.  
-> If you remove it before power-off, Potential Data Corruption can occur, which causes critial, fatal error on operation.
+> If you remove it before power-off, Potential Data Corruption can occur, which causes critical, fatal error on operation.
 >
 > Therefore, please check whether Pi is completely powered off, and remove SD card safely.
+>
 > ```bash
 > sudo poweroff
 > ```
+>
 > 📰️️ Note: `sudo` is used to execute command as a `root`(admin). Only `root` can execute `poweroff`.
-
 
 ### 2-1-1. (NUC) Download Required Package and File
 
@@ -175,27 +178,26 @@ chmod +x flash
 sudo mv flash /usr/local/bin/flash
 ```
 
-
 <details>
 <summary> 📰️ Note: Dependency of `flash` </summary>
 
 For more information, please refer to <https://github.com/hypriot/flash>.
 
-> | Tool | Description |
-> |:---:|:---|
-> |`pv`| Showing progress bar. |
-> |`awscli`| download image from AWS S3 Bucket |
-> |`python3-pip`| to install/execute `awscli` |
-> |`curl`| download image from web server, using URL |
-> |`unzip`| unzip compressed image. |
-> |`hdparm`| use to flash SD Card images |
+> |     Tool      | Description                               |
+> | :-----------: | :---------------------------------------- |
+> |     `pv`      | Showing progress bar.                     |
+> |   `awscli`    | download image from AWS S3 Bucket         |
+> | `python3-pip` | to install/execute `awscli`               |
+> |    `curl`     | download image from web server, using URL |
+> |    `unzip`    | unzip compressed image.                   |
+> |   `hdparm`    | use to flash SD Card images               |
 
 </details>
 
 <details>
 <summary> Package Version (Refer this when dependency error occurs) (Expand)</summary>
 
-##### NUC
+#### NUC flash dependencies
 
 |   Package   |      Version       |
 | :---------: | :----------------: |
@@ -205,16 +207,15 @@ For more information, please refer to <https://github.com/hypriot/flash>.
 |    unzip    |  6.0-25ubuntu1.1   |
 |   hdparm    |     9.58+ds-4      |
 
-##### Python
+#### Python flash dependencies
 
 | Package | Version |
 | :-----: | :-----: |
 | awscli  | 1.27.59 |
 
 </details>
-<br>
 
-`flash` delivers configuration files to `cloud-init`, to configure Network, create user account, and SSH, etc. To download pre-configured files, We will clone Github Repository. 
+`flash` delivers configuration files to `cloud-init`, to configure Network, create user account, and SSH, etc. To download pre-configured files, We will clone Github Repository.
 
 Since there are some large files, first we will add `git-lfs`, then clone repository, at last move to next working directory. Please follow guidance below.
 
@@ -231,7 +232,7 @@ cd ~/SmartX-Mini/SmartX-Mini-2025/Experiment/Lab-2.\ InterConnect/
 <details>
 <summary>Package Versions (Expand)</summary>
 
-##### NUC
+#### NUC git-lfs package versions
 
 | Package |       Version       |
 | :-----: | :-----------------: |
@@ -239,7 +240,6 @@ cd ~/SmartX-Mini/SmartX-Mini-2025/Experiment/Lab-2.\ InterConnect/
 | git-lfs |        3.3.0        |
 
 </details>
-<br>
 
 Next, download HypriotOS(v1.12.3) image file.
 
@@ -252,22 +252,22 @@ ls -alh # Check all files
 
 `network-config` file is used to configure network setting. Now we will open and edit this file to configure.
 
->  [!caution]
-> 
-> **<U>Do not change the name</U> of `network-config` file.** <br>
-> `network-config` is the pre-defined file name, which is used by `cloud-init` to configure network setting during booting. (HypriotOS is managed by `cloud-init`) <br>
-> So, `cloud-init` always try to find `network-config` file at the root directory of local file system mainly. (You can figure out where is root directory, by executing `lsblk` or someting.)
+> [!caution]
+>
+> **<ins>Do not change the name</ins> of `network-config` file.**  
+> `network-config` is the pre-defined file name, which is used by `cloud-init` to configure network setting during booting. (HypriotOS is managed by `cloud-init`)  
+> So, `cloud-init` always try to find `network-config` file at the root directory of local file system mainly. (You can figure out where is root directory, by executing `lsblk` or something.)
 >
 > `flash` will copy it to `/boot`(actually boot partition) of SD Card, but file name does not be changed.
 >
 > If you change the name of `network-config`, then `cloud-init` cannot find that file, which results in failure of network configuration. (i.e. default network setting will be applied.) In that case, you should re-install OS or manually configure network setting.
-> 
-> So, warning agian, <U>**Do not change the file name.**</U>
-> 
-> REF: https://cloudinit.readthedocs.io/en/stable/reference/datasources/nocloud.html#source-files
+>
+> So, warning again, <ins>**Do not change the file name.**</ins>
+>
+> REF: <https://cloudinit.readthedocs.io/en/stable/reference/datasources/nocloud.html#source-files>
 
 > [!note]
-> 
+>
 > Topic: What is `cloud-init`, and How it initializes the OS
 >
 > `cloud-init` is a tool used to initialize cloud instances. It is widely utilized by public cloud providers such as AWS and Google Cloud, as well as for provisioning private cloud infrastructure and installing bare-metal systems.
@@ -283,10 +283,9 @@ ls -alh # Check all files
 > During this phase, tools like `Ansible` or `Chef` can be used to perform fine-grained system configurations. It may also download essential software for system operation, create and configure user accounts, and execute various scripts as specified in `user-data` or `vendor-data`.
 >
 > Once these processes are complete, the system is fully initialized and ready for user access.
-> 
-> REF1: https://cloudinit.readthedocs.io/en/latest/explanation/introduction.html
-> <br>
-> REF2: https://cloudinit.readthedocs.io/en/stable/reference/datasources/nocloud.html
+>
+> REF1: <https://cloudinit.readthedocs.io/en/latest/explanation/introduction.html>  
+> REF2: <https://cloudinit.readthedocs.io/en/stable/reference/datasources/nocloud.html>
 
 ```bash
 pwd # check working directory is "SmartX-Mini/SmartX-Mini-2025/Experiment/Lab-2. InterConnect/"
@@ -315,7 +314,6 @@ To install HypriotOS onto the SD card, we first need to identify where the SD ca
 
 SD cards are typically mounted under paths starting with `/dev/sd`. For a 32GB SD card, the size will be displayed as approximately 29.8 GiB, while a 16GB card will appear as approximately 14.6 GiB. Identify the corresponding device path based on these values. (In the image below, the SD card is mounted at `/dev/sdc`.)
 
-
 ```bash
 sudo fdisk -l
 ```
@@ -331,53 +329,57 @@ flash -u hypriotos-init.yaml -F network-config -d <Your SD Card Directory> hypri
 > [!tip]
 >
 > Table below describes options for `flash`. Details are shown by `flash --help`.
-> |Options|Description|
-> |:---|:---|
-> |`-u <file>`, `--userdata <file>`| select file which will be copied to `/boot/user-data` of OS. |
-> |`-F <file>`, `--file <file>`| select file which will be copied to `/boot` of OS. |
-> |`-d <path>`, `--device`| Path of Device which where OS be installed. |
-> |`~.img`, `~.img.zip`| Raspberry OS Image File |
+>
+> | Options                          | Description                                                  |
+> | :------------------------------- | :----------------------------------------------------------- |
+> | `-u <file>`, `--userdata <file>` | select file which will be copied to `/boot/user-data` of OS. |
+> | `-F <file>`, `--file <file>`     | select file which will be copied to `/boot` of OS.           |
+> | `-d <path>`, `--device`          | Path of Device which where OS be installed.                  |
+> | `~.img`, `~.img.zip`             | Raspberry OS Image File                                      |
 
 > [!note]
-> 
+>
 > Topic: How to resolve `BLKRRPART failed: Device or resource busy` error
 >
 > If this error occurs, the OS is installed successfully, but the `hypriotos-init.yaml` and `network-config` files are not copied to the SD card.
 >
 > Try the following steps one by one to resolve the error:
-> <ins> **If you do not encounter this error, Do not apply those steps.** </ins>
-> 
+> **<ins>If you do not encounter this error, Do not apply those steps.</ins>**
+>
 > 1. If the SD card is mounted at `/dev/sda`, manually copy `hypriotos-init.yaml` as `user-data` to `/dev/sda1` and also copy `network-config` to the same location. Perform the following commands to do this:
->     ```bash
->     # Open terminal in NUC
->     sudo mkdir /mnt/sdcard
->     sudo mount /dev/sda1 /mnt/sdcard
->     sudo cp hypriotos-init.yaml /mnt/sdcard/user-data
->     sudo cp network-config /mnt/sdcard/network-config
->     sudo umount /mnt/sdcard
->     sudo eject /dev/sda
->     # remove SD card from NUC
->     ```
->     Then, eject the SD card from the NUC, insert it into the Pi, and power on the Pi. Verify that the network and hostname settings are correctly applied, by following `2-2-1`. if configuration is not applied, then move to step 2.
-> 2. Run the `flash -u hypriotos-init.yaml -F network-config -d <Your SD Card Directory> hypriotos-rpi-v1.12.3.img.zip` command again to reinstall HypriotOS. Sometimes temporary error can be occured.
+>
+>    ```bash
+>    # Open terminal in NUC
+>    sudo mkdir /mnt/sdcard
+>    sudo mount /dev/sda1 /mnt/sdcard
+>    sudo cp hypriotos-init.yaml /mnt/sdcard/user-data
+>    sudo cp network-config /mnt/sdcard/network-config
+>    sudo umount /mnt/sdcard
+>    sudo eject /dev/sda
+>    # remove SD card from NUC
+>    ```
+>
+>    Then, eject the SD card from the NUC, insert it into the Pi, and power on the Pi. Verify that the network and hostname settings are correctly applied, by following `2-2-1`. if configuration is not applied, then move to step 2.
+>
+> 2. Run the `flash -u hypriotos-init.yaml -F network-config -d <Your SD Card Directory> hypriotos-rpi-v1.12.3.img.zip` command again to reinstall HypriotOS. Sometimes temporary error can be occurred.
 > 3. Delete all partitions on the SD card and try the `flash -u hypriotos-init.yaml -F network-config -d <Your SD Card Directory> hypriotos-rpi-v1.12.3.img.zip` again. You can delete the partitions using the following commands:
->     ``` bash
->     sudo umount <sd_card_path>
->     sudo fdisk <sd_card_path>
->     d   # enter this repetitively unless every partitions are removed.
->     w   # save changes
->     ```
-> 
+>
+>    ```bash
+>    sudo umount <sd_card_path>
+>    sudo fdisk <sd_card_path>
+>    d   # enter this repetitively unless every partitions are removed.
+>    w   # save changes
+>    ```
 
 > [!note]
-> 
+>
 > Topic: About the `hypriotos-init.yaml` file
-> 
+>
 > The `hypriotos-init.yaml` file is used as the `/boot/user-data` file on HypriotOS.  
 > The `/boot/user-data` file provides user-defined configurations to the instance during initialization. It defines user creation, hostname settings, and whether to automatically initialize `/etc/hosts`.  
 > This file also contains the initial user credentials, so if you forget the ID/PW, refer to this file.
 >
-> REF: https://cloudinit.readthedocs.io/en/stable/explanation/format.html
+> REF: <https://cloudinit.readthedocs.io/en/stable/explanation/format.html>
 
 ## 2-2. Raspberry PI Environment Setup
 
@@ -408,35 +410,37 @@ sudo apt update
 sudo apt install -y git vim rdate openssh-server
 ```
 
-|Package|Description|
-|:---:|---|
-|`git`| Git CLI tool |
-|`vim`| Text editor |
-|`rdate`| Tool to synchronize system time with an external time server. |
-|`openssh-server`| Package to enable SSH server functionality on the Pi. |
+|     Package      | Description                                                   |
+| :--------------: | ------------------------------------------------------------- |
+|      `git`       | Git CLI tool                                                  |
+|      `vim`       | Text editor                                                   |
+|     `rdate`      | Tool to synchronize system time with an external time server. |
+| `openssh-server` | Package to enable SSH server functionality on the Pi.         |
 
-Once the package installation is complete, <U>**return to the NUC**</U>. Ensure that the <U>**Pi remains powered on**</U>, as you will access it via SSH from the NUC.
+<!-- TODO: mismatch with korean version -->
+
+Once the package installation is complete, <ins>**return to the NUC**</ins>. Ensure that the <ins>**Pi remains powered on**</ins>, as you will access it via SSH from the NUC.
 
 > [!note]
-> 
-> Topic: Resolving Certificate verification failed: The certificate is NOT Trusted error
-> 
+>
+> Topic: Resolving `Certificate verification failed: The certificate is NOT Trusted` error
+>
 > If you encounter certificate verification errors while installing packages due to a repository issue, you need to switch to another APT repository.
-> 
+>
 > To modify the APT repository, open the /etc/apt/sources.list file using an editor (e.g., nano or vi):
-> 
+>
 > ```bash
 > sudo nano /etc/apt/sources.list
 > ```
-> 
+>
 > Replace the URL in the first line (e.g., <http://ftp.lanet.kr/raspbian/>) with an alternative mirror, such as <http://ftp.kaist.ac.kr/raspbian/raspbian/>.
 >
->Save the changes and retry the package installation process.
+> Save the changes and retry the package installation process.
 
 <details>
 <summary>Package Versions (Expand)</summary>
 
-##### PI
+#### PI initial dependencies
 
 |    Package     |         Version         |
 | :------------: | :---------------------: |
@@ -449,7 +453,7 @@ Once the package installation is complete, <U>**return to the NUC**</U>. Ensure 
 
 ### 2-2-3. (PI) Configuring `crontab` for Time Synchronization
 
-Since the Raspberry Pi lacks an RTC (Real-Time Clock), it can only maintain system time for about 17 minutes after being powered off. <br>
+Since the Raspberry Pi lacks an RTC (Real-Time Clock), it can only maintain system time for about 17 minutes after being powered off.  
 To synchronize the system time after booting, we will configure `crontab` to execute the `rdate` command 1 minute after the boot process is complete.
 
 First, modify the `crontab` settings using the following command:
@@ -478,10 +482,10 @@ sudo reboot
 
 ### 2-2-4. (NUC) Check Pi Setup
 
-Since `openssh-server` has been installed on the Pi, you can now access the Pi via SSH from external devices. <br>
+Since `openssh-server` has been installed on the Pi, you can now access the Pi via SSH from external devices.  
 (From now on, there's no need to repetitively unplug and plug in the monitor, mouse, and keyboard. You can access the Pi via SSH from the NUC.)
 
-To verify this, I will access the Pi via SSH from the terminal on the NUC. <br>
+To verify this, I will access the Pi via SSH from the terminal on the NUC.  
 Return to the NUC and enter the following command:
 
 ```bash
@@ -489,20 +493,20 @@ ssh pi@<PI_IP>  # Simple Format: ssh <ID>@<destination IP or Hostname>
 ```
 
 > [!note]
-> 
+>
 > Topic: SSH - Fingerprint Error
 >
 > ![ssh key error](./img/ssh_duplicated.png)
-> 
+>
 > This error occurs when the SSH key associated with the target IP address differs from the key of the SSH server you are trying to access. (e.g. re-install `openssh-server`)
 >
-> Each SSH server has a unique SSH key.   
+> Each SSH server has a unique SSH key.  
 > When an SSH client connects to a server, the server's key is shared with the client, which then stores the key and IP address in the `~/.ssh/known_hosts` file.  
 > (The image below illustrates this process.)
 >
 > ![ssh initial access](./img/ssh_initial_access.png)
-> 
-> When the client try to reconnects to the server, it uses the stored key in `~/.ssh/known_hosts` to verify that the server is the same one previously accessed. This mechanism helps prevent man-in-the-middle attacks. <br>
+>
+> When the client try to reconnects to the server, it uses the stored key in `~/.ssh/known_hosts` to verify that the server is the same one previously accessed. This mechanism helps prevent man-in-the-middle attacks.  
 > If the SSH key of the server has changed, verification will be failed and `ssh` will produce an error and terminate the connection.
 >
 > To resolve this error, remove the previous fingerprint using the following command and then try reconnecting via SSH:
@@ -512,6 +516,7 @@ ssh pi@<PI_IP>  # Simple Format: ssh <ID>@<destination IP or Hostname>
 > ```
 
 Next, please check the system time by entering a commend below:
+
 ```bash
 date
 ```
@@ -539,6 +544,7 @@ Subsequent steps in the lab will also use hostnames rather than IP addresses for
 ### 2-3-1. (NUC) Hostname preparation for Kafka
 
 First, check the hostname of the NUC using the following command:
+
 ```bash
 hostname
 ```
@@ -550,15 +556,17 @@ sudo vim /etc/hosts
 ```
 
 Add the following line(Pi IP Address & Hostname) at the bottom of the file:
-<!-- 
+
+<!--
   Pi IP만 적는 것으로 수정합니다.
   REF: Issue #98
 -->
+
 ```text
-172.29.0.XX        <PI_HOSTNAME> 
+172.29.0.XX        <PI_HOSTNAME>
 ```
 
->  [!Caution] 
+> [!Caution]
 >
 > The hostnames of the Pi and NUC entered in `/etc/hosts` <ins>**must match their actual hostnames.**</ins>
 >
@@ -567,14 +575,17 @@ Add the following line(Pi IP Address & Hostname) at the bottom of the file:
 > [!note]
 >
 > Topic: How to change Hostname (⚠️Warning⚠️: Applying this during lab is <ins>**not recommended.**</ins>)
-> 
-> You can change the NUC's hostname using the following commands: <br>
+>
+> You can change the NUC's hostname using the following commands:
 >
 > **Temporary change (reverts after reboot):**
+>
 > ```bash
 > sudo hostname <new_name>
 > ```
+>
 > **Permanent change:**
+>
 > ```bash
 > # Change Permanently
 > sudo hostnamectl set-hostname <new_name>
@@ -582,9 +593,8 @@ Add the following line(Pi IP Address & Hostname) at the bottom of the file:
 >
 > After changing the hostname, ensure you update the NUC's hostname entry in the `/etc/hosts` file.
 >
-> On the Pi, additional steps are required for permanent changes due to `cloud-init` <br>
+> On the Pi, additional steps are required for permanent changes due to `cloud-init`  
 > For more details, refer to: <https://repost.aws/ko/knowledge-center/linux-static-hostname-rhel7-centos7>
-
 
 ### 2-3-2. (PI) Hostname preparation for Kafka
 
@@ -593,31 +603,34 @@ Perform the same steps on the Pi that were done on the NUC in section 2-3-1. Ope
 ```bash
 sudo vim /etc/hosts
 ```
-<!-- 
+
+<!--
   NUC IP만 적는 것으로 수정합니다.
   REF: Issue #98
 -->
+
 ```text
 172.29.0.XX        <NUC_HOSTNAME>
 ```
 
->  [!warning]
+> [!warning]
 >
-> The `/etc/hosts` file on the Pi is reset during boot due to cloud-init. <br>
-> If you want to preserve these settings after reboot, follow the guidelines below. 
+> The `/etc/hosts` file on the Pi is reset during boot due to cloud-init.  
+> If you want to preserve these settings after reboot, follow the guidelines below.
 
 > [!tip]
-> 
+>
 > Topic: How to Preserve `/etc/hosts` on the Pi
 >
-> cloud-init regenerates the /etc/hosts file during boot using a predefined hosts template. <br>
+> cloud-init regenerates the /etc/hosts file during boot using a predefined hosts template.  
 > Any manual modifications will be overwritten.
-> 
+>
 > To make permanent changes, you can use one of the following three methods:
+>
 > 1. Modify the `manage_etc_hosts` value to `false` in the `hypriotos-init.yaml` file used during OS installation and reinstall the OS.
 > 2. Edit the `/etc/cloud/templates/hosts.debian.tmpl` file on the Pi with the same modifications made to `/etc/hosts`.
 > 3. Comment out the `update_etc_hosts` module in `/etc/cloud/cloud.cfg`. This module is responsible for regenerating `/etc/hosts`.
->
+
 <!-- 2025.02.27: 이유는 모르겠지만 HypriotOS 내부에서 /boot/user-data를 직접 수정해도 Data가 날아감. 아마 cloud-init을 제대로 이해하지 못했기 때문이라고 생각한다. 추후에 근본 원인을 찾아낸다면 수정을 부탁한다. -->
 
 ### 2-3-3. (PI, NUC) Verifying Hostname-based Communication
@@ -644,7 +657,7 @@ Successful communication should display ICMP packet responses. If you encounter 
 
 Now that the Pi and NUC can communicate via their hostnames, we will deploy Apache Kafka on the NUC using Docker to enable message exchange between the devices. This corresponds to the "Data Interconnect" portion of the lab.
 
-We will deploy 1 Zookeeper, 3 Brokers, and 1 Consumer as Docker containers on the NUC. These containers will share the NUC's public IP address. <br>
+We will deploy 1 Zookeeper, 3 Brokers, and 1 Consumer as Docker containers on the NUC. These containers will share the NUC's public IP address.  
 Zookeeper does not require a Broker ID, while each Kafka broker will be assigned IDs 0, 1, and 2. The consumer will only be used for managing topics and collecting data.
 
 | Function(container) Name | IP Address | Broker ID | Listening Port |
@@ -657,8 +670,8 @@ Zookeeper does not require a Broker ID, while each Kafka broker will be assigned
 
 ### 2-4-1. (NUC) Check Dockerfile
 
-First, we will build the Docker image required to create the containers. <br>
-We will use the `ubuntu-kafka` directory to build the image. <br>
+First, we will build the Docker image required to create the containers.  
+We will use the `ubuntu-kafka` directory to build the image.  
 Navigate to this directory using the command below.
 
 ```bash
@@ -681,19 +694,19 @@ RUN sudo apt-get install -y wget vim iputils-ping net-tools iproute2 dnsutils op
 RUN sudo wget --no-check-certificate https://archive.apache.org/dist/kafka/0.8.2.0/kafka_2.10-0.8.2.0.tgz -O - | tar -zxv
 RUN sudo mv kafka_2.10-0.8.2.0 /kafka
 WORKDIR /kafka
-``` 
+```
 
 > [!tip]
-> 
+>
 > Note: Modifying the APT Repository (Optional)
 >
 > Downloading packages via `apt` during the image build process can be slow.
-> 
+>
 > To speed up the build, consider updating the APT repository to a mirror server by changing the following `sed` command.
-> 
+>
 > ```dockerfile
 > …
-> 
+>
 > RUN sed -i 's@archive.ubuntu.com@mirror.kakao.com@g' /etc/apt/sources.list
 > #Update & Install wget
 > RUN sudo apt-get update
@@ -703,33 +716,32 @@ WORKDIR /kafka
 
 ### 2-4-2. (NUC) Build Docker Image
 
-Once you have verified the `Dockerfile`, proceed to build the Docker image using the following command: 
+Once you have verified the `Dockerfile`, proceed to build the Docker image using the following command:
 
 ```bash
 sudo docker build --tag ubuntu-kafka .
 #You should type '.', so docker can automatically start to find `Dockerfile` in the current directory('.').
 ```
 
-> [!tip] 
-> 
+> [!tip]
+>
 > Note: Basic Docker CLI Commands
 >
 > The following are common Docker CLI commands that you can use to manage containers:
-> 
+>
 > For more information, Please refer to [Docker Official Document](https://docs.docker.com/engine/reference/commandline/cli/).
 >
-> |Command|Description|
-> |---|---|
-> |`sudo docker --help`|Displays available Docker CLI commands and options.|
-> |`sudo docker ps`|Lists running containers. Use `-a` to include stopped ones.|
-> |`sudo docker rm <container_id>`| Removes a Docker container. |
-> |`sudo docker start <container_id>`| Starts a stopped Docker container. |
-> |`sudo docker stop <container_id>`| Stops a running Docker container. |
-> |`sudo docker attach <container_id>`| Attaches to a running Docker container. |
-> |`sudo docker run <options> <image>`| Creates and starts a container from the specified image. |
+> | Command                             | Description                                                 |
+> | ----------------------------------- | ----------------------------------------------------------- |
+> | `sudo docker --help`                | Displays available Docker CLI commands and options.         |
+> | `sudo docker ps`                    | Lists running containers. Use `-a` to include stopped ones. |
+> | `sudo docker rm <container_id>`     | Removes a Docker container.                                 |
+> | `sudo docker start <container_id>`  | Starts a stopped Docker container.                          |
+> | `sudo docker stop <container_id>`   | Stops a running Docker container.                           |
+> | `sudo docker attach <container_id>` | Attaches to a running Docker container.                     |
+> | `sudo docker run <options> <image>` | Creates and starts a container from the specified image.    |
 >
 > You can use the first 4 characters of the container ID shown by `docker ps` as `<container id>`, as long as they are unique.
->
 
 ### 2-4-3. (NUC) Deploy Docker Containers
 
@@ -752,7 +764,7 @@ sudo docker run -it --net=host --name consumer ubuntu-kafka
 
 ### 2-4-4. (NUC - `zookeeper` Container) Configure Zookeeper
 
-First, access the `zookeeper` container to configure it. <br>
+First, access the `zookeeper` container to configure it.  
 Use the following command to check the `zookeeper.properties` file:
 
 ```bash
@@ -762,9 +774,11 @@ sudo vim config/zookeeper.properties
 Ensure that the Client Port is set to `2181`. If not, modify the file to reflect this value:
 
 Next, start the Zookeeper service using the command below:
+
 ```bash
 bin/zookeeper-server-start.sh config/zookeeper.properties
 ```
+
 > [!warning]
 >
 > Zookeeper must always be started before Kafka brokers. Ensure this order is maintained when reconfiguring the environment.
@@ -795,7 +809,7 @@ bin/kafka-server-start.sh config/server.properties
 
 ### 2-4-6. (NUC - `consumer` Container) Consumer Topic Setup
 
-Access the `consumer` container to create a resource topic in Kafka. <br>
+Access the `consumer` container to create a resource topic in Kafka.  
 Use the following command to create the topic:
 
 ```bash
@@ -823,7 +837,7 @@ sudo apt install -y snmp snmpd snmp-mibs-downloader openjdk-8-jdk
 <details>
 <summary>Package Versions (Expand)</summary>
 
-##### PI
+#### PI snmp dependencies
 
 |       Package        |       Version        |
 | :------------------: | :------------------: |
@@ -833,7 +847,6 @@ sudo apt install -y snmp snmpd snmp-mibs-downloader openjdk-8-jdk
 |    openjdk-8-jdk     |  8u312-b07-1~deb9u1  |
 
 </details>
-<br>
 
 Next, open the SNMP daemon configuration file, find `#rocommunity public localhost`, and remove `#`.
 
@@ -933,8 +946,9 @@ bin/flume-ng agent --conf conf --conf-file conf/flume-conf.properties --name age
 ```
 
 > [!note]
-> 
+>
 > If errors occur, verify that the following three values are consistent:
+>
 > 1. The NUC hostname in the Pi's `/etc/hosts` file.
 > 2. The broker hostname in `conf/flume-conf.properties` on the Pi.
 > 3. The hostname of NUC (check with the `hostname` command).
@@ -942,30 +956,32 @@ bin/flume-ng agent --conf conf --conf-file conf/flume-conf.properties --name age
 ## 2-6. (NUC - `consumer` Container) Consume message from brokers
 
 Run the following script to check whether the Consumer container can receive messages sent by the Producer.
+
 ```bash
 bin/kafka-console-consumer.sh --zookeeper localhost:2181 --topic resource --from-beginning
 ```
+
 If everything is configured correctly, you should see the message displayed in the `consumer` container.
 
 ![consumer result](./img/consumer%20result.png)
 
 > [!note]
-> 
+>
 > If `snmpd` is well-configured, and no error is shown on `producer`, but you can see any logs on `consumer`, Please remove and re-build the image `raspbian-flume` in Pi. Sometimes docker reports build process completed without error, yet unknown error has occurred on build process.
 >
 > To remove and rebuild the image, enter commands below on the Pi:
+>
 > ```bash
-> sudo docker ps -a # list every created containers. 
+> sudo docker ps -a # list every created containers.
 >
 > # If there are some containers built using `raspbian-flume` image, then stop and remove them.
 > sudo docker stop <flume-container> # stop container
 > sudo docker rm <flume-container>   # remove container
-> 
+>
 > sudo docker rmi raspbian-flume     # remove image
 > cd ~/SmartX-Mini/SmartX-Box/raspbian-flume    # move to `raspbian-flume` dir.
 > sudo docker build --tag raspbian-flume .   # build `raspbian-flume` image
 > ```
-
 
 # 3. Review
 
@@ -973,9 +989,9 @@ If everything is configured correctly, you should see the message displayed in t
 
 In this lab, we experienced interconnecting computer systems in two different ways.
 
-Through steps `2-1` to `2-3`, you prepared for the physical interconnection of two computer systems and ultimately verified their ability to communicate with each other using `ping`. Through this process, we explored and experienced the concept of <U>**Physical Interconnect**</U>.
+Through steps `2-1` to `2-3`, you prepared for the physical interconnection of two computer systems and ultimately verified their ability to communicate with each other using `ping`. Through this process, we explored and experienced the concept of <ins>**Physical Interconnect**</ins>.
 
-Afterward, multiple containers were deployed on the Box using Docker. In summary, from steps `2-4` to `2-6`, we confirmed that the SNMP data extracted by `Apache Flume` was transmitted through `Apache Kafka` and delivered to the Consumer. Through this, we verified that two functions (Producer ↔ Consumer) could interact and exchange data via Apache Kafka, allowing us to experience <U>**Data Interconnect**</U>.
+Afterward, multiple containers were deployed on the Box using Docker. In summary, from steps `2-4` to `2-6`, we confirmed that the SNMP data extracted by `Apache Flume` was transmitted through `Apache Kafka` and delivered to the Consumer. Through this, we verified that two functions (Producer ↔ Consumer) could interact and exchange data via Apache Kafka, allowing us to experience <ins>**Data Interconnect**</ins>.
 
 ## 3-2. Finale
 
@@ -987,5 +1003,5 @@ Through this lab, we have answered the following two key questions:
 By addressing these questions, you should now have a clear understanding of the difference between Physical Interconnect and Data Interconnect.
 
 > [!important]
-> Thank you for your effort and participation in this lab. <br>
+> Thank you for your effort and participation in this lab.  
 > We appreciate your dedication!

@@ -13,7 +13,7 @@
 
 ![Raspberry Pi 4 Model B](./img/pi4-labelled.png)
 
-라즈베리 파이(Raspberry Pi; 이하 Pi)는 Raspberry Pi 재단에서 디자인한 소형 임베디드 컴퓨터입니다. Pi는 일반적인 컴퓨터에 비해 비교적 저렴한 가격대로 구할 수 있지만, 그만큼 간소화된 하드웨어 구성과 특성(Property)을 갖습니다. 
+라즈베리 파이(Raspberry Pi; 이하 Pi)는 Raspberry Pi 재단에서 디자인한 소형 임베디드 컴퓨터입니다. Pi는 일반적인 컴퓨터에 비해 비교적 저렴한 가격대로 구할 수 있지만, 그만큼 간소화된 하드웨어 구성과 특성(Property)을 갖습니다.
 
 일례로 RTC(Real-Time Clock)가 기본적으로 제거되어있어, 부팅할 때마다 시간을 직접 맞춰주어야 합니다. (보통 `ntp`, `rdate`을 활용하여 부팅 시 시간을 조정할 수 있도록 설정합니다.) 이러한 이유로 본 실습에서는 Pi가 `rdate`와 `crontab`을 이용하여 부팅 이후 자동으로 시간을 맞출 수 있도록 설정합니다.
 
@@ -23,7 +23,7 @@
 
 ![Why We use Kafka](./img/Apache_Kafka.png)
 
-Apache Kafka(이하 Kafka)는 대규모 스트리밍 데이터 처리에 능한 오픈소스 분산 이벤트 스트리밍 플랫폼입니다. 
+Apache Kafka(이하 Kafka)는 대규모 스트리밍 데이터 처리에 능한 오픈소스 분산 이벤트 스트리밍 플랫폼입니다.
 
 여기서 스트리밍 데이터(Streaming Data)는 데이터 원천(Data Source)으로부터 연속적이고 지속적으로 생성되는 데이터를 의미합니다. 가령, 공장의 온도 센서는 매 주기마다 온도를 측정하여 끊임없이 전송하고, CCTV는 촬영한 영상을 끊임없이 전송합니다. 이러한 데이터를 스트리밍 데이터라고 부릅니다.
 
@@ -36,12 +36,13 @@ Apache Kafka(이하 Kafka)는 대규모 스트리밍 데이터 처리에 능한 
 Apache Kafka는 구독-발행 패턴(Pub/Sub Pattern, Publish/Subscribe Pattern)을 따릅니다. 여기서 구독-발행 패턴은 유튜버와 구독자의 관계로 비유할 수 있습니다. 구독자는 유튜브에서 자신이 원하는 채널을 구독하고, 유튜버는 자신이 촬영한 영상을 유튜브에 업로드합니다. 그러면 구독자는 구독 목록을 보고 원하는 영상을 볼 수 있게 됩니다. 마찬가지로, Consumer가 자신이 원하는 Topic을 구독하고, Producer가 Topic에 메세지를 등록하면 Broker를 통해 Consumer가 데이터를 가져올 수 있습니다.
 
 다시 Apache Kafka의 주요 구성원을 정리해보겠습니다.
-| Name | Description |
-|---|:---|
-|`Producer`| Event를 생성하여 Kafka에 전달하는 구성원. |
-|`Consumer`| Topic을 구독하여 Kafka에서 Event를 가져와 처리하는 구성원. |
-|`Topics`| Event 구독 단위. 파일시스템의 폴더와 유사하게, Event를 보관/관리하는 단위로 쓰인다. |
-|`Broker`| Event 저장/관리를 수행하는 구성원. Topic에 저장된 Event를 분산/복제하여 관리한다. |
+
+| Name       | Description                                                                         |
+| ---------- | :---------------------------------------------------------------------------------- |
+| `Producer` | Event를 생성하여 Kafka에 전달하는 구성원.                                           |
+| `Consumer` | Topic을 구독하여 Kafka에서 Event를 가져와 처리하는 구성원.                          |
+| `Topics`   | Event 구독 단위. 파일시스템의 폴더와 유사하게, Event를 보관/관리하는 단위로 쓰인다. |
+| `Broker`   | Event 저장/관리를 수행하는 구성원. Topic에 저장된 Event를 분산/복제하여 관리한다.   |
 
 Apache Kafka는 일반적으로 Messaging System으로 사용되기도 하지만, 전통적인 Messaging Queue와는 다르게 Consumer가 Event를 읽는다고 하여 즉시 사라지지 않고, 필요한 만큼 여러번 읽을 수 있다는 점에서 차이가 있습니다. 대신 Kafka는 각 Topic마다 Event의 수명을 정의하는 식으로 Event를 관리합니다.
 
@@ -52,9 +53,9 @@ Topic들은 여러 Partition으로 분할하여 관리됩니다. 만약 하나�
 이번 실습에서는 Apache Kafka으로 Pi에서 발생한 Event를 NUC의 Consumer로 전달하는 것을 확인함으로써 이기종 간 Data-Interconnect이 이루어질 수 있음을 확인해볼 것입니다.
 
 > [!warning]
-> 
+>
 > Apache Kafka 3.5 이후로 Zookeeper는 Deprecated로 지정되었으며, 이를 한층 보완한 KRaft가 제안되었습니다.  
-> 현재는 호환성 문제 및 실습 목적으로 Zookeeper를 사용하지만, 추후에 자신의 환경에 Apache Kafka를 배포하여 사용하실 예정이라면 KRaft를 사용하시는 것을 권장합니다. 
+> 현재는 호환성 문제 및 실습 목적으로 Zookeeper를 사용하지만, 추후에 자신의 환경에 Apache Kafka를 배포하여 사용하실 예정이라면 KRaft를 사용하시는 것을 권장합니다.
 
 > [!tip]  
 > Apache Kafka를 더 자세히 알고 싶다면 [Apache Kafka Docs](https://kafka.apache.org/documentation/#intro_concepts_and_terms)를 참고해주세요.
@@ -70,12 +71,12 @@ Topic들은 여러 Partition으로 분할하여 관리됩니다. 만약 하나�
 SNMP를 통해 네트워크를 관리하는 경우, 역할에 따라 구성원을 다음과 같이 구분할 수 있습니다.
 ![SNMP Enumeration](./img/snmp_enumeration.jpg)
 
-|Component|Description|
-|---|---|
-|SNMP Manager| 네트워크를 모니터링하는 중앙 시스템. <br> NMS(Network Management Station)이라고 부르기도 한다. <br> 일반적으로 Host에 SNMP Client를 실행하여 Manager 역할을 수행한다. |
-|SNMP Agent| SNMP Manager의 명령에 따라 상태 정보 수집 및 저장, 설정 변경을 수행하는 요소. <br> 네트워크 장비에 설치된 SNMP Server가 Agent 역할을 수행한다. |
-|Managed Device| SNMP Agent가 설치되어 SNMP에 의해 중앙관리되는 장비. |
-|MIB(Management Information Base)| Managed Device의 네트워크 상태 정보 및 설정을 저장하는 요소. <br> 총 8개 카테고리(시스템, 인터페이스, 주소 변환, IP, UDP, TCP, EGP, ICMP)로 이루어진다. <br> MIB의 각 Object는 고유의 OID(Object ID)를 갖는다. <br> (e.g. `1.3.6.1.2.1.2.2.1.16.2`: 2번 인터페이스에서 수신한 바이트 수) |
+| Component                        | Description                                                                                                                                                                                                                                                               |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| SNMP Manager                     | 네트워크를 모니터링하는 중앙 시스템. NMS(Network Management Station)이라고 부르기도 한다. 일반적으로 Host에 SNMP Client를 실행하여 Manager 역할을 수행한다.                                                                                                               |
+| SNMP Agent                       | SNMP Manager의 명령에 따라 상태 정보 수집 및 저장, 설정 변경을 수행하는 요소. 네트워크 장비에 설치된 SNMP Server가 Agent 역할을 수행한다.                                                                                                                                 |
+| Managed Device                   | SNMP Agent가 설치되어 SNMP에 의해 중앙관리되는 장비.                                                                                                                                                                                                                      |
+| MIB(Management Information Base) | Managed Device의 네트워크 상태 정보 및 설정을 저장하는 요소. 총 8개 카테고리(시스템, 인터페이스, 주소 변환, IP, UDP, TCP, EGP, ICMP)로 이루어진다. MIB의 각 Object는 고유의 OID(Object ID)를 갖는다. (e.g. `1.3.6.1.2.1.2.2.1.16.2`: 2번 인터페이스에서 수신한 바이트 수) |
 
 Net-SNMP는 리눅스 시스템에 SNMP Manager와 SNMP Agent 역할을 수행할 수 있는 도구를 포함합니다. Agent에게 SNMP 요청을 보낼 수 있는 여러 CLI 도구(`snmpget`, `snmptable`, ...)와, SNMP Agent 역할을 수행할 수 있는 Daemon 어플리케이션(`snmpd`, ...), 이외의 여러 라이브러리 등이 Net-SNMP에 포함됩니다.
 
@@ -96,17 +97,18 @@ Flume은 대량의 로그 데이터를 효율적으로 수집, 집계 및 전송
 Flume의 Data Flow Model은 하단의 그림과 같으며, 크게 3가지 요소로 구성됩니다.
 
 ![Apache Flume](./img/flume.png)
-|Component|Description|
-|---|---|
-|Source|외부 시스템에서 전달된 Event를 수집한다. <br> 이때 Event는 Flume이 식별 가능한 형식으로 작성되어야 한다.|
-|Channel| Source에 의해 수집된 Event를 일시적으로 저장하는 Passive Store이다. <br> Sink가 Event를 회수할 때까지 데이터를 저장한다. <br> Local File System 기반의 File Channel 등이 존재한다. |
-|Sink| Channel로부터 Event를 회수하여 외부 저장 공간이나 다른 Flume Agent에게 전달한다. |
 
-이번 실습에서는 Flume은 `snmpd`로부터 상태 정보를 받아 Kafka로 전달하는 데에 사용됩니다. 실습에서는 Source를 `snmpd`로 설정하여 SNMP를 통해 상태 정보를 수집하며, 이를 Kafka에게 넘겨주게 됩니다. 
+| Component | Description                                                                                                                                                              |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Source    | 외부 시스템에서 전달된 Event를 수집한다. 이때 Event는 Flume이 식별 가능한 형식으로 작성되어야 한다.                                                                      |
+| Channel   | Source에 의해 수집된 Event를 일시적으로 저장하는 Passive Store이다. Sink가 Event를 회수할 때까지 데이터를 저장한다. Local File System 기반의 File Channel 등이 존재한다. |
+| Sink      | Channel로부터 Event를 회수하여 외부 저장 공간이나 다른 Flume Agent에게 전달한다.                                                                                         |
+
+이번 실습에서는 Flume은 `snmpd`로부터 상태 정보를 받아 Kafka로 전달하는 데에 사용됩니다. 실습에서는 Source를 `snmpd`로 설정하여 SNMP를 통해 상태 정보를 수집하며, 이를 Kafka에게 넘겨주게 됩니다.
 
 > [!warning]
 >
-> (2025년 2월 기준) Apache Flume은 2024년 10월 10일 프로젝트 유지 중단을 선언하였으며, Flume 사용자는 다른 서비스로 마이그레이션하도록 안내하였습니다.   
+> (2025년 2월 기준) Apache Flume은 2024년 10월 10일 프로젝트 유지 중단을 선언하였으며, Flume 사용자는 다른 서비스로 마이그레이션하도록 안내하였습니다.  
 > 현재는 호환성 문제 및 실습 목적으로 Flume을 사용하지만, 추후에 분산 로그 수집 서비스를 도입할 경우 Fluentd나 Logstash 등을 사용할 것을 권장드립니다.
 
 # 2. Practice
@@ -132,9 +134,9 @@ Flume의 Data Flow Model은 하단의 그림과 같으며, 크게 3가지 요소
 ## 2-1. Raspberry PI OS Installation
 
 > [!warning]
-> 
+>
 > 만약 Container와 VM이 동작 중인 경우, IP 충돌 문제를 방지하기 위해 Container와 VM을 종료하여 주십시오.
-> 
+>
 > ```bash
 > sudo docker stop <container_name>
 > sudo killall -9 qemu-system-x86_64  # if can not kill it, use sudo killall -9 kvm
@@ -145,18 +147,19 @@ Raspberry Pi에 HypriotOS를 설치하겠습니다. HypriotOS는 Raspberry Pi에
 HypriotOS 설치를 위해 Micro SD 카드를 리더기에 삽입한 뒤, NUC에 연결해 주십시오.
 
 > [!caution]
-> 
->  SD 카드 분리 전, **반드시 Pi가 __완전히 종료되었는지__ 확인합니다.**
-> 
-> Raspberry Pi는 SD카드를 저장장치로 사용합니다. 
-> 만약 정상 종료 전에 SD 카드를 강제로 제거할 경우, SD 카드 내 데이터가 오염되어 치명적인 오류를 일으킬 수 있습니다. 
+>
+> SD 카드 분리 전, **반드시 Pi가 <ins>완전히 종료되었는지</ins> 확인합니다.**
+>
+> Raspberry Pi는 SD카드를 저장장치로 사용합니다.
+> 만약 정상 종료 전에 SD 카드를 강제로 제거할 경우, SD 카드 내 데이터가 오염되어 치명적인 오류를 일으킬 수 있습니다.
 >
 > 따라서, SD 카드 분리 전에 하단의 명령어를 입력하여 Pi를 완전히 종료한 후 안전하게 제거해주시기 바랍니다.
+>
 > ```bash
 > sudo poweroff
 > ```
+>
 > 📰️️ 참고: `sudo`는 Root 사용자(관리자) 권한으로 명령을 실행합니다. 시스템 종료 동작은 Root 권한을 요구합니다.
-
 
 ### 2-1-1. (NUC) Download Required Package and File
 
@@ -170,27 +173,26 @@ chmod +x flash
 sudo mv flash /usr/local/bin/flash
 ```
 
-
 <details>
 <summary> 📰️ 참고: `flash` 의존성 </summary>
 
 2025년 기준입니다. 자세한 사항은 <https://github.com/hypriot/flash> 을 참고합니다.
 
-> | Tool | Description |
-> |:---:|:---|
-> |`pv`|기록 작업까지 남은 시간을 Progress Bar로 보기 위함 |
-> |`awscli`|SD Card Image를 AWS S3 Bucket에서 가져오는 경우에 활용|
-> |`python3-pip`|`awscli` 다운로드 및 실행에 필요|
-> |`curl`|SD Card Image를 HTTP URL을 통해 가져오는 경우에 활용|
-> |`unzip`|압축된 Image를 압축해제한 뒤 사용하기 위함|
-> |`hdparm`|프로그램 동작에 필요한 필수 요소|
+> |     Tool      | Description                                            |
+> | :-----------: | :----------------------------------------------------- |
+> |     `pv`      | 기록 작업까지 남은 시간을 Progress Bar로 보기 위함     |
+> |   `awscli`    | SD Card Image를 AWS S3 Bucket에서 가져오는 경우에 활용 |
+> | `python3-pip` | `awscli` 다운로드 및 실행에 필요                       |
+> |    `curl`     | SD Card Image를 HTTP URL을 통해 가져오는 경우에 활용   |
+> |    `unzip`    | 압축된 Image를 압축해제한 뒤 사용하기 위함             |
+> |   `hdparm`    | 프로그램 동작에 필요한 필수 요소                       |
 
 </details>
 
 <details>
 <summary> 패키지 버전 (버전 오류 시 참고) (Expand)</summary>
 
-##### NUC
+#### NUC flash dependencies
 
 |   Package   |      Version       |
 | :---------: | :----------------: |
@@ -200,18 +202,17 @@ sudo mv flash /usr/local/bin/flash
 |    unzip    |  6.0-25ubuntu1.1   |
 |   hdparm    |     9.58+ds-4      |
 
-##### Python
+#### Python flash dependencies
 
 | Package | Version |
 | :-----: | :-----: |
 | awscli  | 1.27.59 |
 
 </details>
-<br>
 
-`flash`는 `cloud-init`에게 설정 파일을 전달하여 네트워크, 계정, SSH 등을 설정합니다. 미리 준비한 설정 파일을 다운로드하기 위해, Github Repository를 Clone하겠습니다. 
+`flash`는 `cloud-init`에게 설정 파일을 전달하여 네트워크, 계정, SSH 등을 설정합니다. 미리 준비한 설정 파일을 다운로드하기 위해, Github Repository를 Clone하겠습니다.
 
-Repository 내부에 Large File이 포함된 관계로, `git-lfs`을 먼저 설치한 뒤 Clone하고, 설치를 진행할 디렉토리로 이동하겠습니다. 하단의 명령어를 입력하여 Clone을 진행해주시기 바랍니다. 
+Repository 내부에 Large File이 포함된 관계로, `git-lfs`을 먼저 설치한 뒤 Clone하고, 설치를 진행할 디렉토리로 이동하겠습니다. 하단의 명령어를 입력하여 Clone을 진행해주시기 바랍니다.
 
 ```bash
 cd ~
@@ -226,7 +227,7 @@ cd ~/SmartX-Mini/SmartX-Mini-2025/Experiment/Lab-2.\ InterConnect/
 <details>
 <summary>Package Versions (Expand)</summary>
 
-##### NUC
+#### NUC git-lfs package versions
 
 | Package |       Version       |
 | :-----: | :-----------------: |
@@ -234,7 +235,7 @@ cd ~/SmartX-Mini/SmartX-Mini-2025/Experiment/Lab-2.\ InterConnect/
 | git-lfs |        3.3.0        |
 
 </details>
-<br>
+
 그 다음으로, HypriotOS(v1.12.3) 이미지 파일을 다운로드하겠습니다.
 
 ```bash
@@ -244,30 +245,30 @@ ls -alh # Check all files
 
 ### 2-1-2. (NUC) HypriotOS 설정 수정
 
-`network-config`는 Pi에서 사용할 네트워크 설정이 저장되어 있습니다. 이 파일을 열어 설정을 변경하겠습니다. 
+`network-config`는 Pi에서 사용할 네트워크 설정이 저장되어 있습니다. 이 파일을 열어 설정을 변경하겠습니다.
 
->  [!caution]
-> 
+> [!caution]
+>
 > `network-config` 파일의 이름을 <ins>**절대로**</ins> 변경하시면 안됩니다.
-> 
-> `network-config`는 시스템이 부팅될 때 초기화를 담당하는 `cloud-init`에게 네트워크 설정을 전달하기 위해 사용되는 파일로, 파일 이름을 기준으로 해당 파일 탐색을 시도합니다. <br>
-> `flash`를 통해 HypriotOS를 설치할 경우 `cloud-init`에 의해 관리되도록 구성되며, 부팅 시 네트워크 설정 초기화를 위해 먼저 로컬 파일시스템(`/boot` 등)에 위치한 `network-config` 파일을 탐색하도록 설정되어있습니다. <br>
-> 만약 파일 이름을 변경하실 경우 `cloud-init`이 네트워크 설정을 찾지 못해 default setting이 반영됩니다. <br>
+>
+> `network-config`는 시스템이 부팅될 때 초기화를 담당하는 `cloud-init`에게 네트워크 설정을 전달하기 위해 사용되는 파일로, 파일 이름을 기준으로 해당 파일 탐색을 시도합니다.  
+> `flash`를 통해 HypriotOS를 설치할 경우 `cloud-init`에 의해 관리되도록 구성되며, 부팅 시 네트워크 설정 초기화를 위해 먼저 로컬 파일시스템(`/boot` 등)에 위치한 `network-config` 파일을 탐색하도록 설정되어있습니다.  
+> 만약 파일 이름을 변경하실 경우 `cloud-init`이 네트워크 설정을 찾지 못해 default setting이 반영됩니다.  
 > 즉, 후술할 네트워크 설정이 반영되지 않을 뿐더러, 재설정을 위해 OS를 재설치하거나 네트워크 설정 파일을 찾아 직접 네트워크 인터페이스 설정을 수정해야 하므로 <ins>**절대로 파일의 명칭을 변경하면 안됩니다.**</ins>
-> 
-> 참조: https://cloudinit.readthedocs.io/en/stable/reference/datasources/nocloud.html#source-files
+>
+> 참조: <https://cloudinit.readthedocs.io/en/stable/reference/datasources/nocloud.html#source-files>
 
 > [!note]
 >
 > 주제: `cloud-init`이란 무엇이며, 이것이 어떻게 OS를 초기화하는가?
-> 
+>
 > `cloud-init`은 클라우드 인스턴스의 초기화에 사용되는 도구로, AWS나 Google Cloud 등의 퍼블릭 클라우드 제공사를 비롯하여, 사설 클라우드 인프라의 프로비저닝 및 베어 메탈 장비 설치에 쓰입니다.
 >
 > 시스템 부팅 과정에서 `cloud-init`은 크게 2단계(Early-boot, Late-boot)에 걸쳐 초기화를 진행합니다.
 >
 > Early-boot 단계에서 Datasource 식별 및 설정 정보 획득, 네트워크 설정을 수행합니다. 먼저, 시스템 내장값을 통해 인스턴스 초기화에 필요한 Datasource를 식별합니다. (여기서 Datasource는 인스턴스 설정 정보를 모두 포함하는 지점입니다.) Public Cloud Provider의 경우라면 외부 서버에서 제공받으며, 베어 메탈 장비(`NoCloud`)의 경우 일반적으로 각 파일 시스템의 Root Directory에서 설정 파일을 탐색합니다. (`/`, `/boot` 등, `lsblk`로 식별되는 주소)
 >
-> Datasource를 식별한 이후, 이로부터 여러 설정 파일을 찾습니다. `meta-data`를 이용해 Instance ID 등의 인스턴스 및 플랫폼 정보를 식별합니다. `user-data`(Public Cloud의 경우 `vender-data`)를 통해 하드웨어 최적화, Hostname 설정, 여러 설정 파일 관리, 기본 사용자 계정 설정, 사용자 정의 스크립트 실행 등의 설정값을 식별합니다. 또한, `network-config`를 통해 네트워크 인터페이스 설정 값을 식별합니다. 
+> Datasource를 식별한 이후, 이로부터 여러 설정 파일을 찾습니다. `meta-data`를 이용해 Instance ID 등의 인스턴스 및 플랫폼 정보를 식별합니다. `user-data`(Public Cloud의 경우 `vender-data`)를 통해 하드웨어 최적화, Hostname 설정, 여러 설정 파일 관리, 기본 사용자 계정 설정, 사용자 정의 스크립트 실행 등의 설정값을 식별합니다. 또한, `network-config`를 통해 네트워크 인터페이스 설정 값을 식별합니다.
 >
 > 설정값을 모두 파악한 경우, 마지막으로 DNS 설정, IP 주소 설정, Gateway 설정 등 네트워크 설정을 수행합니다.
 >
@@ -276,10 +277,9 @@ ls -alh # Check all files
 > 시스템 설정을 위해 `Ansible`이나 `Chef` 등의 도구를 이용해 세분화된 설정을 수행할 수도 있으며, 시스템의 원활한 동작을 위해 필요한 소프트웨어를 다운로드할 수 있으며, `user-data`/`vender-data`에서 정의한 사용자 계정을 생성/설정하며, 여러 스크립트를 실행하게 됩니다.
 >
 > 이러한 동작이 모두 마무리되면, 사용자가 시스템에 접근하여 활용할 수 있는 여건이 마련됩니다.
-> 
-> 참고1: https://cloudinit.readthedocs.io/en/latest/explanation/introduction.html
-> <br>
-> 참고2: https://cloudinit.readthedocs.io/en/stable/reference/datasources/nocloud.html
+>
+> 참고1: <https://cloudinit.readthedocs.io/en/latest/explanation/introduction.html>  
+> 참고2: <https://cloudinit.readthedocs.io/en/stable/reference/datasources/nocloud.html>
 
 ```bash
 pwd # 현재 Directory가 "SmartX-Mini/SmartX-Mini-2025/Experiment/Lab-2. InterConnect/"인지 확인
@@ -308,7 +308,6 @@ HypriotOS를 SD 카드에 설치하기 위해, SD 카드가 마운트된 지점�
 
 SD 카드는 일반적으로 `/dev/sd`로 시작하는 지점에 마운트됩니다. 이 중, 32GB 혹은 16GB에 해당하는 파티션을 찾아야 합니다. 만약 용량이 32GB일 경우 약 29.8 GiB로 표기되며, 16GB일 경우 약 14.6GiB로 표시됩니다. 이에 해당하는 경로를 찾습니다. (하단의 이미지의 경우 `/dev/sdc`에 마운트된 것을 확인할 수 있습니다.)
 
-
 ```bash
 sudo fdisk -l
 ```
@@ -324,12 +323,13 @@ flash -u hypriotos-init.yaml -F network-config -d <Your SD Card Directory> hypri
 > [!tip]
 >
 > 다음은 위의 명령줄에서 사용한 `flash` 옵션을 설명합니다. 자세한 정보는 `flash --help`를 통해 확인해주시기 바랍니다.
-> |Options|Description|
-> |:---|:---|
-> |`-u <file>`, `--userdata <file>`| 지정한 파일이 `cloud-init`이 사용하는 설정 파일 중 `/boot/user-data`로 사용됩니다.|
-> |`-F <file>`, `--file <file>`| 커스텀 설정 파일로, 지정한 파일이 `/boot` 디렉토리에 복제됩니다.|
-> |`-d <path>`, `--device`| OS를 설치할 장치를 지정합니다.|
-> |`~.img`, `~.img.zip`| OS의 이미지 파일을 의미합니다. (Raspberry OS Image File)|
+>
+> | Options                          | Description                                                                        |
+> | :------------------------------- | :--------------------------------------------------------------------------------- |
+> | `-u <file>`, `--userdata <file>` | 지정한 파일이 `cloud-init`이 사용하는 설정 파일 중 `/boot/user-data`로 사용됩니다. |
+> | `-F <file>`, `--file <file>`     | 커스텀 설정 파일로, 지정한 파일이 `/boot` 디렉토리에 복제됩니다.                   |
+> | `-d <path>`, `--device`          | OS를 설치할 장치를 지정합니다.                                                     |
+> | `~.img`, `~.img.zip`             | OS의 이미지 파일을 의미합니다. (Raspberry OS Image File)                           |
 
 > [!note]
 >
@@ -338,38 +338,41 @@ flash -u hypriotos-init.yaml -F network-config -d <Your SD Card Directory> hypri
 > `BLKRRPART failed: Device or resource busy` 오류가 발생하였을 시, OS는 정상적으로 설치되나 `hypriotos-init.yaml`과 `network-config`가 SD카드로 복제되지 않습니다.
 >
 > 위의 오류가 발생하였을 경우, 다음을 따라 오류 해결을 시도합니다. <ins>**오류가 없었다면 하단의 해결법을 적용하지 않습니다.**</ins>
-> 
+>
 > 1. (오류 발생 시, `/dev/sda`에 SD 카드가 있는 경우.) `hypriotos-init.yaml`을 `user-data`라는 이름으로 `/dev/sda1`에 복제하고, `network-config`도 동일하게 복제합니다. 이는 다음과 같이 수행합니다.
->     ```bash
->     # NUC에서 진행
->     sudo mkdir /mnt/sdcard
->     sudo mount /dev/sda1 /mnt/sdcard
->     sudo cp hypriotos-init.yaml /mnt/sdcard/user-data
->     sudo cp network-config /mnt/sdcard/network-config
->     sudo umount /mnt/sdcard
->     sudo eject /dev/sda
->     # 이후 NUC에서 SD 카드 분리
->     ```
->     SD 카드를 NUC에서 분리한 후, Pi에 삽입한 뒤 Pi를 켭니다. `2-2-1`을 진행하여 네트워크 및 계정 설정이 정상적으로 이루어졌는지 확인합니다. 실패한 경우, Pi의 전원을 끈 뒤 SD 카드를 다시 NUC에 연결하여 해결 방안 2번을 따릅니다.
+>
+>    ```bash
+>    # NUC에서 진행
+>    sudo mkdir /mnt/sdcard
+>    sudo mount /dev/sda1 /mnt/sdcard
+>    sudo cp hypriotos-init.yaml /mnt/sdcard/user-data
+>    sudo cp network-config /mnt/sdcard/network-config
+>    sudo umount /mnt/sdcard
+>    sudo eject /dev/sda
+>    # 이후 NUC에서 SD 카드 분리
+>    ```
+>
+>    SD 카드를 NUC에서 분리한 후, Pi에 삽입한 뒤 Pi를 켭니다. `2-2-1`을 진행하여 네트워크 및 계정 설정이 정상적으로 이루어졌는지 확인합니다. 실패한 경우, Pi의 전원을 끈 뒤 SD 카드를 다시 NUC에 연결하여 해결 방안 2번을 따릅니다.
+>
 > 2. 한번 더 `flash -u hypriotos-init.yaml -F network-config -d <Your SD Card Directory> hypriotos-rpi-v1.12.3.img.zip`를 실행합니다. 일시적 오류로 `flash`가 실패했을 수도 있습니다. 성공적으로 마무리되었다면 실습을 계속 진행합니다. 실패한 경우, 해결 방안 3을 따릅니다.
 > 3. SD 카드의 모든 파티션을 삭제한 뒤 다시 `flash -u hypriotos-init.yaml -F network-config -d <Your SD Card Directory> hypriotos-rpi-v1.12.3.img.zip`를 시도합니다. 파티션 삭제는 다음의 명령어를 통해 수행할 수 있습니다.
->     ``` bash
->     sudo umount <sd_card_path>
->     sudo fdisk <sd_card_path>
->     d   # 모든 파티션이 삭제될 때까지 반복 입력한다.
->     w   # 변경사항 저장
->     ```
 >
+>    ```bash
+>    sudo umount <sd_card_path>
+>    sudo fdisk <sd_card_path>
+>    d   # 모든 파티션이 삭제될 때까지 반복 입력한다.
+>    w   # 변경사항 저장
+>    ```
 
 > [!note]
-> 
+>
 > `hypriotos-init.yaml` 파일에 관하여
 >
-> `hypriotos-init.yaml`은 HypriotOS의 `/boot/user-data` 파일로 사용됩니다. <br>
-> `/boot/user-data` 파일은 사용자 정의 설정을 인스턴스에게 제공할 때 사용되는 파일로, 사용자 생성, Hostname 설정, `/etc/hosts` 자동 초기화 여부 등을 결정합니다. <br>
+> `hypriotos-init.yaml`은 HypriotOS의 `/boot/user-data` 파일로 사용됩니다.  
+> `/boot/user-data` 파일은 사용자 정의 설정을 인스턴스에게 제공할 때 사용되는 파일로, 사용자 생성, Hostname 설정, `/etc/hosts` 자동 초기화 여부 등을 결정합니다.  
 > 초기 계정 정보 또한 이곳에서 정의되므로, 설치 전 초기 계정 정보를 변경하거나, ID/PW를 잊어버렸을 때 이를 참고합니다.
 >
-> 참고: https://cloudinit.readthedocs.io/en/stable/explanation/format.html
+> 참고: <https://cloudinit.readthedocs.io/en/stable/explanation/format.html>
 
 ## 2-2. Raspberry PI 초기 환경 설정
 
@@ -400,27 +403,27 @@ sudo apt update
 sudo apt install -y git vim rdate openssh-server
 ```
 
-|Package|Description|
-|:---:|---|
-|`git`| Git CLI 도구 |
-|`vim`| 텍스트 편집기 |
-|`rdate`|시스템 시간을 외부 Time Server와 동기화하는 도구.|
-|`openssh-server`|SSH 서버 역할을 할 수 있도록 하는 패키지. 외부에서 Pi로 SSH를 통해 접근하기 위해 필요하다.|
+|     Package      | Description                                                                                |
+| :--------------: | ------------------------------------------------------------------------------------------ |
+|      `git`       | Git CLI 도구                                                                               |
+|      `vim`       | 텍스트 편집기                                                                              |
+|     `rdate`      | 시스템 시간을 외부 Time Server와 동기화하는 도구.                                          |
+| `openssh-server` | SSH 서버 역할을 할 수 있도록 하는 패키지. 외부에서 Pi로 SSH를 통해 접근하기 위해 필요하다. |
 
 패키지 설치가 완료된 것을 확인한 이후, 다음 과정으로 넘어갑니다.
 
-> [!note] 
-> 
+> [!note]
+>
 > 주제: `Certificate verification failed: The certificate is NOT Trusted` 오류
 >
 > Repository의 인증서 오류로 패키지를 설치할 수 없는 문제로, 해결을 위해서는 주소를 다른 APT Repository의 것으로 변경해야 합니다.
 >
 > APT Repository 경로를 수정하기 위해 다음과 같이 편집기(`nano`, `vi` 등)로 `/etc/apt/sources.list`를 다음의 명령을 통해 엽니다.
-> 
+>
 > ```bash
 > sudo nano /etc/apt/sources.list
 > ```
-> 
+>
 > 이후, 최상단 줄의 URL 주소(예: `http://ftp.lanet.kr/raspbian/`)를 `http://ftp.kaist.ac.kr/raspbian/raspbian/`, 혹은 다른 미러 사이트 URL 주소로 변경합니다.
 >
 > 수정한 내용을 저장한 뒤, 다시 패키지 설치 과정을 진행합니다.
@@ -428,7 +431,7 @@ sudo apt install -y git vim rdate openssh-server
 <details>
 <summary>Package Versions (Expand)</summary>
 
-##### PI
+#### PI initial dependencies
 
 |    Package     |         Version         |
 | :------------: | :---------------------: |
@@ -441,7 +444,7 @@ sudo apt install -y git vim rdate openssh-server
 
 ### 2-2-3. (PI) 시간 동기화를 위한 `crontab` 설정
 
-라즈베리 파이는 RTC가 없는 관계로, 전원 종료 후 약 17분 동안만 시스템 시간이 유지됩니다. <br>
+라즈베리 파이는 RTC가 없는 관계로, 전원 종료 후 약 17분 동안만 시스템 시간이 유지됩니다.  
 부팅 후 시간을 동기화하기 위해 `crontab`을 이용하여 부팅 완료 후 1분 뒤 `rdate`를 실행하도록 설정하겠습니다.
 
 먼저, 다음의 명령어를 입력하여 `crontab` 설정을 수정하도록 하겠습니다.
@@ -450,7 +453,7 @@ sudo apt install -y git vim rdate openssh-server
 sudo crontab -e
 ```
 
-`crontab`을 처음 설정하는 경우, 화면에 어떤 편집기를 사용할 것인지 설정할 수 있습니다. <br>
+`crontab`을 처음 설정하는 경우, 화면에 어떤 편집기를 사용할 것인지 설정할 수 있습니다.  
 해당 화면에서 원하는 편집기를 정한 뒤, 설정 파일의 맨 아래에 다음을 입력합니다. (주석은 제외합니다.)
 
 ![crontab editor](./img/crontab_editor_selection.png)
@@ -470,33 +473,33 @@ sudo reboot
 
 ### 2-2-4. (NUC) Pi 환경 확인
 
-이전 과정에서 Pi에 `openssh-server`를 설치하였기 때문에, 외부에서 SSH를 통해 Pi에 접근할 수 있습니다. <br>
+이전 과정에서 Pi에 `openssh-server`를 설치하였기 때문에, 외부에서 SSH를 통해 Pi에 접근할 수 있습니다.  
 (즉, 이제부터 모니터, 마우스, 키보드를 일일이 뽑고 꽂을 필요 없이, NUC에서 SSH로 Pi에 접근하면 됩니다.)
 
-이를 확인하기 위해, NUC의 터미널에서 SSH를 통해 Pi에 접근하겠습니다. <br>
+이를 확인하기 위해, NUC의 터미널에서 SSH를 통해 Pi에 접근하겠습니다.  
 NUC으로 돌아와, 다음과 같이 입력해주십시오.
 
 ```bash
 ssh pi@<PI_IP>  # Simple Format: ssh <ID>@<Target IP or Hostname>
 ```
 
-> [!note] 
-> 
+> [!note]
+>
 > 주제: SSH - Fingerprint 오류
 >
 > ![ssh key error](./img/ssh_duplicated.png)
 >
 > 해당 오류는 접근할 IP 주소와 이와 연결된 SSH Key의 정보가 접근하려는 SSH Server의 Key와 다른 경우에 발생합니다. (e.g. `openssh-server` 재설치 이후 접근 시도)
-> 
-> 각 SSH Server는 고유의 SSH Key를 갖고 있습니다. <br>
-> 해당 Key는 SSH Client가 Server에 접근하였을 때 전달받으며, Client는 `~/.ssh/known_hosts`에 이를 IP와 함께 저장합니다. <br>
-> (하단의 이미지가 이 과정에 해당합니다.)<br>
+>
+> 각 SSH Server는 고유의 SSH Key를 갖고 있습니다.  
+> 해당 Key는 SSH Client가 Server에 접근하였을 때 전달받으며, Client는 `~/.ssh/known_hosts`에 이를 IP와 함께 저장합니다.  
+> (하단의 이미지가 이 과정에 해당합니다.)  
 > ![ssh initial access](./img/ssh_initial_access.png)
-> 
-> Client는 해당 Server에 다시 접근할 때, `~/.ssh/known_hosts`에 저장된 데이터를 이용하여, 접근하려는 Server가 이전에 접근했던 Server와 동일한지 확인합니다. (이는 중간자 공격 보안 위협을 방지하기 위한 정책입니다.) <br>
+>
+> Client는 해당 Server에 다시 접근할 때, `~/.ssh/known_hosts`에 저장된 데이터를 이용하여, 접근하려는 Server가 이전에 접근했던 Server와 동일한지 확인합니다. (이는 중간자 공격 보안 위협을 방지하기 위한 정책입니다.)  
 > 하지만 접근하려는 Server가 이전에 접근했었던 Server와 다를 경우, `ssh`는 위와 같은 오류를 출력하며 접근을 강제로 끊습니다.
 >
-> 위의 오류를 해결하기 위해, 다음의 방법을 통해 이전의 Fingerprint를 삭제합니다. <br>
+> 위의 오류를 해결하기 위해, 다음의 방법을 통해 이전의 Fingerprint를 삭제합니다.  
 > 이후 다시 SSH 연결을 시도합니다.
 >
 > ```bash
@@ -504,6 +507,7 @@ ssh pi@<PI_IP>  # Simple Format: ssh <ID>@<Target IP or Hostname>
 > ```
 
 다음으로, 시간 설정을 확인합니다. 다음의 명령어를 입력합니다.
+
 ```bash
 date
 ```
@@ -541,16 +545,18 @@ sudo vim /etc/hosts
 ```
 
 파일의 맨 아래에 Pi의 IP 주소와 Hostname을 다음과 같이 추가합니다.
-<!-- 
+
+<!--
   Pi IP만 적는 것으로 수정합니다.
   REF: Issue #98
 -->
+
 ```text
-172.29.0.XX        <PI_HOSTNAME> 
+172.29.0.XX        <PI_HOSTNAME>
 ```
 
->  [!Caution] 
-> 
+> [!Caution]
+>
 > `/etc/hosts`에 기입하는 Pi와 NUC의 Hostname은 실제 Hostname과 일치해야 합니다.
 >
 > 일치하지 않을 경우, 추후에 진행할 Kafka 실습 과정에서 차질이 발생할 수 있습니다.
@@ -559,11 +565,11 @@ sudo vim /etc/hosts
 >
 > 참고: Hostname 수정 (⚠️경고⚠️: 본 실습 과정 중에 적용하는 것은 권장하지 않습니다.)
 >
->
 > ```bash
 > # 일시적 수정 (재부팅 시 원상 복구)
 > sudo hostname <new_name>
 > ```
+>
 > ```bash
 > # 영구 수정
 > sudo hostnamectl set-hostname <new_name>
@@ -571,9 +577,8 @@ sudo vim /etc/hosts
 >
 > 수정 이후, `/etc/hosts`에 기록된 NUC의 Hostname도 새로운 Hostname으로 수정해야 합니다.
 >
-> Pi의 경우, `cloud-init`으로 인해 영구적 변경을 위해 추가적인 절차를 거쳐야합니다. <br>
+> Pi의 경우, `cloud-init`으로 인해 영구적 변경을 위해 추가적인 절차를 거쳐야합니다.  
 > 방법은 별도로 설명하지 않으며, <https://repost.aws/ko/knowledge-center/linux-static-hostname-rhel7-centos7>을 참고해주십시오.
-
 
 ### 2-3-2. (PI) Hostname preparation for Kafka
 
@@ -582,31 +587,34 @@ sudo vim /etc/hosts
 ```bash
 sudo vim /etc/hosts
 ```
-<!-- 
+
+<!--
   NUC IP만 적는 것으로 수정합니다.
   REF: Issue #98
 -->
+
 ```text
 172.29.0.XX        <NUC_HOSTNAME>
 ```
 
->  [!warning]
+> [!warning]
 >
-> Pi의 `/etc/hosts`는 `cloud-init`에 의해 부팅 과정에서 초기화됩니다. <br>
+> Pi의 `/etc/hosts`는 `cloud-init`에 의해 부팅 과정에서 초기화됩니다.  
 > 만약 종료 이후에도 `/etc/hosts`를 유지하고 싶을 경우, 후술할 참고 영역을 따릅니다.
 
->  [!tip]
-> 
->  Pi의 `/etc/hosts` 영구 보존
+> [!tip]
 >
-> `cloud-init`은 부팅 과정에서 사전 정의된 hosts 템플릿 파일을 이용하여 `/etc/hosts`를 재생성합니다. <br>
+> Pi의 `/etc/hosts` 영구 보존
+>
+> `cloud-init`은 부팅 과정에서 사전 정의된 hosts 템플릿 파일을 이용하여 `/etc/hosts`를 재생성합니다.  
 > 이 과정에서 이전에 기록되었던 기록은 삭제됩니다.
 >
 > 영구적으로 반영하기 위해, 다음의 3개 방법 중 하나를 사용할 수 있습니다.
+>
 > 1. OS 설치에 사용한 `hypriotos-init.yaml` 파일에서 `manage_etc_hosts`의 값을 `false`로 수정한 뒤 재설치합니다.
 > 2. Pi 내부에서 `/etc/cloud/templates/hosts.debian.tmpl` 파일을 `/etc/hosts`를 수정했던 방법과 동일한 방법으로 수정합니다.
 > 3. `/etc/cloud/cloud.cfg`에서 `cloud_init_modules`의 `- update_etc_hosts`를 주석처리 합니다. 해당 모듈이 `/etc/hosts`의 재생성을 담당합니다.
-> 
+
 <!-- 2025.02.27: 이유는 모르겠지만 HypriotOS 내부에서 /boot/user-data를 직접 수정해도 Data가 날아감. 아마 cloud-init을 제대로 이해하지 못했기 때문이라고 생각한다. 추후에 근본 원인을 찾아낸다면 수정을 부탁한다. -->
 
 ### 2-3-3. (PI, NUC) Hostname 적용 확인
@@ -645,7 +653,7 @@ NUC과 Pi가 Hostname을 이용하여 정상적으로 통신할 수 있게 되�
 
 ### 2-4-1. (NUC) Dockerfile 확인
 
-먼저, `ubuntu-kafka`를 사용하여 이미지 파일을 빌드하겠습니다. <br>
+먼저, `ubuntu-kafka`를 사용하여 이미지 파일을 빌드하겠습니다.  
 하단의 명령어를 통해 지정한 디렉토리로 이동해주십시오.
 
 ```bash
@@ -668,21 +676,21 @@ RUN sudo apt-get install -y wget vim iputils-ping net-tools iproute2 dnsutils op
 RUN sudo wget --no-check-certificate https://archive.apache.org/dist/kafka/0.8.2.0/kafka_2.10-0.8.2.0.tgz -O - | tar -zxv
 RUN sudo mv kafka_2.10-0.8.2.0 /kafka
 WORKDIR /kafka
-``` 
+```
 
 > [!tip]
 >
 > Note: APT Repository 변경 (Optional)
-> 
+>
 > 이미지 파일 빌드 과정에서 `apt`를 통한 패키지 다운로드에 많은 시간이 소요됩니다.
-> 
+>
 > 지역적으로 가까울수록 다운로드 속도는 일반적으로 높지만, 기본 레포지토리는 보통 해외에 있고 느립니다. 따라서 속도 향상을 위해 지역적으로 가까운 위치의 미러 서버를 사용합니다.
 >
 > 해당 설정은 Dockerfile 명령 중 하단의 `sed`를 통해 이루어집니다. 지금은 카카오의 미러 서버를 가리키도록 수정하지만, 다른 서버를 사용하고자 할 경우 `mirror.kakao.com`의 주소를 다른 값(Lanet, KAIST 미러 서버 등)으로 수정하면 됩니다.
-> 
+>
 > ```dockerfile
 > …
-> 
+>
 > RUN sed -i 's@archive.ubuntu.com@mirror.kakao.com@g' /etc/apt/sources.list
 > #Update & Install wget
 > RUN sudo apt-get update
@@ -692,37 +700,36 @@ WORKDIR /kafka
 
 ### 2-4-2. (NUC) Docker Image 빌드
 
-`Dockerfile`이 올바르게 작성되어 있다면, 이를 이용하여 `docker build`를 통해 Docker Image 생성을 진행하겠습니다. <br>
-하단의 명령을 입력하여 Image 생성을 진행해주십시오. 
+`Dockerfile`이 올바르게 작성되어 있다면, 이를 이용하여 `docker build`를 통해 Docker Image 생성을 진행하겠습니다.  
+하단의 명령을 입력하여 Image 생성을 진행해주십시오.
 
 ```bash
 sudo docker build --tag ubuntu-kafka .
 #You should type '.', so docker can automatically start to find `Dockerfile` in the current directory('.').
 ```
 
->  [!tip]
+> [!tip]
 >
 > 다음은 Docker CLI에서 주로 사용하는 명령어입니다. 하단의 명령어를 통해 실행 중인 컨테이너를 확인하거나, 컨테이서 생성/정지/삭제를 수행할 수 있으며 컨테이너 내부로 진입할 수 있습니다.
-> 
+>
 > 자세한 사항은 [Docker Official Document](https://docs.docker.com/engine/reference/commandline/cli/)를 참고해주시기 바랍니다.
 >
-> |Command|Description|
-> |---|---|
-> |`sudo docker --help`|Docker CLI에서 사용할 수 있는 명령어 목록과 옵션을 출력합니다.|
-> |`sudo docker ps`|현재 실행 중인 컨테이너 목록을 출력합니다. <br> `-a` 옵션을 통해 종료된 컨테이너를 확인할 수 있습니다.|
-> |`sudo docker rm <container_id>`| Docker 컨테이너를 삭제합니다.|
-> |`sudo docker start <container_id>`| 정지된 Docker 컨테이너를 실행합니다. |
-> |`sudo docker stop <container_id>`|실행 중인 Docker 컨테이너를 정지시킵니다. |
-> |`sudo docker attach <container_id>`| 실행 중인 Docker 컨테이너에 연결합니다. <br> 컨테이너에 진입하여 쉘(`bash` 등)을 사용할 수도 있습니다.|
-> |`sudo docker run <options> <image>`| 지정한 image로 컨테이너를 생성하고 실행합니다. |
+> | Command                             | Description                                                                                       |
+> | ----------------------------------- | ------------------------------------------------------------------------------------------------- |
+> | `sudo docker --help`                | Docker CLI에서 사용할 수 있는 명령어 목록과 옵션을 출력합니다.                                    |
+> | `sudo docker ps`                    | 현재 실행 중인 컨테이너 목록을 출력합니다. `-a` 옵션을 통해 종료된 컨테이너를 확인할 수 있습니다. |
+> | `sudo docker rm <container_id>`     | Docker 컨테이너를 삭제합니다.                                                                     |
+> | `sudo docker start <container_id>`  | 정지된 Docker 컨테이너를 실행합니다.                                                              |
+> | `sudo docker stop <container_id>`   | 실행 중인 Docker 컨테이너를 정지시킵니다.                                                         |
+> | `sudo docker attach <container_id>` | 실행 중인 Docker 컨테이너에 연결합니다. 컨테이너에 진입하여 쉘(`bash` 등)을 사용할 수도 있습니다. |
+> | `sudo docker run <options> <image>` | 지정한 image로 컨테이너를 생성하고 실행합니다.                                                    |
 >
 > 이때 `<container_id>`는 `docker ps` 기준 (겹치지만 않는다면) ID의 앞 4글자만 입력해도 정상적으로 처리됩니다.
->
 
 ### 2-4-3. (NUC) Docker Container 배치
 
-`ubuntu-kafka` 이미지 생성이 완료된 경우, 다음의 명령어를 통해 Docker Container를 생성하겠습니다. <br>
-컨테이너 각각에게 `zookeeper`, `broker0`, `broker1`, `broker2`, `consumer`라는 이름을 붙이겠습니다. 
+`ubuntu-kafka` 이미지 생성이 완료된 경우, 다음의 명령어를 통해 Docker Container를 생성하겠습니다.  
+컨테이너 각각에게 `zookeeper`, `broker0`, `broker1`, `broker2`, `consumer`라는 이름을 붙이겠습니다.
 
 NUC에서 터미널 5개를 열고, 각 터미널에 명령어를 하나씩 입력하여 터미널 각각이 Container 1개와 연결되도록 설정합니다.
 
@@ -741,7 +748,7 @@ sudo docker run -it --net=host --name consumer ubuntu-kafka
 
 ### 2-4-4. (NUC - `zookeeper` Container) Zookeeper 설정
 
-먼저 `zookeeper` 컨테이너에 접근하여 설정을 진행하도록 하겠습니다. <br>
+먼저 `zookeeper` 컨테이너에 접근하여 설정을 진행하도록 하겠습니다.  
 다음의 명령어를 통해 `zookeeper.properties` 파일을 확인하도록 하겠습니다.
 
 ```bash
@@ -751,18 +758,19 @@ sudo vim config/zookeeper.properties
 해당 파일에서 Client Port가 `2181`으로 설정되어있는지 확인해주시고, 아니라면 `2181`로 수정해주십시오.
 
 다음으로, 하단의 명령어를 통해 컨테이너에서 Zookeeper를 실행하겠습니다.
+
 ```bash
 bin/zookeeper-server-start.sh config/zookeeper.properties
 ```
 
 > [!warning]
-> 
+>
 > Zookeeper는 항상 Broker보다 먼저 실행되어야 합니다. 환경을 다시 구성하실 때 이 점 유의 바랍니다.
 
 ### 2-4-5. (NUC - `brokerN` Container) Broker 설정
 
-다음으로 각 `broker` 컨테이너에 접근하여 설정을 진행하도록 하겠습니다. <br>
-하단의 명령어를 통해 설정 파일을 열어주시고, 하단의 이미지를 참고하여 각 Broker가 하단의 표와 같은 값을 갖도록 설정해주십시오. <br>
+다음으로 각 `broker` 컨테이너에 접근하여 설정을 진행하도록 하겠습니다.  
+하단의 명령어를 통해 설정 파일을 열어주시고, 하단의 이미지를 참고하여 각 Broker가 하단의 표와 같은 값을 갖도록 설정해주십시오.  
 이때, Broker ID와 Listening Port는 Broker 간에 중복되어서는 안된다는 점 참고 바랍니다.
 
 ```bash
@@ -785,7 +793,7 @@ bin/kafka-server-start.sh config/server.properties
 
 ### 2-4-6. (NUC - `consumer` Container) Consumer Topic 설정
 
-이제 Consumer 컨테이너에 접근하여 Kafka에 `resource`라는 Topic을 생성할 것입니다. <br>
+이제 Consumer 컨테이너에 접근하여 Kafka에 `resource`라는 Topic을 생성할 것입니다.  
 하단의 명령어를 통해 Topic을 생성해주십시오.
 
 ```bash
@@ -813,7 +821,7 @@ sudo apt install -y snmp snmpd snmp-mibs-downloader openjdk-8-jdk
 <details>
 <summary>Package Versions (Expand)</summary>
 
-##### PI
+#### PI snmp dependencies
 
 |       Package        |       Version        |
 | :------------------: | :------------------: |
@@ -823,7 +831,6 @@ sudo apt install -y snmp snmpd snmp-mibs-downloader openjdk-8-jdk
 |    openjdk-8-jdk     |  8u312-b07-1~deb9u1  |
 
 </details>
-<br>
 
 이제 설정파일을 수정하겠습니다. 편집기로 파일을 열어 `#rocommunity public localhost`를 찾고, `#`을 제거해주십시오.
 
@@ -856,7 +863,7 @@ cd ~/SmartX-Mini/SmartX-Box/raspbian-flume
 
 `Dockerfile`을 열어 내용이 하단과 동일한지 확인해주십시오.
 
->  [!caution]
+> [!caution]
 >
 > 만약 Image가 `FROM balenalib/rpi-raspbian:stretch`로 지정된 경우, 반드시 이를 `FROM balenalib/rpi-raspbian:buster`로 수정하시기 바랍니다.
 >
@@ -924,6 +931,7 @@ bin/flume-ng agent --conf conf --conf-file conf/flume-conf.properties --name age
 
 > [!note]
 > 만약 연결 오류가 발생하였을 경우, 다음의 3개 값이 모두 일치하는지 확인해주십시오.
+>
 > 1. Pi의 `/etc/hosts`에 입력된 NUC의 hostname
 > 2. Pi의 `conf/flume-conf.properties`에 입력된 Broker의 hostname
 > 3. NUC의 hostname (`hostname`으로 확인되는 값)
@@ -931,9 +939,11 @@ bin/flume-ng agent --conf conf --conf-file conf/flume-conf.properties --name age
 ## 2-6. (NUC - `consumer` Container) Consume message from brokers
 
 다음의 스크립트를 실행하여 Producer에서 전달한 메세지를 Consumer가 수신할 수 있는지 확인해보겠습니다.
+
 ```bash
 bin/kafka-console-consumer.sh --zookeeper localhost:2181 --topic resource --from-beginning
 ```
+
 만약 정상적으로 수신되는 경우, `consumer`에서 하단의 화면을 확인할 수 있습니다.
 
 ![consumer result](./img/consumer%20result.png)
@@ -943,13 +953,14 @@ bin/kafka-console-consumer.sh --zookeeper localhost:2181 --topic resource --from
 > `snmpd` 설정이 제대로 이루어졌고, `producer`에서 눈에 띄는 오류가 없음에도 `consumer`에서 데이터를 확인할 수 없다면, Pi에서 `raspbian-flume` 이미지를 삭제한 후 다시 빌드하시기 바랍니다. 원인 불명의 문제로 빌드 과정에서 오류가 발생하였으나, 성공으로 처리된 사례가 있습니다.
 >
 > 재빌드 과정은 다음과 같이 Pi 내에서 진행합니다.
+>
 > ```bash
-> sudo docker ps -a # 전체 Container 목록 조회. 
+> sudo docker ps -a # 전체 Container 목록 조회.
 >
 > # 출력된 목록에서 `raspbian-flume` 이미지로 생성된 Container가 있다면, 하단의 2개 명령으로 정지 후 삭제합니다.
 > sudo docker stop <flume-container> # Container 정지
 > sudo docker rm <flume-container>   # Container 삭제
-> 
+>
 > sudo docker rmi raspbian-flume     # Image 삭제
 > cd ~/SmartX-Mini/SmartX-Box/raspbian-flume    # raspbian-flume 디렉토리 이동
 > sudo docker build --tag raspbian-flume .   # 이미지 빌드 수행
@@ -963,7 +974,7 @@ bin/kafka-console-consumer.sh --zookeeper localhost:2181 --topic resource --from
 
 여러분은 `2-1`부터 `2-3`까지의 과정을 통해 두 개의 컴퓨터 시스템이 물리적으로 상호 연결되기 위한 준비를 진행하였으며, 최종적으로 `ping`을 통해 두 시스템이 서로 통신할 수 있다는 것을 확인하였습니다. 이러한 과정을 통해 <ins>**Physical Interconnect**</ins>에 대해 알아보고, 체험해보았습니다.
 
-이후 Docker를 통해 Box에 여러 Container를 배포하였습니다. 간단하게 요약하면, `2-4`부터 `2-6`을 통해 `Apache Flume`이 추출한 SNMP 데이터가 `Apache Kafka`를 거쳐 Consumer에게 전달되었음을 확인할 수 있었습니다. 이를 통해, 우리는 `Apache Kafka`를 매개로 하여 두 Function(Producer ↔ Consumer)이 Data를 주고 받으며 상호작용할 수 있음을 확인할 수 있었으며, <ins>**Data Interconnect**</ins>를 체험할 수 있었습니다. 
+이후 Docker를 통해 Box에 여러 Container를 배포하였습니다. 간단하게 요약하면, `2-4`부터 `2-6`을 통해 `Apache Flume`이 추출한 SNMP 데이터가 `Apache Kafka`를 거쳐 Consumer에게 전달되었음을 확인할 수 있었습니다. 이를 통해, 우리는 `Apache Kafka`를 매개로 하여 두 Function(Producer ↔ Consumer)이 Data를 주고 받으며 상호작용할 수 있음을 확인할 수 있었으며, <ins>**Data Interconnect**</ins>를 체험할 수 있었습니다.
 
 ## 3-2. Finale
 
@@ -975,5 +986,5 @@ bin/kafka-console-consumer.sh --zookeeper localhost:2181 --topic resource --from
 위의 질문을 생각해보며, Physical Interconnect와 Data Interconnect에 대해 고민해볼 수 있는 시간을 가져보시기 바랍니다.
 
 > [!important]
-> 실습에 참여하시느라 고생 많으셨습니다. <br>
+> 실습에 참여하시느라 고생 많으셨습니다.  
 > 참여해주셔서 감사합니다.
