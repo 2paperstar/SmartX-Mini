@@ -93,8 +93,8 @@ Let's take a close look at the overall structure.
 > For students who have installed the OS in the Playground Lab, the OS Installation section can be skipped.
 
 The Host OS to be used in the Lab is as follows. Use the provided installation USB to install the OS.  
-OS : Ubuntu Desktop 22.04 LTS(64bit)  
-Reference: Download Site - <https://releases.ubuntu.com/22.04/>
+OS : Ubuntu Desktop 24.04 LTS(64bit)  
+Reference: Download Site - <https://releases.ubuntu.com/24.04/>
 
 ### 2-1-1. Boot Configuration
 
@@ -387,7 +387,7 @@ sudo systemctl restart networking
 
 - Install required packages to set up and manage KVM
 
-  Install the dependencies required to set up and manage KVM, and download the Ubuntu 22.04.5 image for use inside the VM.
+  Install the dependencies required to set up and manage KVM, and download the Ubuntu 24.04.4 image for use inside the VM.
   - qemu-kvm: Provides KVM (Kernel-based Virtualization) support based on QEMU (Quick Emulator).
   - libvirt-daemon-system: Runs the libvirtd daemon, enabling the management of virtual machines.
   - libvirt-clients: Provides command-line tools for managing virtual machines.
@@ -398,15 +398,18 @@ sudo systemctl restart networking
   # upgrade KVM
   # qemu is open-source emulator
 
-  wget https://ftp.lanet.kr/ubuntu-releases/22.04.5/ubuntu-22.04.5-live-server-amd64.iso
+  wget https://ftp.lanet.kr/ubuntu-releases/24.04.4/ubuntu-24.04.4-live-server-amd64.iso
   ```
+
+  <!-- TODO: lanet.kr, ubuntu.com, kakao.com 중에서 어떤 것이 빠른지 실험실에서 테스트 필요 -->
+  <!-- https://launchpad.net/ubuntu/+cdmirrors 경우에 따라 이쪽에 있는 목록을 여러개 나열하는 것도 도움 될 수 있음 -->
 
 - Prepare for Ubuntu VM
 
   To Make a virtual disk image, enter this command.
 
   ```bash
-  sudo qemu-img create vFunction22.img -f qcow2 10G
+  sudo qemu-img create vFunction24.img -f qcow2 10G
   ```
 
   Enter the following command to start the VM in background mode.
@@ -418,8 +421,8 @@ sudo systemctl restart networking
   -smp cpus=4,maxcpus=4 \
   -device virtio-net-pci,netdev=net0 \
   -netdev tap,id=net0,ifname=vport_vFunction,script=no \
-  -boot d vFunction22.img \
-  -cdrom ubuntu-22.04.5-live-server-amd64.iso \
+  -boot d vFunction24.img \
+  -cdrom ubuntu-24.04.4-live-server-amd64.iso \
   -vnc :5 -daemonize \
   -monitor telnet:127.0.0.1:3010,server,nowait,ipv4 \
   -cpu host
@@ -497,7 +500,7 @@ sudo kvm -m 1024 -name tt \
 -smp cpus=2,maxcpus=2 \
 -device virtio-net-pci,netdev=net0 \
 -netdev tap,id=net0,ifname=vport_vFunction,script=no \
--boot d vFunction22.img
+-boot d vFunction24.img
 ```
 
 ## 2-4. OVS connects with KVM
@@ -583,10 +586,10 @@ If it works correctly, the following output will be displayed.
 
 ## 2-7. Make Container
 
-Create a container named c1. This container will be based on the ubuntu:22.04 image and will run /bin/bash upon its initial execution. The --net=none option is used to ensure that the container is not connected to any network.
+Create a container named c1. This container will be based on the ubuntu:24.04 image and will run /bin/bash upon its initial execution. The --net=none option is used to ensure that the container is not connected to any network.
 
 ```bash
-sudo docker run -it --net=none --name c1 ubuntu:22.04 /bin/bash
+sudo docker run -it --net=none --name c1 ubuntu:24.04 /bin/bash
 ```
 
 Pressing ctrl + p, q allows you to exit the container without stopping it.

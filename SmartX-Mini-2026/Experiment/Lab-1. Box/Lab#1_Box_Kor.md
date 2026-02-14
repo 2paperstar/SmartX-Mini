@@ -89,8 +89,8 @@ Box Lab에서는 \*베어 메탈에 운영체제(OS)를 직접 설치해보고
 > 수강생들 중, Playground Lab에서 OS를 설치한 경우에는 OS Installation 부분을 생략합니다.
 
 Lab에서 사용할 Host OS는 다음과 같습니다. 제공받은 설치 USB를 사용하여 OS를 설치하면 됩니다.  
-OS : Ubuntu Desktop 22.04 LTS(64bit)  
-참고: Download Site - <https://releases.ubuntu.com/22.04/>
+OS : Ubuntu Desktop 24.04 LTS(64bit)  
+참고: Download Site - <https://releases.ubuntu.com/24.04/>
 
 ### 2-1-1. Boot Configuration
 
@@ -375,7 +375,7 @@ sudo systemctl restart networking
 
 - Install required packages to set up and manage KVM
 
-  KVM을 설정하고 관리하기 위한 dependency를 설치하고, VM 안에서 사용할 Ubuntu 22.04.5 image를 다운받습니다.
+  KVM을 설정하고 관리하기 위한 dependency를 설치하고, VM 안에서 사용할 Ubuntu 24.04.4 image를 다운받습니다.
   - qemu-kvm: QEMU(Quick Emulator) 기반으로 KVM(커널 기반 가상화)을 지원합니다.
   - libvirt-daemon-system: libvirtd 데몬을 실행하여 가상 머신을 관리할 수 있도록 지원합니다.
   - libvirt-clients: VM 관리 명령어를 제공합니다.
@@ -386,15 +386,18 @@ sudo systemctl restart networking
   # upgrade KVM
   # qemu is open-source emulator
 
-  wget https://ftp.lanet.kr/ubuntu-releases/22.04.5/ubuntu-22.04.5-live-server-amd64.iso
+  wget https://ftp.lanet.kr/ubuntu-releases/24.04.4/ubuntu-24.04.4-live-server-amd64.iso
   ```
+
+  <!-- TODO: lanet.kr, ubuntu.com 중에서 어떤 것이 빠른지 실험실에서 테스트 필요 -->
+  <!-- https://launchpad.net/ubuntu/+cdmirrors 경우에 따라 이쪽에 있는 목록을 여러개 나열하는 것도 도움 될 수 있음 -->
 
 - Prepare for Ubuntu VM
 
   VM에서 사용할 가상 디스크 image를 만들기 위해, 아래의 명령어를 실행합니다.
 
   ```bash
-  sudo qemu-img create vFunction22.img -f qcow2 10G
+  sudo qemu-img create vFunction24.img -f qcow2 10G
   ```
 
   아래의 명령어를 입력하여 VM을 백그라운드 모드로 실행합니다.
@@ -406,8 +409,8 @@ sudo systemctl restart networking
   -smp cpus=4,maxcpus=4 \
   -device virtio-net-pci,netdev=net0 \
   -netdev tap,id=net0,ifname=vport_vFunction,script=no \
-  -boot d vFunction22.img \
-  -cdrom ubuntu-22.04.5-live-server-amd64.iso \
+  -boot d vFunction24.img \
+  -cdrom ubuntu-24.04.4-live-server-amd64.iso \
   -vnc :5 -daemonize \
   -monitor telnet:127.0.0.1:3010,server,nowait,ipv4 \
   -cpu host
@@ -485,7 +488,7 @@ sudo kvm -m 1024 -name tt \
 -smp cpus=2,maxcpus=2 \
 -device virtio-net-pci,netdev=net0 \
 -netdev tap,id=net0,ifname=vport_vFunction,script=no \
--boot d vFunction22.img
+-boot d vFunction24.img
 ```
 
 ## 2-4. OVS connects with KVM
@@ -571,10 +574,10 @@ sudo docker run hello-world
 
 ## 2-7. Make Container
 
-c1이라는 이름의 container를 생성해봅니다. 이 container는 ubuntu:22.04 이미지를 바탕으로 생성되며, 최초 실행 시, /bin/bash가 실행되도록 합니다. `--net=none` 옵션을 사용하여 container가 네트워크에 연결되지 않도록 합니다.
+c1이라는 이름의 container를 생성해봅니다. 이 container는 ubuntu:24.04 이미지를 바탕으로 생성되며, 최초 실행 시, /bin/bash가 실행되도록 합니다. `--net=none` 옵션을 사용하여 container가 네트워크에 연결되지 않도록 합니다.
 
 ```bash
-sudo docker run -it --net=none --name c1 ubuntu:22.04 /bin/bash
+sudo docker run -it --net=none --name c1 ubuntu:24.04 /bin/bash
 ```
 
 ctrl + p, q를 누르면 container를 종료하지 않고 container 밖으로 나올 수 있습니다.
