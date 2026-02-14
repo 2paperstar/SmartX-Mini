@@ -1,0 +1,11 @@
+{
+  "markdownlint.config": {
+    "MD025": false,
+    "MD033": {
+      "allowed_elements": ["details", "summary", "ins"],
+      "table_allowed_elements": ["br"]
+    }
+  },
+  "editor.rulers": [160],
+  "cSpell.words": []
+}
