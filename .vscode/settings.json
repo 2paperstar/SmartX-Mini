@@ -47,7 +47,6 @@
     "killall",
     "kubeadm",
     "kubelet",
-    "kubenetes",
     "lanet",
     "libvirtd",
     "localtime",

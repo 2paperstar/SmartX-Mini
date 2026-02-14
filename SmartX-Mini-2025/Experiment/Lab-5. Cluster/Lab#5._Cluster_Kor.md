@@ -424,7 +424,7 @@ kubectl get node
 
 위 사진에서 nuc02와 nuc03이 NotReady 상태인 이유는 **네트워크 플러그인(CNI)**이 아직 설치되지 않았거나, 워커 노드가 마스터 노드에 정상적으로 조인되지 않았기 때문입니다. Kubernetes에서는 클러스터 내 네트워크가 설정되지 않으면 노드를 Ready 상태로 만들지 않으며, kubeadm join이 제대로 실행되지 않은 경우에도 NotReady 상태가 유지됩니다. 이를 해결하려면 CNI를 설치하고, 워커 노드가 정상적으로 조인되었는지 확인해야 합니다. 바로 이어지는 section에서 CNI를 설치해보겠습니다.
 
-## 2-5. Kubenetes Network Plugin Installation at NUC1
+## 2-5. Kubernetes Network Plugin Installation at NUC1
 
 ### CNI란?
 

@@ -426,7 +426,7 @@ kubectl get node
 
 In the above image, nuc02 and nuc03 are in a NotReady state because the **network plugin (CNI)** is not yet installed, or the worker nodes did not join properly. Kubernetes does not mark nodes as Ready until networking is configured. We'll install the CNI plugin next to resolve this.
 
-## 2-5. Kubenetes Network Plugin Installation at NUC1
+## 2-5. Kubernetes Network Plugin Installation at NUC1
 
 ### What is CNI?
 
