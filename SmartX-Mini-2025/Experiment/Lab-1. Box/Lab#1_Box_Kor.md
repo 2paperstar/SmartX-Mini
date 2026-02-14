@@ -550,7 +550,7 @@ sudo systemctl start docker
 sudo systemctl start docker.socket
 ```
 
-## 2-7. Check docker installation
+## 2-6. Check docker installation
 
 아래의 명령어를 실행하여 docker의 실행을 확인해봅니다.
 
@@ -562,7 +562,7 @@ sudo docker run hello-world
 
 ![1](./img/1.png)
 
-## 2-8. Make Container
+## 2-7. Make Container
 
 c1이라는 이름의 container를 생성해봅니다. 이 container는 ubuntu:22.04 이미지를 바탕으로 생성되며, 최초 실행 시, /bin/bash가 실행되도록 합니다. `--net=none` 옵션을 사용하여 container가 네트워크에 연결되지 않도록 합니다.
 
@@ -576,7 +576,7 @@ ctrl + p, q를 누르면 container를 종료하지 않고 container 밖으로 �
 > docker attach [container_name]:  
 > 위의 명령어를 입력하면 ctrl + p, q를 사용하여 detach 했던 container 안으로 다시 들어갈 수 있습니다.
 
-## 2-9. Connect docker container
+## 2-8. Connect docker container
 
 **도커 외부에서**, 즉 Host machine에서 하단의 명령어를 실행합니다.  
 이 명령어는 **Open vSwitch(OVS)**를 사용하여 Docker container(c1)에 특정 네트워크 인터페이스(veno1)를 추가하고, 이를 가상 브리지(br0)에 연결합니다.
@@ -610,7 +610,7 @@ apt install -y net-tools
 apt install -y iputils-ping
 ```
 
-## 2-10. Check connectivity: VM & Container
+## 2-9. Check connectivity: VM & Container
 
 ping 명령어를 사용하여 Docker container 내부에서 VM으로 통신이 잘 이루어지는지 확인합니다.
 
