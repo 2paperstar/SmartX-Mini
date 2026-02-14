@@ -60,6 +60,8 @@ In this Lab, we will see that data-interconnects can be achieved by confirming t
 >
 > As of Apache Kafka 3.5, Zookeeper is deprecated and replaced by KRaft, which provides enhanced capabilities. While we use Zookeeper in this lab for compatibility purposes, it is recommended to use KRaft for future deployments.
 
+<!-- -->
+
 > [!tip]
 > If you want to know more about Apache Kafka, Please refer to [Apache Kafka Docs](https://kafka.apache.org/documentation/#intro_concepts_and_terms).
 
@@ -91,6 +93,8 @@ In this lab, we will install `snmpd` on the Pi and use Apache Flume to collect t
 
 > [!note]
 > The system information to be collected is defined in the `flume-conf.properties` file under `agent.sources.sources1.oidN` during the Flume deployment.
+
+<!-- -->
 
 > [!tip]  
 > For more details on SNMP, refer to [GeeksForGeeks](https://www.geeksforgeeks.org/simple-network-management-protocol-snmp/).
@@ -266,6 +270,8 @@ ls -alh # Check all files
 >
 > REF: <https://cloudinit.readthedocs.io/en/stable/reference/datasources/nocloud.html#source-files>
 
+<!-- -->
+
 > [!note]
 >
 > Topic: What is `cloud-init`, and How it initializes the OS
@@ -337,6 +343,8 @@ flash -u hypriotos-init.yaml -F network-config -d <Your SD Card Directory> hypri
 > | `-d <path>`, `--device`          | Path of Device which where OS be installed.                  |
 > | `~.img`, `~.img.zip`             | Raspberry OS Image File                                      |
 
+<!-- -->
+
 > [!note]
 >
 > Topic: How to resolve `BLKRRPART failed: Device or resource busy` error
@@ -370,6 +378,8 @@ flash -u hypriotos-init.yaml -F network-config -d <Your SD Card Directory> hypri
 >    d   # enter this repetitively unless every partitions are removed.
 >    w   # save changes
 >    ```
+
+<!-- -->
 
 > [!note]
 >
@@ -572,6 +582,8 @@ Add the following line(Pi IP Address & Hostname) at the bottom of the file:
 >
 > If they do not match, issues may arise during the upcoming Kafka practice sessions.
 
+<!-- -->
+
 > [!note]
 >
 > Topic: How to change Hostname (⚠️Warning⚠️: Applying this during lab is <ins>**not recommended.**</ins>)
@@ -617,6 +629,8 @@ sudo vim /etc/hosts
 >
 > The `/etc/hosts` file on the Pi is reset during boot due to cloud-init.  
 > If you want to preserve these settings after reboot, follow the guidelines below.
+
+<!-- -->
 
 > [!tip]
 >
