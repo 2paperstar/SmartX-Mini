@@ -42,7 +42,7 @@ kubectl get po -n kube-system -o wide
 ```
 
 위 명령어 입력 시, 아래 사진과 같이 모든 **노드**가 `Ready` 상태이며, 모든 **kube-system**의 Pod가 `Running` 상태여야 합니다.
-<img src='img/1-cluster-status.png' alt='cluster status'>
+![cluster status](img/1-cluster-status.png)
 
 ## 2-1. 쿠버네티스 대시보드 설치
 
@@ -122,13 +122,13 @@ kubectl -n kubernetes-dashboard create token admin-user
 
 토큰 발급이 성공적으로 이뤄지면, 아래 사진과 같이 터미널에 해당 토큰이 출력됩니다. 이 토큰은 쿠버네티스 로그인 화면에서 사용하게 됩니다.
 
-<img src='img/2-dashboard-token.png' alt='token'>
+![token](img/2-dashboard-token.png)
 
 ## 2-3. 쿠버네티스 대시보드 접근
 
 이제 쿠버네티스 대시보드에 접근해봅시다. 아래 주소를 브라우저에 입력해 쿠버네티스 대시보드에 접근해보세요!
 
-http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/
+<http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/>
 
 > [!warning]
 >
@@ -138,13 +138,13 @@ http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kube
 
 실습과정을 정상적으로 수행했을 경우, 아래와 같이 로그인 화면을 볼 수 있습니다. 방금 전 발급 받은 토큰을 입력하고 `Sign in` 버튼을 클릭하여 로그인합니다.
 
-<img src='img/3-dashboard-login.png' alt='signin'>
+![signin](img/3-dashboard-login.png)
 
 &nbsp;
 
 로그인 성공 시, 아래 사진과 같이 쿠버네티스 대시보드에 접근할 수 있습니다.
 
-<img src='img/3-dashboard-enter.png' alt='ui'>
+![ui](img/3-dashboard-enter.png)
 
 &nbsp;
 
@@ -152,13 +152,13 @@ http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kube
 >
 > ⚠️ **오류 발생 시** 아래 공식 문서 참고
 >
-> https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/
+> <https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/>
 
 ## 2-4. 쿠버네티스 대시보드에서 Pod 삭제
 
 이제 대시보드에서 현재 실행 중인 Pod를 삭제하겠습니다. 아래 사진과 같이 진행 후 `새로고침`을 눌러주세요!
 
-<img src='img/4-pod-delete.png' alt='pod delete'>
+![pod delete](img/4-pod-delete.png)
 
 아래 사진을 보면 알 수 있듯이, `Delete`한 Pod는 현재 `Terminating` 상태입니다.
 
@@ -166,7 +166,7 @@ http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kube
 
 ### 2-4-1. Review: 쿠버네티스의 `Self-healing` 기능
 
-<img src='img/4-pod-delete-result-dashboard.png' alt='pod delete dashboard'>
+![pod delete dashboard](img/4-pod-delete-result-dashboard.png)
 
 터미널을 통해서도 똑같은 결과를 확인해볼 수 있습니다.
 
@@ -174,7 +174,7 @@ http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kube
 kubectl get pod
 ```
 
-<img src='img/4-pod-delete-result-terminal.png' alt='pod delete terminal'>
+![pod delete terminal](img/4-pod-delete-result-terminal.png)
 
 ## 2-5. 쿠버네티스 대시보드에서 Deployment Scaling
 
@@ -182,31 +182,31 @@ kubectl get pod
 
 아래 사진처럼 `Deployments` 탭에 들어가서, `simple-app-deployment`를 클릭해주세요.
 
-<img src='img/5-deploy.png' alt='deployment'>
+![deployment](img/5-deploy.png)
 
 &nbsp;
 
 사진과 같이 우측 상단에 `Scale resources` 버튼을 클릭해주세요.
 
-<img src='img/5-deploy-2.png' alt='deployment - 1'>
+![deployment - 1](img/5-deploy-2.png)
 
 &nbsp;
 
 사진과 같이 `replicas`의 수를 `10`으로 수정하고 `Scale 버튼`을 클릭해주세요. (다른 숫자로 수정해도 괜찮습니다.)
 
-<img src='img/5-deploy-3.png' alt='deployment - 2'>
+![deployment - 2](img/5-deploy-3.png)
 
 &nbsp;
 
 이제 Deployments가 관리하는 Pod의 수가 10개가 된 것을 확인할 수 있습니다.
 
-<img src='img/5-deploy-4.png' alt='deployment - 3'>
+![deployment - 3](img/5-deploy-4.png)
 
 &nbsp;
 
 대시보드의 `Pods` 탭과 터미널에서도 같은 결과를 확인할 수 있습니다.
 
-<img src='img/5-deploy-5.png' alt='deployment - 4'>
+![deployment - 4](img/5-deploy-5.png)
 
 &nbsp;
 
@@ -214,7 +214,7 @@ kubectl get pod
 kubectl get pod
 ```
 
-<img src='img/5-deploy-6.png' alt='deployment - 5'>
+![deployment - 5](img/5-deploy-6.png)
 
 ## 2-6. 쿠버네티스 대시보드에서 클러스터 이벤트 확인하기
 
@@ -234,11 +234,11 @@ kubectl get pod
 
 이제 `Events` 탭으로 이동해서 여러 페이지를 둘러봅니다.
 
-<img src='img/6-events-1.png' alt='event - 1'>
+![event - 1](img/6-events-1.png)
 
 대시보드를 통해 오류가 발생한 이벤트도 확인할 수 있으며, 아래와 같이 오류 메시지를 확인하여 원인을 분석할 수 있습니다.
 
-<img src='img/6-events-2.png' alt='event - 2'>
+![event - 2](img/6-events-2.png)
 
 ## 2-7. 쿠버네티스 대시보드에서 노드 정보 접근
 
@@ -246,7 +246,7 @@ kubectl get pod
 
 `Nodes 탭`에 접근하면 아래 사진과 같이 노드 정보를 볼 수 없는 상황이 발생할 수 있습니다.
 
-<img src='img/7-node-forbidden.png' alt='node forbiddent'>
+![node forbidden](img/7-node-forbidden.png)
 
 ### 왜 노드 정보에 접근할 수 없는가?
 
@@ -289,18 +289,13 @@ at the cluster scope
 
 대시보드가 필요한 몇 가지 이유는 다음과 같습니다:
 
-**1. 실시간 클러스터 모니터링 시각화**
-
-- CLI 기반 kubectl 명령어로는 텍스트 기반 출력을 확인해야 하지만, 대시보드에서는 CPU, 메모리 사용량, Pod 상태 등을 별도의 명령어 없이 한눈에 파악할 수 있습니다.
-
-**2. 관리 및 디버깅 용이성**
-
-- kubectl을 사용할 경우, 로그 확인이나 이벤트 분석을 위해 여러 명령어를 조합해야 하지만, 대시보드에서는 클러스터 내 오류나 이벤트를 즉시 확인하고 분석할 수 있습니다.
-
-**3. 비전문가 접근성 향상**
-
-- 개발자가 아닌 운영팀, DevOps 엔지니어 또는 관리자가 클러스터를 쉽게 모니터링하고 조작할 수 있도록 돕습니다.
-- 물론 비전문가의 쿠버네티스 클러스터 접근은 주의해야합니다.
+1. **실시간 클러스터 모니터링 시각화**
+   - CLI 기반 kubectl 명령어로는 텍스트 기반 출력을 확인해야 하지만, 대시보드에서는 CPU, 메모리 사용량, Pod 상태 등을 별도의 명령어 없이 한눈에 파악할 수 있습니다.
+2. **관리 및 디버깅 용이성**
+   - kubectl을 사용할 경우, 로그 확인이나 이벤트 분석을 위해 여러 명령어를 조합해야 하지만, 대시보드에서는 클러스터 내 오류나 이벤트를 즉시 확인하고 분석할 수 있습니다.
+3. **비전문가 접근성 향상**
+   - 개발자가 아닌 운영팀, DevOps 엔지니어 또는 관리자가 클러스터를 쉽게 모니터링하고 조작할 수 있도록 돕습니다.
+   - 물론 비전문가의 쿠버네티스 클러스터 접근은 주의해야합니다.
 
 결론적으로, 대시보드는 CLI만으로는 부족할 수 있는 쿠버네티스 클러스터 운영의 가시성을 보완하고, 더욱 직관적인 관리를 가능하게 하는 핵심적인 도구입니다.
 
@@ -309,23 +304,18 @@ at the cluster scope
 이번 실습에서 수행한 주요 과정은 다음과 같습니다:
 
 1. 쿠버네티스 대시보드 설치 및 접근
-
    - kubectl apply를 이용해 대시보드를 설치하고, kubectl proxy를 실행하여 웹 대시보드에 접근.
 
 2. 대시보드 로그인 및 인증 토큰 발급
-
    - ServiceAccount 및 ClusterRoleBinding을 생성하여 관리 권한을 부여하고, admin-user의 로그인 토큰을 발급하여 대시보드에 로그인.
 
 3. 대시보드를 활용한 리소스 조작 실습
-
    - Pod 삭제: Deployment에 의해 새로운 Pod가 자동 생성되는 Self-healing 기능 확인
    - Deployment Scaling: Replica 개수를 조정하여 동적으로 리소스를 확장
 
 4. 클러스터 이벤트 로그 확인
-
    - Events 탭에서 Pod, Deployment, Service 등에서 발생한 이벤트를 확인
 
 5. 노드 정보 접근 제한 확인
-
    - 기본적으로 admin-user 계정이 노드 정보를 조회할 수 없도록 보안 정책이 적용됨을 확인
    - 쿠버네티스의 보안 정책을 이해하고, 필요할 경우 권한을 추가해야 함을 인식

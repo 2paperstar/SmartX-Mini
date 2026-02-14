@@ -43,7 +43,7 @@ kubectl get po -n kube-system -o wide
 
 When you run the above commands, you should see all **nodes** in a `Ready` state and all **kube-system** Pods in a `Running` state, as shown in the screenshot below:
 
-<img src='img/1-cluster-status.png' alt='cluster status'>
+![cluster status](img/1-cluster-status.png)
 
 # 2-2. Install the Kubernetes Dashboard
 
@@ -123,13 +123,13 @@ kubectl -n kubernetes-dashboard create token admin-user
 
 If successful, you will see a token output in the terminal like the screenshot below. Copy this token for use in the dashboard login.
 
-<img src='img/2-dashboard-token.png' alt='token'>
+![token](img/2-dashboard-token.png)
 
 ## 2-4. Access the Kubernetes Dashboard
 
 Now, access the Kubernetes Dashboard using the following address in your browser:
 
-http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/
+<http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/>
 
 > [!warning]
 >
@@ -139,13 +139,13 @@ http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kube
 
 If everything is working correctly, you should see a login screen like the one below. Paste the token you received earlier and click `Sign in`.
 
-<img src='img/3-dashboard-login.png' alt='signin'>
+![signin](img/3-dashboard-login.png)
 
 &nbsp;
 
 Upon successful login, you will see the Kubernetes Dashboard interface as shown below.
 
-<img src='img/3-dashboard-enter.png' alt='ui'>
+![ui](img/3-dashboard-enter.png)
 
 &nbsp;
 
@@ -153,13 +153,13 @@ Upon successful login, you will see the Kubernetes Dashboard interface as shown 
 >
 > ⚠️ If you run into errors, refer to the official documentation:
 >
-> https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/
+> <https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/>
 
 ## 2-4. Delete a Pod from the Kubernetes Dashboard
 
 Now let’s delete a currently running Pod using the dashboard. Follow the steps shown in the screenshot below and refresh the browser.
 
-<img src='img/4-pod-delete.png' alt='pod delete'>
+![pod delete](img/4-pod-delete.png)
 
 As shown in the next screenshot, the Pod that was deleted is now in the `Terminating` state.
 
@@ -167,7 +167,7 @@ You will also notice that a new Pod has been created. Since these Pods are manag
 
 ### 2-4-1. Review: Kubernetes `Self-healing` Feature
 
-<img src='img/4-pod-delete-result-dashboard.png' alt='pod delete dashboard'>
+![pod delete dashboard](img/4-pod-delete-result-dashboard.png)
 
 You can check the same result via the terminal:
 
@@ -175,7 +175,7 @@ You can check the same result via the terminal:
 kubectl get pod
 ```
 
-<img src='img/4-pod-delete-result-terminal.png' alt='pod delete terminal'>
+![pod delete terminal](img/4-pod-delete-result-terminal.png)
 
 ## 2-5. Scale a Deployment from the Kubernetes Dashboard
 
@@ -183,31 +183,31 @@ Now let’s perform Deployment scaling just like in the Cluster Lab.
 
 Go to the `Deployments` tab and click `simple-app-deployment`, as shown below.
 
-<img src='img/5-deploy.png' alt='deployment'>
+![deployment](img/5-deploy.png)
 
 &nbsp;
 
 Then click the `Scale resources` button in the top right corner.
 
-<img src='img/5-deploy-2.png' alt='deployment - 1'>
+![deployment - 1](img/5-deploy-2.png)
 
 &nbsp;
 
 Set the number of `replicas` to `10` (or any other number you prefer), and click the `Scale` button.
 
-<img src='img/5-deploy-3.png' alt='deployment - 2'>
+![deployment - 2](img/5-deploy-3.png)
 
 &nbsp;
 
 You should now see that the number of Pods managed by the Deployment has increased to 10.
 
-<img src='img/5-deploy-4.png' alt='deployment - 3'>
+![deployment - 3](img/5-deploy-4.png)
 
 &nbsp;
 
 You can check the result both in the `Pods` tab of the dashboard and via the terminal:
 
-<img src='img/5-deploy-5.png' alt='deployment - 4'>
+![deployment - 4](img/5-deploy-5.png)
 
 &nbsp;
 
@@ -215,7 +215,7 @@ You can check the result both in the `Pods` tab of the dashboard and via the ter
 kubectl get pod
 ```
 
-<img src='img/5-deploy-6.png' alt='deployment - 5'>
+![deployment - 5](img/5-deploy-6.png)
 
 ## 2-6. Check Cluster Events via the Dashboard
 
@@ -235,11 +235,11 @@ These logs are extremely helpful for identifying and debugging issues in your cl
 
 Now go to the `Events` tab and browse through the pages.
 
-<img src='img/6-events-1.png' alt='event - 1'>
+![event - 1](img/6-events-1.png)
 
 You can also view error-related events and analyze the cause directly through the dashboard.
 
-<img src='img/6-events-2.png' alt='event - 2'>
+![event - 2](img/6-events-2.png)
 
 ## 2-7. Access Node Information via the Dashboard
 
@@ -247,7 +247,7 @@ Let’s try accessing node information.
 
 You may see a screen like this in the `Nodes` tab, indicating that access is forbidden.
 
-<img src='img/7-node-forbidden.png' alt='node forbiddent'>
+![node forbidden](img/7-node-forbidden.png)
 
 ### Why Can't We Access Node Information?
 
@@ -290,42 +290,32 @@ Although all tasks can be performed using **CLI tools like kubectl**, the dashbo
 
 Here’s why the dashboard is essential:
 
-**1. Real-Time Visualization of Cluster Status**
-
-- Unlike CLI outputs, the dashboard allows you to see CPU/memory usage and Pod statuses without extra commands.
-
-**2. Easier Management and Debugging**
-
-- With kubectl, you must combine multiple commands to check logs and events.
-- The dashboard provides direct access to error messages and events.
-
-**3. Improved Accessibility for Non-Experts**
-
-- Operations teams or DevOps engineers who aren’t developers can still monitor and manage clusters.
-- However, granting access to non-experts should be done with caution.
+1. **Real-Time Visualization of Cluster Status**
+   - Unlike CLI outputs, the dashboard allows you to see CPU/memory usage and Pod statuses without extra commands.
+2. **Easier Management and Debugging**
+   - With kubectl, you must combine multiple commands to check logs and events.
+   - The dashboard provides direct access to error messages and events.
+3. **Improved Accessibility for Non-Experts**
+   - Operations teams or DevOps engineers who aren’t developers can still monitor and manage clusters.
+   - However, granting access to non-experts should be done with caution.
 
 In short, the dashboard is a **critical tool** for enhancing Kubernetes cluster management, especially when CLI alone isn't sufficient.
 
 ## Key Activities Summary
 
 1. Installed and Accessed the Kubernetes Dashboard
-
    - Used `kubectl apply` to deploy the dashboard, then accessed it via `kubectl proxy`.
 
 2. Logged into the Dashboard with an Auth Token
-
    - Created a `ServiceAccount` and `ClusterRoleBinding` for the admin-user, issued a login token, and authenticated.
 
 3. Practiced Resource Management via the Dashboard
-
    - Deleted Pods: Observed the `Self-healing` behavior via Deployment auto-recovery
    - Scaled Deployments: Changed replica counts dynamically
 
 4. Viewed Cluster Event Logs
-
    - Explored the Events tab for logs related to Pods, Deployments, Services, and more
 
 5. Observed Access Restrictions for Node Information
-
    - Learned that node access is restricted by default
    - Understood Kubernetes’ security model and the need for explicit permissions
