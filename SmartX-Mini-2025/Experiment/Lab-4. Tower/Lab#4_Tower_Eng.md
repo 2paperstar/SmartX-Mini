@@ -2,7 +2,7 @@
 
 # 0. Objective
 
-<img width="450" alt="overall objective" src="https://user-images.githubusercontent.com/82452337/160807997-9caadb51-b363-4e82-bbb2-e1f5888b08b3.png">
+![overall objective](https://user-images.githubusercontent.com/82452337/160807997-9caadb51-b363-4e82-bbb2-e1f5888b08b3.png)
 
 **The goal of this Lab is to build a Tower (monitoring system) that can monitor a system and visualize the monitored data.**
 
@@ -25,13 +25,13 @@ In this Lab, we will learn how to build such a monitoring system using `Flume` a
 
 ### Visualization and monitoring of time-series data
 
-<img src="./img/time-series-data.png" alt="InfluxDB" width="900">
+![time-series-data](./img/time-series-data.png)
 
 Time-series data refers to data that changes over time, where each data point represents a value at a specific timestamp. Examples include server CPU usage, network traffic, IoT sensor data, and financial market data. A **Time Series Database** is optimized to efficiently store and query such data, allowing fast lookup, real-time analysis, and long-term trend detection.
 
 ## 0-4. InfluxDB
 
-<img src="./img/influxdb.png" alt="InfluxDB" width="225">
+![influxdb](./img/influxdb.png)
 
 **InfluxDB** is an open-source time-series database developed by InfluxData.  
 Written in the Go programming language, it is used in various domains to store and retrieve time-series data such as operational monitoring, application metrics, IoT sensor data, and real-time analytics.
@@ -42,11 +42,11 @@ Written in the Go programming language, it is used in various domains to store a
 
 ## 0-5. Chronograf
 
-<img src="./img/chronograf-icon.png" alt="chronograf icon" width="225">
+![chronograf icon](./img/chronograf-icon.png)
 
 ### Simple monitoring system architecture using InfluxDB and Chronograf
 
-<img src="./img/chronograf-arch.png" alt="chronograf comoponents" width="900">
+![chronograf components](./img/chronograf-arch.png)
 
 Chronograf is the user interface (UI) and administrative component used with InfluxDB 1.x.  
 It provides an easy way to browse stored data in InfluxDB, create queries and alerts, and quickly build dashboards using templates and libraries for real-time visualization.
@@ -70,9 +70,8 @@ sudo docker run -p 8888:8888 --name chronograf chronograf --influxdb-url http://
 ```
 
 - **What does `-p 8888:8888` do?**
-
   - Maps host's port 8888 to container's port 8888
-  - This means that if you access to host's port 8888, then it will be forwared to container's 8888 port.
+  - This means that if you access to host's port 8888, then it will be forwarded to container's 8888 port.
   - Allows you to access the Chronograf UI via `localhost:8888` or `<NUC IP>:8888`
   - `-p <host port>:<container port>`
 
@@ -136,8 +135,6 @@ sudo pip install requests kafka-python influxdb msgpack
 |   msgpack    |  1.0.4  |
 
 </details>
-
-<br>
 
 ## 1-4. Start Kafka Cluster
 
@@ -206,7 +203,7 @@ If the information you previously entered is missing, please add the following t
 >
 > You should replace `<>` with your information.
 
-```
+```txt
 <NUC_IP> <NUC_HOSTNAME>
 <PI_IP> <PI_HOSTNAME>
 ```
@@ -246,7 +243,7 @@ In this file, you should replace `<NUC IP>` with your real NUC IP.
 
 > e.g. `172.10.109.100`
 
-<img alt="broker_to_influxdb python file" src="https://user-images.githubusercontent.com/82452337/160814546-da543a58-e6b6-49cb-bdb1-19aa2de9c1fb.png" width="900">
+![broker_to_influxdb python file](https://user-images.githubusercontent.com/82452337/160814546-da543a58-e6b6-49cb-bdb1-19aa2de9c1fb.png)
 
 ### 1-6-2. Run `broker_to_influxdb.py`
 
@@ -266,37 +263,37 @@ Open a web browser and access the Chronograf Dashboard.
 
 > **Access URL**: `http://<Your NUC IP>:8888`
 
-<img src="./img/chronograf-1.png" alt="chronograf-1">
+![chronograf-1](./img/chronograf-1.png)
 
-### 1-7-1. Creating a Dashboard
+### 1-7-2. Creating a Dashboard
 
-<img src="./img/chronograf-2.png" alt="chronograf-2">
+![chronograf-2](./img/chronograf-2.png)
 
-### 1-7-2. Adding a Data Source
+### 1-7-3. Adding a Data Source
 
-<img src="./img/chronograf-3.png" alt="chronograf-3">
+![chronograf-3](./img/chronograf-3.png)
 
-### 1-7-3. Registering a Query
+### 1-7-4. Registering a Query
 
-<img src="./img/chronograf-4.png" alt="chronograf-4">
+![chronograf-4](./img/chronograf-4.png)
 
 ```sql
 SELECT "memory" FROM "Labs"."autogen"."labs" WHERE time > :dashboardTime:
 ```
 
-### 1-7-4. Monitoring
+### 1-7-5. Monitoring
 
 #### Memory Monitoring
 
 You can monitor the current memory usage.
 
-<img src="./img/chronograf-5.png" alt="chronograf-5">
+![chronograf-5](./img/chronograf-5.png)
 
 #### CPU Monitoring
 
 You can monitor the current CPU usage.
 
-<img src="./img/chronograf-6.png" alt="chronograf-6">
+![chronograf-6](./img/chronograf-6.png)
 
 #### CPU Load Test ( in PI )
 
@@ -304,7 +301,7 @@ To verify that the monitoring system is correctly visualizing data, you can inte
 
 First, change the field in the Chronograf Dashboard to `CPU_Usage`.
 
-<img src="./img/chronograf-6.png" alt="chronograf-6">
+![chronograf-6](./img/chronograf-6.png)
 
 Then, **run the following command on the PI.**
 
