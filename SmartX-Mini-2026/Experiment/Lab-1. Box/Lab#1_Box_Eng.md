@@ -99,30 +99,46 @@ Reference: Download Site - <https://releases.ubuntu.com/24.04/>
 ### 2-1-1. Boot Configuration
 
 1. While the NUC is powered off, connect the USB for OS installation and then turn on the NUC.
-2. When the boot process begins, press F10 to enter the boot device selection screen.
-3. From the boot device list, select the USB device (e.g., UEFI: SanDisk …).
+2. When the power is turned on, press F10 key repeatedly to enter the boot device selection screen. If the boot device selection screen is not entered, turn off the power and try again.
+3. Use the direction keys to select the USB device from the boot device list (e.g., UEFI: SanDisk …).
 4. Choose “Try or Install Ubuntu” to proceed.
 
 ### 2-1-2. Installation
 
-1. Select “Install Ubuntu” (Do not choose “Try Ubuntu”). The installation should be done in English.
-2. In the Keyboard layout step, select “English (US)”.
-3. If the Wireless tab appears, select “I don’t want to connect to a Wi-Fi network right now” and proceed.
-4. In the Updates and other software step, under “What apps would you like to install to start with?”, choose “Minimal installation” and proceed to the next step.
-5. In the Installation type step, select “Erase disk and install Ubuntu”, then click “Install Now”.
-6. When the “Write the changes to disks?” prompt appears, click “Continue” to proceed.
-7. On the Location settings screen, select "Seoul".
-8. In the “Who are you?” step, enter the User and Computer information as follows.
+1. "Welcome to Ubuntu" screen appears, continue to proceed.
+   You can simply click Next for all settings.
+   - Choose your language: English
+   - Accessibility in Ubuntu: Don't configure (Next)
+   - Select your keyboard layout: English (US)
+   - Connect to the internet: Use wired connection
+   - What do you want to do with Ubuntu?: Install Ubuntu
+   - How would you like to install Ubuntu?: Interactive installation
+   - What apps would you like to install to start with?: Default selection
+   - Install recommended proprietary software?: Don't select anything (Next)
+2. In "How do you want to install Ubuntu?" screen, select **<ins>Erase disk and install Ubuntu</ins>**.
+3. In "Create your account" step, enter the User and Computer information as follows.
    - Your name: gist
    - Your computer's name: nuc<The last three digits of the NUC’s IP address.>  
      -> If the IP address is XXX.XXX.XXX.109, then the hostname should be nuc109.
-   - Pick a username: gist
+   - Your username: gist
    - For the password, follow the instructions provided by the TAs.
-9. Once all settings are complete, click the button to proceed with the final installation.
-10. Once the installation is complete, click the “Restart Now” button to reboot the NUC.
-11. During the restart process, if you see the message “Please remove the installation medium, then press ENTER”, remove the installation USB and press ENTER.
+4. On the Location settings screen, select "Seoul".
+5. In "Review your choices" screen, you should see the following. Click the green "Install" button to proceed.
+   - General
+     - Disk setup: Erase disk and Install Ubuntu
+     - Installation disk: nvme0n1
+     - Applications: Default selection
+   - Security & more
+     - Disk encryption: None
+     - Proprietary software: None
+   - Partitions
+     - partition nvme0n1p1 formatted as fat32 used for /boot/efi
+     - partition nvme0n1p2 formatted as ext4 used for /
+6. Once the installation is complete, click the green "Restart Now" button to reboot the NUC.
+7. During the restart process, if you see the message “Please remove the installation medium, then press ENTER”, remove the installation USB and press ENTER.
 
   <details>
+    <!-- TODO: outdated -->
     <summary>
       Refer to this section in case of an error. (If the installation was successful, you can skip this part)
     </summary>

@@ -95,30 +95,46 @@ OS : Ubuntu Desktop 24.04 LTS(64bit)
 ### 2-1-1. Boot Configuration
 
 1. NUC의 전원이 꺼진 상태에서 OS 설치를 위한 USB를 NUC에 연결한 뒤에, NUC의 전원을 켭니다.
-2. 부팅이 시작되면 F10 키를 눌러서 Boot device를 선택하는 화면에 진입합니다.
-3. Boot device 리스트에서 USB에 해당하는 것을 선택합니다. (ex. UEFI: SanDisk ...)
-4. Try or install ubuntu를 선택하여 실행합니다.
+2. 전원을 켜자마자 F10 키를 연타해서 Boot device를 선택하는 화면에 진입합니다. Boot device 화면 진입에 실패한 경우에는 전원을 끄고 다시 시도합니다.
+3. 방향키를 사용해서 Boot device 목록 중 USB에 해당하는 것을 선택합니다. (ex. UEFI: SanDisk ...)
+4. Try or Install Ubuntu를 선택하여 실행합니다.
 
 ### 2-1-2. Installation
 
-1. Install Ubuntu를 선택합니다. (Try Ubuntu X) 언어는 English로 진행해야합니다.
-2. Keyboard layout 설정 단계에서도 "English(US)"로 설정합니다.
-3. Wireless 탭이 뜨면, "I don't want to connect to a Wi-Fi network right now"를 선택하고 넘어갑니다.
-4. Updates and other software 단계에서 "What apps would you like to install to start with?" 영역에서 "Minimal installation"을 선택하고 다음 단계로 넘어갑니다.
-5. Installation type 단계에서 "Erase disk and install Ubuntu"를 선택하고 "Install now" 버튼을 누릅니다.
-6. Write the changes to disks? 창이 뜨면 Continue를 눌러 계속 진행합니다.
-7. Location 설정 화면에서 "Seoul"을 선택합니다.
-8. User 정보와 Computer 정보를 입력하는 "Who are you" 단계에 진입했다면 다음과 같이 설정합니다.
+1. Welcome to Ubuntu 화면이 뜨면 계속해서 진행합니다.
+   별다른 설정 필요없이 Next만 누르면 됩니다.
+   - Choose your language: English
+   - Accessibility in Ubuntu: 설정 안 함 (Next)
+   - Select your keyboard layout: English (US)
+   - Connect to the internet: Use wired connection
+   - What do you want to do with Ubuntu?: Install Ubuntu
+   - How would you like to install Ubuntu?: Interactive installation
+   - What apps would you like to install to start with?: Default selection
+   - Install recommended proprietary software?: 선택 안 함 (Next)
+2. How do you want to install Ubuntu? 화면에서 **<ins>Erase disk and Install Ubuntu</ins>**를 선택합니다.
+3. User 정보와 Computer 정보를 입력하는 "Create your account" 단계에 진입했다면 다음과 같이 설정합니다.
    - Your name: gist
    - Your computer's name: nuc<NUC IP주소의 마지막 3자리 숫자>  
      -> ex. XXX.XXX.XXX.109의 경우, nuc109
-   - Pick a username: gist
+   - Your username: gist
    - 비밀번호의 경우, 조교의 안내에 따라 설정을 진행합니다.
-9. 모든 설정이 완료되었다면 버튼을 눌러 최종 설치를 진행합니다.
-10. 설치가 완료되면, "Restart now" 버튼을 눌러 NUC을 다시 시작합니다.
-11. 재시작 과정에서 "Please remove the installation medium, then press ENTER" 메세지가 보이면, 설치 USB를 제거한 뒤에 ENTER 키를 누릅니다.
+4. Location 설정 화면에서 "Seoul"을 선택합니다.
+5. Review your choices 화면에서 아래와 같이 나타나면 문제없이 진행 된 것입니다. 초록색 Install을 눌러 계속합니다.
+   - General
+     - Disk setup: Erase disk and Install Ubuntu
+     - Installation disk: nvme0n1
+     - Applications: Default selection
+   - Security & more
+     - Disk encryption: None
+     - Proprietary software: None
+   - Partitions
+     - partition nvme0n1p1 formatted as fat32 used for /boot/efi
+     - partition nvme0n1p2 formatted as ext4 used for /
+6. 설치가 완료되면, 초록색 "Restart now" 버튼을 눌러 NUC을 다시 시작합니다.
+7. 재시작 과정에서 "Please remove the installation medium, then press ENTER" 메세지가 보이면, 설치 USB를 뽑은 뒤에 ENTER 키를 누릅니다.
 
   <details>
+    <!-- TODO: outdated -->
     <summary>에러 발생 시 참고(정상 설치가 되었다면 이 부분은 생략합니다.)</summary>
 
 - Select ‘Something else’
