@@ -2,7 +2,7 @@
 
 # 0. Objective
 
-<img width="916" alt="image" src="https://user-images.githubusercontent.com/63437430/161034315-b201ae9e-463e-44d3-a02f-4796a90f6ee4.png">
+![objective](https://user-images.githubusercontent.com/63437430/161034315-b201ae9e-463e-44d3-a02f-4796a90f6ee4.png)
 
 **The goal of this Lab is to build an IoT-Cloud Hub that collects data using IoT sensors and transmits it to a server.**
 
@@ -33,7 +33,7 @@ To easily use the temperature-humidity sensor, we use Adafruit_python_DHT. Adafr
 
 # 1. Preparation
 
-<img src="img/pi-gpio.png" alt="pi gpio" width="450">
+![pi gpio](./img/pi-gpio.png)
 
 The above image shows the **GPIO (General Purpose Input/Output) pin layout** of the Raspberry Pi. GPIO pins allow the Raspberry Pi to send and receive electrical signals by connecting to external devices. In simple terms, they are multipurpose pins that can be used to connect sensors, LEDs, motors, and more for input or output.
 
@@ -45,9 +45,9 @@ The above image shows the **GPIO (General Purpose Input/Output) pin layout** of 
 >
 > **Now, connect the temperature-humidity sensor to the Raspberry Pi as shown in the red box in the photo above. See below for real pictures!**
 
-<img src="img/pi-sensor.png" alt="pi with sensor" width="450">
+![pi with sensor](./img/pi-sensor.png)
 
-<img src="img/pi-sensor-detail.png" alt="pi with sensor" width="450">
+![pi with sensor detail](./img/pi-sensor-detail.png)
 
 ---
 
@@ -84,7 +84,7 @@ This web server performs the following functions depending on the path of the re
 vim /SmartX-Mini/IoT-labs/webserver.js
 ```
 
-<img src="img/webserver.png" alt="webserver code" >
+![webserver code](./img/webserver.png)
 
 ## 2-3. Test Temperature-Humidity Sensor ( in PI )
 
@@ -152,7 +152,7 @@ sudo pip3 install .
 <details>
 <summary>Package Versions (Expand)</summary>
 
-#### PI
+#### PI initial dependencies
 
 |     Package     |   Version   |
 | :-------------: | :---------: |
@@ -160,7 +160,7 @@ sudo pip3 install .
 | build-essential |    12.6     |
 |   python3-dev   |   3.7.3-1   |
 
-#### Python
+#### Python initial dependencies
 
 |  Package   |   Version   |
 | :--------: | :---------: |
@@ -168,7 +168,6 @@ sudo pip3 install .
 |   wheel    | 18.1-5+rpt1 |
 
 </details>
-<br>
 
 ### Test Temperature-Humidity Sensor ( in PI )
 
@@ -212,7 +211,7 @@ If temperature and humidity are displayed correctly as shown below, the sensor i
 2. If no problem is found, **check whether the packages were installed properly**. Reinstalling the package might help.
 3. The sensor might be broken. If the issue still isn't resolved, call the TA.
 
-<img alt="image" src="https://user-images.githubusercontent.com/63437430/160829118-04bae048-2cf3-4c3f-8cd9-4b9295b019d0.png">
+![result](https://user-images.githubusercontent.com/63437430/160829118-04bae048-2cf3-4c3f-8cd9-4b9295b019d0.png)
 
 ## 2-4. Collect and Transmit Sensor Data ( in PI )
 
@@ -231,7 +230,7 @@ sudo apt-get install -y mercurial
 <details>
 <summary>Package Versions (Expand)</summary>
 
-#### PI
+#### PI analysis dependencies
 
 |    Package    |     Version     |
 | :-----------: | :-------------: |
@@ -239,7 +238,6 @@ sudo apt-get install -y mercurial
 |   mercurial   | 4.8.2-1+deb10u1 |
 
 </details>
-<br>
 
 ### 2-4-2. Sensor Data Collection Code
 
@@ -251,7 +249,7 @@ Run the following command to check the sensor data transmission code. (No modifi
 vim ~/SmartX-Mini/SmartX-Box/IoT-labs/RPI_capture.py
 ```
 
-<img src="img/rpi_capture.png" alt="rpi capture code">
+![rpi capture code](./img/rpi_capture.png)
 
 ### 2-4-3. Sensor Data Transmission Code
 
@@ -261,7 +259,7 @@ Open the code that sends the saved sensor data and modify `<NUC IP>` to your NUC
 vim ~/SmartX-Mini/SmartX-Box/IoT-labs/RPI_transfer.py
 ```
 
-<img src="img/rpi_transfer.png" alt="rpi transfer code">
+![rpi transfer code](./img/rpi_transfer.png)
 
 ## 2-5. Run IoT Web Service
 
@@ -296,7 +294,7 @@ Open a web browser on the NUC and go to `http://<NUC IP>`.
 
 If you see the following screen, you're successful! Refresh the page to see the temperature-humidity sensor data changing continuously.
 
-<img width="490" alt="image" src="https://user-images.githubusercontent.com/63437430/161033216-2c5035de-e827-4f05-a095-f912c2772777.png">
+![iot web service](https://user-images.githubusercontent.com/63437430/161033216-2c5035de-e827-4f05-a095-f912c2772777.png)
 
 ---
 

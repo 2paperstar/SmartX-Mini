@@ -2,7 +2,7 @@
 
 # 0. Objective
 
-<img width="916" alt="image" src="https://user-images.githubusercontent.com/63437430/161034315-b201ae9e-463e-44d3-a02f-4796a90f6ee4.png">
+![objective](https://user-images.githubusercontent.com/63437430/161034315-b201ae9e-463e-44d3-a02f-4796a90f6ee4.png)
 
 **이번 Lab의 목표는 IoT 센서를 활용하여 데이터를 수집하고, 이를 서버에 전달하는 IoT-Cloud Hub를 구축하는 것입니다.**
 
@@ -33,7 +33,7 @@ Node.js는 오픈 소스, 크로스 플랫폼을 지원하는 백엔드 JavaScri
 
 # 1. Preparation
 
-<img src="img/pi-gpio.png" alt="pi gpio" width="450">
+![pi gpio](./img/pi-gpio.png)
 
 위 이미지는 라즈베리파이의 **GPIO(General Purpose Input/Output, 범용 입출력) 핀 배치도**를 나타냅니다. GPIO는 라즈베리파이에서 외부 장치와 연결하여 전기 신호를 주고 받을 수 있는 핀입니다. 간단히 말해, 센서, LED, 모터 등 다양한 기기를 연결하여 입력을 받거나 출력을 보낼 수 있는 다목적 핀이라고 볼 수 있습니다.
 
@@ -45,9 +45,9 @@ Node.js는 오픈 소스, 크로스 플랫폼을 지원하는 백엔드 JavaScri
 >
 > **이제 위 사진의 빨간색 상자 내부처럼 라즈베리파이에 온습도 센서를 연결해줍니다. 실물 사진은 아래를 참고해주세요!**
 
-<img src="img/pi-sensor.png" alt="pi with sensor" width="450">
+![pi with sensor](./img/pi-sensor.png)
 
-<img src="img/pi-sensor-detail.png" alt="pi with sensor" width="450">
+![pi with sensor detail](./img/pi-sensor-detail.png)
 
 ---
 
@@ -84,7 +84,7 @@ apt-get install vim
 vim /SmartX-Mini/IoT-labs/webserver.js
 ```
 
-<img src="img/webserver.png" alt="webserver code" >
+![webserver code](./img/webserver.png)
 
 ## 2-3. 온습도 센서 테스트 ( in PI )
 
@@ -152,7 +152,7 @@ sudo pip3 install .
 <details>
 <summary>Package Versions (Expand)</summary>
 
-#### PI
+#### PI initial dependencies
 
 |     Package     |   Version   |
 | :-------------: | :---------: |
@@ -160,7 +160,7 @@ sudo pip3 install .
 | build-essential |    12.6     |
 |   python3-dev   |   3.7.3-1   |
 
-#### Python
+#### Python initial dependencies
 
 |  Package   |   Version   |
 | :--------: | :---------: |
@@ -168,7 +168,6 @@ sudo pip3 install .
 |   wheel    | 18.1-5+rpt1 |
 
 </details>
-<br>
 
 ### 2-3-2. 온습도 센서 테스트 ( in PI )
 
@@ -212,7 +211,7 @@ sudo ./AdafruitDHT.py 11 4
 2. 아무런 문제를 발견하지 못했다면, **패키지 설치가 제대로 됐는지 확인해주세요**. 패키지를 다시 설치해보는 것도 방법이 될 수 있습니다.
 3. 센서 자체의 문제일 수 있습니다. 만약 여전히 문제가 해결되지 않았다면, 조교를 호출해주세요.
 
-<img alt="image" src="https://user-images.githubusercontent.com/63437430/160829118-04bae048-2cf3-4c3f-8cd9-4b9295b019d0.png">
+![result](https://user-images.githubusercontent.com/63437430/160829118-04bae048-2cf3-4c3f-8cd9-4b9295b019d0.png)
 
 ## 2-4. 센서 데이터 수집과 전송 ( in PI )
 
@@ -231,7 +230,7 @@ sudo apt-get install -y mercurial
 <details>
 <summary>Package Versions (Expand)</summary>
 
-#### PI
+#### PI analysis dependencies
 
 |    Package    |     Version     |
 | :-----------: | :-------------: |
@@ -239,7 +238,6 @@ sudo apt-get install -y mercurial
 |   mercurial   | 4.8.2-1+deb10u1 |
 
 </details>
-<br>
 
 ### 2-4-2. 센서 데이터 수집 코드
 
@@ -251,7 +249,7 @@ sudo apt-get install -y mercurial
 vim ~/SmartX-Mini/SmartX-Box/IoT-labs/RPI_capture.py
 ```
 
-<img src="img/rpi_capture.png" alt="rpi capture code">
+![rpi capture code](./img/rpi_capture.png)
 
 ### 2-4-3. 센서 데이터 전송 코드
 
@@ -261,7 +259,7 @@ vim ~/SmartX-Mini/SmartX-Box/IoT-labs/RPI_capture.py
 vim ~/SmartX-Mini/SmartX-Box/IoT-labs/RPI_transfer.py
 ```
 
-<img src="img/rpi_transfer.png" alt="rpi transfer code">
+![rpi transfer code](./img/rpi_transfer.png)
 
 ## 2-5. IoT Web Service 실행하기
 
@@ -296,7 +294,7 @@ NUC에서 웹브라우저를 열고 `http://<NUC IP>`에 접속해주세요.
 
 다음과 같은 화면을 확인한다면 성공입니다! 새로고침을 눌러, 온습도 센서 데이터가 지속적으로 바뀌는 것을 확인해보세요.
 
-<img width="490" alt="image" src="https://user-images.githubusercontent.com/63437430/161033216-2c5035de-e827-4f05-a095-f912c2772777.png">
+![iot web service](https://user-images.githubusercontent.com/63437430/161033216-2c5035de-e827-4f05-a095-f912c2772777.png)
 
 ---
 
