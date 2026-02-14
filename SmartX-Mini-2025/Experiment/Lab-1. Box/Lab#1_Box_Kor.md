@@ -603,7 +603,7 @@ sudo ovs-docker add-port br0 veno1 c1 --ipaddress=<docker_container_IP>/24 --gat
 <!-- -->
 
 > [!NOTE]  
-> **⚠️ 아무 문제가 없었다면, 이 부분(Note block)은 생략합니다. ⚠️**
+> **⚠️ 아무 문제가 없었다면, 이 부분(Note block)은 생략합니다. ⚠️**  
 > **만약, `sudo ovs-docker add-port br0 veno1 c1 --ipaddress=<docker_container_IP>/24 --gateway=<gateway_IP>` 명령어를 실행하는 과정에서 오타나 실수가 있었다면 `sudo ovs-docker del-port br0 veno1 c1` 명령어를 실행하고 다시 `sudo ovs-docker add-port br0 veno1 c1 --ipaddress=<docker_container_IP>/24 --gateway=<gateway_IP>`를 실행합니다.**
 
 Docker container 안으로 진입합니다.
