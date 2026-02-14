@@ -118,7 +118,6 @@ Reference: Download Site - <https://releases.ubuntu.com/22.04/>
      -> If the IP address is XXX.XXX.XXX.109, then the hostname should be nuc109.
    - Pick a username: gist
    - For the password, follow the instructions provided by the TAs.
-
 9. Once all settings are complete, click the button to proceed with the final installation.
 10. Once the installation is complete, click the “Restart Now” button to reboot the NUC.
 11. During the restart process, if you see the message “Please remove the installation medium, then press ENTER”, remove the installation USB and press ENTER.

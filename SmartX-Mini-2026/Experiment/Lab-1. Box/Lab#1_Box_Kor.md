@@ -114,7 +114,6 @@ OS : Ubuntu Desktop 22.04 LTS(64bit)
      -> ex. XXX.XXX.XXX.109의 경우, nuc109
    - Pick a username: gist
    - 비밀번호의 경우, 조교의 안내에 따라 설정을 진행합니다.
-
 9. 모든 설정이 완료되었다면 버튼을 눌러 최종 설치를 진행합니다.
 10. 설치가 완료되면, "Restart now" 버튼을 눌러 NUC을 다시 시작합니다.
 11. 재시작 과정에서 "Please remove the installation medium, then press ENTER" 메세지가 보이면, 설치 USB를 제거한 뒤에 ENTER 키를 누릅니다.
