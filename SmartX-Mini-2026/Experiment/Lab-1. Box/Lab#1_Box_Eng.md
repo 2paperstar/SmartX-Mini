@@ -562,7 +562,7 @@ sudo systemctl start docker
 sudo systemctl start docker.socket
 ```
 
-## 2-7. Check docker installation
+## 2-6. Check docker installation
 
 Run the following command to check if Docker is running.
 
@@ -574,7 +574,7 @@ If it works correctly, the following output will be displayed.
 
 ![1](./img/1.png)
 
-## 2-8. Make Container
+## 2-7. Make Container
 
 Create a container named c1. This container will be based on the ubuntu:22.04 image and will run /bin/bash upon its initial execution. The --net=none option is used to ensure that the container is not connected to any network.
 
@@ -588,7 +588,7 @@ Pressing ctrl + p, q allows you to exit the container without stopping it.
 > docker attach [container_name]:  
 > We can re-enter a container that was detached using ctrl + p, q.
 
-## 2-9. Connect docker container
+## 2-8. Connect docker container
 
 Execute the following command outside of Docker. **(on the host machine)**  
 This command uses **Open vSwitch(OVS)** to add a specific network interface (veno1) to a Docker container (c1) and connect it to a virtual bridge (br0).
@@ -622,7 +622,7 @@ apt install -y net-tools
 apt install -y iputils-ping
 ```
 
-## 2-10. Check connectivity: VM & Container
+## 2-9. Check connectivity: VM & Container
 
 Check connectivity with ping command from docker to VM.
 
