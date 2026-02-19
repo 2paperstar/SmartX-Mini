@@ -1,4 +1,4 @@
-FROM fluent/fluentd:v1.17-debian-1
+FROM fluent/fluentd:v1.19.2-debian-1.0
 LABEL maintainer="SmartX Labs <mini@smartx.kr>"
 
 # Switch to root to install gems and snmp tools
