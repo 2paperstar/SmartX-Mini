@@ -1,117 +1,191 @@
-# Kafka 4.2.0 KRaft cluster — 3 combined controller+broker nodes
-# All containers share the host network (network_mode: host) so that
-# the Pi's Fluentd can reach NUC brokers using the NUC hostname.
+# Kafka 4.2.0 KRaft cluster — controller 3 + broker 3 (separated roles)
 #
-# CLUSTER_ID must be identical across all nodes.
-# Generate once with:  docker run --rm lab2-kafka bin/kafka-storage.sh random-uuid
-# Then replace the value of CLUSTER_ID below.
+# Role separation:
+#   controller0~2 : metadata quorum only (KRaft leader election, no client traffic)
+#   broker0~2     : message storage and delivery (Fluentd produces here)
+#
+# node.id must be unique across the entire cluster:
+#   controller0=0, controller1=1, controller2=2
+#   broker0=3,     broker1=4,     broker2=5
+#
+# CLUSTER_ID is read from the .env file in this directory.
+# Before starting, run:
+#   docker run --rm ubuntu-kafka bin/kafka-storage.sh random-uuid
+# Then write the output into .env:
+#   echo "CLUSTER_ID=<output>" > .env
+#
+# Start order: controllers must be healthy before brokers register.
+# docker compose up -d handles this via depends_on + healthcheck.
 
-x-kafka-common: &kafka-common
-  image: lab2-kafka
-  network_mode: host
-  restart: unless-stopped
-  # entrypoint: format storage (idempotent) then start broker
+# ---------------------------------------------------------------------------
+# Shared entrypoint: copy base server.properties, patch with env vars,
+# format storage (idempotent), then start Kafka.
+# ---------------------------------------------------------------------------
+x-kafka-entrypoint: &kafka-entrypoint
   entrypoint: >
     bash -c "
+      CONF=/kafka/config/kraft/server-node$${KAFKA_NODE_ID}.properties &&
+      cp config/kraft/server.properties $$CONF &&
+      sed -i \"s|^node.id=.*|node.id=$${KAFKA_NODE_ID}|\"                     $$CONF &&
+      sed -i \"s|^process.roles=.*|process.roles=$${KAFKA_PROCESS_ROLES}|\"   $$CONF &&
+      sed -i \"s|^listeners=.*|listeners=$${KAFKA_LISTENERS}|\"               $$CONF &&
+      sed -i \"s|^controller.quorum.voters=.*|controller.quorum.voters=$${KAFKA_CONTROLLER_QUORUM_VOTERS}|\" $$CONF &&
+      sed -i \"s|^log.dirs=.*|log.dirs=$${KAFKA_LOG_DIRS}|\"                  $$CONF &&
+      if [ -n \"$${KAFKA_ADVERTISED_LISTENERS}\" ]; then
+        sed -i \"s|^advertised.listeners=.*|advertised.listeners=$${KAFKA_ADVERTISED_LISTENERS}|\" $$CONF ;
+      fi &&
       bin/kafka-storage.sh format
         --cluster-id $${CLUSTER_ID}
-        --config config/kraft/server.properties
+        --config $$CONF
         --ignore-formatted &&
-      bin/kafka-server-start.sh config/kraft/server.properties
+      bin/kafka-server-start.sh $$CONF
     "
 
+x-kafka-common: &kafka-common
+  image: ubuntu-kafka
+  network_mode: host
+  restart: unless-stopped
+
+# Quorum voters — shared across all nodes
+x-quorum-voters: &quorum-voters "0@nuc:19090,1@nuc:19091,2@nuc:19092"
+
+# ---------------------------------------------------------------------------
+# Controllers  (process.roles=controller, no advertised.listeners)
+# Ports: CONTROLLER 19090 / 19091 / 19092
+# ---------------------------------------------------------------------------
 services:
 
-  broker0:
-    <<: *kafka-common
-    container_name: broker0
+  controller0:
+    <<: [*kafka-common, *kafka-entrypoint]
+    container_name: controller0
     environment:
-      CLUSTER_ID: "replace-with-your-cluster-uuid"
+      CLUSTER_ID: ${CLUSTER_ID}
       KAFKA_NODE_ID: 0
-      KAFKA_PROCESS_ROLES: broker,controller
-      KAFKA_LISTENERS: PLAINTEXT://:9090,CONTROLLER://:19090
+      KAFKA_PROCESS_ROLES: controller
+      KAFKA_LISTENERS: CONTROLLER://:19090
+      KAFKA_ADVERTISED_LISTENERS: ""
+      KAFKA_CONTROLLER_QUORUM_VOTERS: *quorum-voters
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LOG_DIRS: /tmp/kraft-controller0-logs
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-broker-api-versions.sh --bootstrap-server nuc:19090 2>/dev/null || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+
+  controller1:
+    <<: [*kafka-common, *kafka-entrypoint]
+    container_name: controller1
+    environment:
+      CLUSTER_ID: ${CLUSTER_ID}
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: controller
+      KAFKA_LISTENERS: CONTROLLER://:19091
+      KAFKA_ADVERTISED_LISTENERS: ""
+      KAFKA_CONTROLLER_QUORUM_VOTERS: *quorum-voters
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LOG_DIRS: /tmp/kraft-controller1-logs
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-broker-api-versions.sh --bootstrap-server nuc:19091 2>/dev/null || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+
+  controller2:
+    <<: [*kafka-common, *kafka-entrypoint]
+    container_name: controller2
+    environment:
+      CLUSTER_ID: ${CLUSTER_ID}
+      KAFKA_NODE_ID: 2
+      KAFKA_PROCESS_ROLES: controller
+      KAFKA_LISTENERS: CONTROLLER://:19092
+      KAFKA_ADVERTISED_LISTENERS: ""
+      KAFKA_CONTROLLER_QUORUM_VOTERS: *quorum-voters
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LOG_DIRS: /tmp/kraft-controller2-logs
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-broker-api-versions.sh --bootstrap-server nuc:19092 2>/dev/null || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+
+# ---------------------------------------------------------------------------
+# Brokers  (process.roles=broker, no CONTROLLER listener)
+# Ports: PLAINTEXT 9090 / 9091 / 9092
+# node.id continues from controllers: 3, 4, 5
+# ---------------------------------------------------------------------------
+
+  broker0:
+    <<: [*kafka-common, *kafka-entrypoint]
+    container_name: broker0
+    depends_on:
+      controller0:
+        condition: service_healthy
+      controller1:
+        condition: service_healthy
+      controller2:
+        condition: service_healthy
+    environment:
+      CLUSTER_ID: ${CLUSTER_ID}
+      KAFKA_NODE_ID: 3
+      KAFKA_PROCESS_ROLES: broker
+      KAFKA_LISTENERS: PLAINTEXT://:9090
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://nuc:9090
-      KAFKA_CONTROLLER_QUORUM_VOTERS: 0@nuc:19090,1@nuc:19091,2@nuc:19092
+      KAFKA_CONTROLLER_QUORUM_VOTERS: *quorum-voters
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_LOG_DIRS: /tmp/kraft-broker0-logs
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_DEFAULT_REPLICATION_FACTOR: 1
-    # Apply env vars into server.properties before starting
-    entrypoint: >
-      bash -c "
-        cp config/kraft/server.properties config/kraft/server-broker0.properties &&
-        sed -i \"s|^node.id=.*|node.id=$${KAFKA_NODE_ID}|\"                                          config/kraft/server-broker0.properties &&
-        sed -i \"s|^process.roles=.*|process.roles=$${KAFKA_PROCESS_ROLES}|\"                        config/kraft/server-broker0.properties &&
-        sed -i \"s|^listeners=.*|listeners=$${KAFKA_LISTENERS}|\"                                    config/kraft/server-broker0.properties &&
-        sed -i \"s|^advertised.listeners=.*|advertised.listeners=$${KAFKA_ADVERTISED_LISTENERS}|\"   config/kraft/server-broker0.properties &&
-        sed -i \"s|^controller.quorum.voters=.*|controller.quorum.voters=$${KAFKA_CONTROLLER_QUORUM_VOTERS}|\" config/kraft/server-broker0.properties &&
-        sed -i \"s|^log.dirs=.*|log.dirs=$${KAFKA_LOG_DIRS}|\"                                      config/kraft/server-broker0.properties &&
-        bin/kafka-storage.sh format
-          --cluster-id $${CLUSTER_ID}
-          --config config/kraft/server-broker0.properties
-          --ignore-formatted &&
-        bin/kafka-server-start.sh config/kraft/server-broker0.properties
-      "
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_DEFAULT_REPLICATION_FACTOR: 3
+      KAFKA_MIN_INSYNC_REPLICAS: 2
 
   broker1:
-    <<: *kafka-common
+    <<: [*kafka-common, *kafka-entrypoint]
     container_name: broker1
+    depends_on:
+      controller0:
+        condition: service_healthy
+      controller1:
+        condition: service_healthy
+      controller2:
+        condition: service_healthy
     environment:
-      CLUSTER_ID: "replace-with-your-cluster-uuid"
-      KAFKA_NODE_ID: 1
-      KAFKA_PROCESS_ROLES: broker,controller
-      KAFKA_LISTENERS: PLAINTEXT://:9091,CONTROLLER://:19091
+      CLUSTER_ID: ${CLUSTER_ID}
+      KAFKA_NODE_ID: 4
+      KAFKA_PROCESS_ROLES: broker
+      KAFKA_LISTENERS: PLAINTEXT://:9091
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://nuc:9091
-      KAFKA_CONTROLLER_QUORUM_VOTERS: 0@nuc:19090,1@nuc:19091,2@nuc:19092
+      KAFKA_CONTROLLER_QUORUM_VOTERS: *quorum-voters
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_LOG_DIRS: /tmp/kraft-broker1-logs
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_DEFAULT_REPLICATION_FACTOR: 1
-    entrypoint: >
-      bash -c "
-        cp config/kraft/server.properties config/kraft/server-broker1.properties &&
-        sed -i \"s|^node.id=.*|node.id=$${KAFKA_NODE_ID}|\"                                          config/kraft/server-broker1.properties &&
-        sed -i \"s|^process.roles=.*|process.roles=$${KAFKA_PROCESS_ROLES}|\"                        config/kraft/server-broker1.properties &&
-        sed -i \"s|^listeners=.*|listeners=$${KAFKA_LISTENERS}|\"                                    config/kraft/server-broker1.properties &&
-        sed -i \"s|^advertised.listeners=.*|advertised.listeners=$${KAFKA_ADVERTISED_LISTENERS}|\"   config/kraft/server-broker1.properties &&
-        sed -i \"s|^controller.quorum.voters=.*|controller.quorum.voters=$${KAFKA_CONTROLLER_QUORUM_VOTERS}|\" config/kraft/server-broker1.properties &&
-        sed -i \"s|^log.dirs=.*|log.dirs=$${KAFKA_LOG_DIRS}|\"                                      config/kraft/server-broker1.properties &&
-        bin/kafka-storage.sh format
-          --cluster-id $${CLUSTER_ID}
-          --config config/kraft/server-broker1.properties
-          --ignore-formatted &&
-        bin/kafka-server-start.sh config/kraft/server-broker1.properties
-      "
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_DEFAULT_REPLICATION_FACTOR: 3
+      KAFKA_MIN_INSYNC_REPLICAS: 2
 
   broker2:
-    <<: *kafka-common
+    <<: [*kafka-common, *kafka-entrypoint]
     container_name: broker2
+    depends_on:
+      controller0:
+        condition: service_healthy
+      controller1:
+        condition: service_healthy
+      controller2:
+        condition: service_healthy
     environment:
-      CLUSTER_ID: "replace-with-your-cluster-uuid"
-      KAFKA_NODE_ID: 2
-      KAFKA_PROCESS_ROLES: broker,controller
-      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:19092
+      CLUSTER_ID: ${CLUSTER_ID}
+      KAFKA_NODE_ID: 5
+      KAFKA_PROCESS_ROLES: broker
+      KAFKA_LISTENERS: PLAINTEXT://:9092
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://nuc:9092
-      KAFKA_CONTROLLER_QUORUM_VOTERS: 0@nuc:19090,1@nuc:19091,2@nuc:19092
-      KAFKA_CONTROLLER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: *quorum-voters
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_LOG_DIRS: /tmp/kraft-broker2-logs
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_DEFAULT_REPLICATION_FACTOR: 1
-    entrypoint: >
-      bash -c "
-        cp config/kraft/server.properties config/kraft/server-broker2.properties &&
-        sed -i \"s|^node.id=.*|node.id=$${KAFKA_NODE_ID}|\"                                          config/kraft/server-broker2.properties &&
-        sed -i \"s|^process.roles=.*|process.roles=$${KAFKA_PROCESS_ROLES}|\"                        config/kraft/server-broker2.properties &&
-        sed -i \"s|^listeners=.*|listeners=$${KAFKA_LISTENERS}|\"                                    config/kraft/server-broker2.properties &&
-        sed -i \"s|^advertised.listeners=.*|advertised.listeners=$${KAFKA_ADVERTISED_LISTENERS}|\"   config/kraft/server-broker2.properties &&
-        sed -i \"s|^controller.quorum.voters=.*|controller.quorum.voters=$${KAFKA_CONTROLLER_QUORUM_VOTERS}|\" config/kraft/server-broker2.properties &&
-        sed -i \"s|^log.dirs=.*|log.dirs=$${KAFKA_LOG_DIRS}|\"                                      config/kraft/server-broker2.properties &&
-        bin/kafka-storage.sh format
-          --cluster-id $${CLUSTER_ID}
-          --config config/kraft/server-broker2.properties
-          --ignore-formatted &&
-        bin/kafka-server-start.sh config/kraft/server-broker2.properties
-      "
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_DEFAULT_REPLICATION_FACTOR: 3
+      KAFKA_MIN_INSYNC_REPLICAS: 2
