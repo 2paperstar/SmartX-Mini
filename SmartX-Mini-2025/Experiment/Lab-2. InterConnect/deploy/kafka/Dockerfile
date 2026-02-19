@@ -16,3 +16,7 @@ RUN wget -q https://downloads.apache.org/kafka/4.2.0/kafka_2.13-4.2.0.tgz -O - |
     mv kafka_2.13-4.2.0 /kafka
 
 WORKDIR /kafka
+
+# Copy startup script
+COPY start-kafka.sh /start-kafka.sh
+RUN chmod +x /start-kafka.sh
