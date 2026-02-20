@@ -93,12 +93,12 @@ Fluentd는 다양한 소스에서 로그 및 이벤트 데이터를 수집, 변�
 
 Fluentd의 Data Flow Model은 하단의 그림과 같으며, 크게 3가지 요소로 구성됩니다.
 
-![Fluentd](./img/flume.png)
+![Fluentd](./img/fluentd.png)
 |Component|Description|
 |---|---|
-|Input| 외부 시스템이나 명령어 실행 결과 등으로부터 데이터를 수집한다. <br> 파일, HTTP, 명령어 실행(`exec`) 등 다양한 방식을 지원한다. |
-|Filter| 수집된 데이터를 변환하거나 필터링한다. (선택적으로 사용) |
+|Input / Filter| 외부 시스템이나 명령어 실행 결과 등으로부터 데이터를 수집하고, 변환·필터링한다. <br> 파일, HTTP, 명령어 실행(`exec`) 등 다양한 방식을 지원한다. |
 |Output| 처리된 데이터를 외부 시스템(Kafka, Elasticsearch, S3 등)으로 전송한다. |
+|Buffer| stage(chunk 적재)와 queue(전송 대기) 구조로 데이터를 안전하게 버퍼링한다. Chunk 단위로 묶어 전송함으로써 신뢰성 있는 데이터 전달을 보장한다. |
 
 이번 실습에서는 Flume은 `snmpd`로부터 상태 정보를 받아 Kafka로 전달하는 데에 사용됩니다. 실습에서는 Source를 `snmpd`로 설정하여 SNMP를 통해 상태 정보를 수집하며, 이를 Kafka에게 넘겨주게 됩니다.
 이번 실습에서는 Fluentd가 `snmpd`로부터 상태 정보를 주기적으로 수집(`exec` Input)하여 Kafka로 전달하는 데에 사용됩니다. `snmpget` 명령어를 통해 SNMP로 상태 정보를 수집하고, 이를 JSON 형식으로 가공하여 Kafka Topic에 전송합니다.
