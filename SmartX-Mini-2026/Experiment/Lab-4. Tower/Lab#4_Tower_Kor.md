@@ -46,25 +46,83 @@ Go 프로그래밍 언어로 작성되었으며, 운영 모니터링, 애플리�
 
 ![chronograf components](./img/chronograf-arch.png)
 
-Chronograf는 InfluxDB 1.x 버전에서 사용되는 사용자 인터페이스(UI) 및 관리 컴포넌트입니다.
-Chronograf를 사용하면 InfluxDB에 저장된 데이터를 빠르게 확인하고, 쿼리 및 알림을 생성할 수 있습니다. 사용이 간편하며 여러 템플릿 및 라이브러리를 제공해 실시간 데이터를 시각화하는 대시보드를 빠르게 구축할 수 있습니다.
+Chronograf는 InfluxDB 시계열 데이터를 웹에서 조회하고 시각화할 수 있는 사용자 인터페이스(UI)입니다.
+이번 Lab에서는 InfluxDB 2.8을 사용하되, 기존 실습 코드와의 호환을 위해 InfluxDB의 v1 compatibility API(`Labs.autogen`)를 함께 사용합니다.
 
 # 1. Practice
 
-## 1-1. InfluxDB Container 생성 및 실행 ( in NUC )
+## 1-1. InfluxDB 2.8 Container 생성 및 실행 ( in NUC )
+
+기존에 실행 중인 `influxdb` 컨테이너(1.x)가 있다면 먼저 정리합니다.
 
 ```bash
-sudo docker run -d --net host --name influxdb influxdb:1.7
+sudo docker rm -f influxdb 2>/dev/null || true
 ```
 
-이제 **InfluxDB**가 생성되었습니다. InfluxDB는 **8086번 port**를 사용하며, `--net host` option을 사용했기 때문에, InfluxDB에 접근하기 위해서는 `localhost:8086` 혹은 `<NUC IP>:8086`을 사용하게 됩니다.
+아래 명령어로 **InfluxDB 2.8** 컨테이너를 실행합니다.
+`<>` 값은 실습 환경에 맞게 변경하세요.
+
+```bash
+sudo docker run -d \
+  --net host \
+  --name influxdb \
+  -v influxdb2-data:/var/lib/influxdb2 \
+  -e DOCKER_INFLUXDB_INIT_MODE=setup \
+  -e DOCKER_INFLUXDB_INIT_USERNAME=admin \
+  -e DOCKER_INFLUXDB_INIT_PASSWORD=<INFLUXDB_ADMIN_PASSWORD> \
+  -e DOCKER_INFLUXDB_INIT_ORG=GIST \
+  -e DOCKER_INFLUXDB_INIT_BUCKET=Labs \
+  -e DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=<INFLUXDB_ADMIN_TOKEN> \
+  influxdb:2.8
+```
+
+InfluxDB는 **8086번 port**를 사용하며, `--net host` 옵션을 사용했기 때문에 `localhost:8086` 혹은 `<NUC IP>:8086`으로 접근할 수 있습니다.
+
+### 1-1-1. InfluxDB v1 호환 설정 (Chronograf / Python Consumer 호환)
+
+`broker_to_influxdb.py`와 Chronograf의 기존 쿼리(`Labs.autogen`)를 그대로 사용하기 위해 v1 호환 구성을 추가합니다.
+
+먼저 `Labs` bucket ID를 확인합니다.
+
+```bash
+sudo docker exec influxdb influx bucket list --name Labs
+```
+
+출력에서 `Labs`의 ID를 `<LABS_BUCKET_ID>`로 사용해 DBRP 매핑을 생성합니다.
+
+```bash
+sudo docker exec influxdb influx v1 dbrp create \
+  --db Labs \
+  --rp autogen \
+  --default \
+  --bucket-id <LABS_BUCKET_ID> \
+  --org GIST \
+  --token <INFLUXDB_ADMIN_TOKEN>
+```
+
+마지막으로 v1 호환 인증 계정을 생성합니다.
+
+```bash
+sudo docker exec influxdb influx v1 auth create \
+  --username tower \
+  --password <INFLUXDB_V1_PASSWORD> \
+  --read-bucket <LABS_BUCKET_ID> \
+  --write-bucket <LABS_BUCKET_ID> \
+  --org GIST \
+  --token <INFLUXDB_ADMIN_TOKEN>
+```
+
+> [!tip]
+>
+> `<INFLUXDB_V1_PASSWORD>`는 URL 쿼리 문자열에 들어가므로 영문/숫자 조합으로 설정하는 것을 권장합니다.
 
 ## 1-2. Chronograf Container 생성 및 실행 ( in NUC )
 
 InfluxDB에 접근할 수 있는 url을 argument로 입력해 **chronograf container**를 생성합니다.
 
 ```bash
-sudo docker run -p 8888:8888 --name chronograf chronograf --influxdb-url http://<NUC IP>:8086
+sudo docker rm -f chronograf 2>/dev/null || true
+sudo docker run -d -p 8888:8888 --name chronograf chronograf --influxdb-url http://<NUC IP>:8086
 ```
 
 - **`-p 8888:8888`의 역할**
@@ -134,55 +192,46 @@ sudo pip install requests kafka-python influxdb msgpack
 
 </details>
 
-## 1-4. Kafka Cluster 실행
+<br>
 
-**지난 Lab2에서 사용했던 Kafka 클러스터**의 **zookeeper, broker0, broker1, broker2 containers**를 다시 실행하고, 각 container 역할별 프로그램을 실행합니다.
+## 1-4. Kafka Cluster 실행 (KRaft, in NUC)
+
+**지난 Lab2에서 구성한 Kafka KRaft 클러스터**(`controller0`, `controller1`, `controller2`, `broker0`, `broker1`, `broker2`)를 다시 실행합니다.
 
 ### 1-4-1. Kafka 클러스터 Containers 재실행
 
-아래 명령어를 입력해보면, 실행 종료된 zookeeper, broker container들을 확인할 수 있습니다.
+먼저 컨테이너 상태를 확인합니다.
 
 ```bash
-sudo docker ps -a
+sudo docker ps -a --format "table {{.Names}}\t{{.Status}}" | egrep "controller|broker"
 ```
 
-우리는 그 중에서 zookeeper, brokers containers를 다시 실행해야 합니다. 아래 명령어를 통해 해당 containers를 실행합니다.
+중지되어 있다면 아래 명령어로 실행합니다.
 
 ```bash
-sudo docker start zookeeper broker0 broker1 broker2
+sudo docker start controller0 controller1 controller2 broker0 broker1 broker2
 ```
 
-### 1-4-2. Kafka Container 터미널 접속 및 프로그램 실행
+### 1-4-2. Kafka 동작 및 Topic 확인
 
-아래 명령어를 통해 각 docker container의 터미널에 접속할 수 있습니다. `zookeeper`, `broker0`, `broker1`, `broker2` 순서대로 접속하고, 각 container에 접속할 때마다 각 case에 해당하는 작업을 수행합니다.
+KRaft 모드에서는 `zookeeper` 컨테이너를 사용하지 않습니다.
+컨트롤러/브로커 상태와 `resource` topic 존재 여부를 확인합니다.
 
 ```bash
-sudo docker attach zookeeper
+sudo docker ps --format "table {{.Names}}\t{{.Status}}" | egrep "controller|broker"
 
-# at new terminal
-sudo docker attach broker0
-
-# at new terminal
-sudo docker attach broker1
-
-# at new terminal
-sudo docker attach broker2
+sudo docker exec broker0 /kafka/bin/kafka-topics.sh --list \
+  --bootstrap-server localhost:9090
 ```
 
-#### Case 1: **`zookeeper` container인 경우**
-
-아래 명령어를 입력합니다. `bin/zookeeper-server.start.sh`는 zookeeper 서버를 실행하는 파일이며, `config/zookeeper.properties`는 Lab2에서 이미 수정했으므로 별도의 수정이 필요하지 않습니다.
+`resource` topic이 없다면 생성합니다.
 
 ```bash
-bin/zookeeper-server-start.sh config/zookeeper.properties
-```
-
-#### Case 2: **`broker` container인 경우(broker0, broker1, broker2)**
-
-아래 명령어를 입력합니다. `bin/kafka-server-start.sh`는 broker 서버를 실행하는 파일이며, `config/server.properties`는 Lab2에서 이미 수정했으므로 별도의 수정이 필요하지 않습니다.
-
-```bash
-bin/kafka-server-start.sh config/server.properties
+sudo docker exec broker0 /kafka/bin/kafka-topics.sh --create \
+  --bootstrap-server localhost:9090 \
+  --replication-factor 3 \
+  --partitions 3 \
+  --topic resource
 ```
 
 ## 1-5. Flume container ( in PI )
@@ -237,9 +286,25 @@ bin/flume-ng agent --conf conf --conf-file conf/flume-conf.properties --name age
 vim ~/SmartX-Mini/SmartX-Box/ubuntu-kafkatodb/broker_to_influxdb.py
 ```
 
-이 파일에서, `<NUC IP>`를 여러분의 실제 NUC IP로 수정해주세요.
+이 파일에서 아래 3개 항목을 수정해주세요.
 
-> e.g. `<NUC IP>`를 `203.237.53.100`로 수정
+1. Kafka Bootstrap Server를 KRaft Broker로 변경
+2. InfluxDB write URL에 v1 인증 파라미터 추가
+3. InfluxDB 2.8에서 사전 생성한 bucket을 사용하도록 `CREATE DATABASE` 호출 제거
+
+```python
+# before
+consumer = KafkaConsumer('resource',bootstrap_servers=['<NUC_IP>:9091'])
+consumer = KafkaConsumer('resource', bootstrap_servers=['<NUC_IP>:9091'])
+cmd = "curl -XPOST 'http://localhost:8086/query' --data-urlencode 'q=CREATE DATABASE Labs'"
+cmd = "curl -i -XPOST 'http://localhost:8086/write?db=Labs' --data-binary '...'"
+
+# after
+consumer = KafkaConsumer('resource',bootstrap_servers=['localhost:9090'])
+consumer = KafkaConsumer('resource', bootstrap_servers=['localhost:9090'])
+# Labs bucket은 1-1에서 이미 생성하므로 CREATE DATABASE 호출은 제거(또는 주석 처리)
+cmd = "curl -i -XPOST 'http://localhost:8086/write?db=Labs&u=tower&p=<INFLUXDB_V1_PASSWORD>' --data-binary '...'"
+```
 
 ![broker_to_influxdb python file](https://user-images.githubusercontent.com/82452337/160814546-da543a58-e6b6-49cb-bdb1-19aa2de9c1fb.png)
 
@@ -270,6 +335,13 @@ python3 ~/SmartX-Mini/SmartX-Box/ubuntu-kafkatodb/broker_to_influxdb.py
 ### 1-7-3. 데이터 Source 추가하기
 
 ![chronograf-3](./img/chronograf-3.png)
+
+Data Source를 추가할 때 아래 항목을 입력합니다.
+
+- URL: `http://<NUC IP>:8086`
+- Database: `Labs`
+- Username: `tower`
+- Password: `<INFLUXDB_V1_PASSWORD>`
 
 ### 1-7-4. 쿼리 등록하기
 
@@ -325,9 +397,9 @@ docker run --rm -it busybox sh -c "while true; do :; done"
 
 ## 주요 과정 요약
 
-1. InfluxDB 컨테이너 실행 → 데이터를 저장하는 TSDB
+1. InfluxDB 2.8 컨테이너 실행 + v1 호환(DBRP/Auth) 설정 → 기존 코드와 쿼리 호환 유지
 2. Chronograf 컨테이너 실행 → InfluxDB 데이터를 시각화하는 Web UI
-3. Kafka 클러스터 재시작 → 지난 Lab에서 구축한 Kafka를 다시 실행
+3. Kafka KRaft 클러스터 재시작 → 지난 Lab2에서 구축한 Controller/Broker 실행
 4. Flume 실행 → 데이터 스트리밍을 위한 Flume 에이전트 실행
 5. Python (Kafka) Consumer 실행 (broker_to_influxdb.py) → Kafka Broker로부터 데이터를 받아 InfluxDB에 적재
 6. Chronograf 대시보드 구성 → InfluxDB의 데이터를 시각적으로 확인할 수 있도록 설정
