@@ -161,6 +161,7 @@ HypriotOS 설치를 위해 Micro SD 카드를 리더기에 삽입한 뒤, NUC에
 [`flash`](https://github.com/hypriot/flash)는 SD카드에 Image를 설치하는 스크립트로, SD카드에 OS를 설치하기 위해 사용됩니다. 다음의 명령어를 입력하여 `flash`를 설치합니다. 설치 이후, Shell에 `flash`를 입력하여 정상 설치 여부를 확인합니다.
 
 ```bash
+cd ~
 sudo apt update && sudo apt install -y pv curl python3-pip unzip hdparm python3.12-venv
 python3 -m venv ~/.venv
 source .venv/bin/activate
@@ -218,7 +219,7 @@ curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.s
 sudo apt install -y git-lfs
 git lfs install
 git clone https://github.com/SmartX-Labs/SmartX-Mini.git
-cd ~/SmartX-Mini/SmartX-Mini-2025/Experiment/Lab-2.\ InterConnect/
+cd ~/SmartX-Mini/SmartX-Mini-2025/Experiment/Lab-2.\ InterConnect/deploy/hypirotos
 ```
 
 <details>
