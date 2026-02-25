@@ -177,6 +177,8 @@ chmod +x flash
 sudo mv flash /usr/local/bin/flash
 ```
 
+<!-- NOTE: python-pip, awscli 필요 없습니다. -->
+
 <details>
 <summary> 📰️ 참고: `flash` 의존성 </summary>
 
@@ -217,6 +219,12 @@ sudo mv flash /usr/local/bin/flash
 `flash`는 `cloud-init`에게 설정 파일을 전달하여 네트워크, 계정, SSH 등을 설정합니다. 미리 준비한 설정 파일을 다운로드하기 위해, Github Repository를 Clone하겠습니다.
 
 Repository 내부에 Large File이 포함된 관계로, `git-lfs`을 먼저 설치한 뒤 Clone하고, 설치를 진행할 디렉토리로 이동하겠습니다. 하단의 명령어를 입력하여 Clone을 진행해주시기 바랍니다.
+
+<!-- NOTE: git lfs 없이 클론 가능합니다. -->
+<!-- NOTE:
+      network-config, hypriotos-init.yaml 파일만 가져오기 위해 레포를 클론하는 것이 오버헤드는 아닐지?
+      다운로드가 필요하다면 release를 만들어서 artifact로 제공할 수도 있습니다.
+-->
 
 ```bash
 cd ~
@@ -390,7 +398,7 @@ flash -u hypriotos-init.yaml -F network-config -d <Your SD Card Directory> hypri
 
 이제 SD 카드를 분리하여 다시 Pi에 삽입한 뒤, Pi의 전원을 켭니다. ID는 `pi`, Password는 `1234` 입니다.
 
-이제부터 키보드와 마우스, 모니터를 Pi에 연결하여 작업합니다.
+이제부터 키보드와 모니터를 Pi에 연결하여 작업합니다.
 
 먼저, 네트워크 인터페이스 설정이 올바르게 이루어졌는지 확인하기 위해 `ifconfig` 명령을 쉘에 입력합니다.
 
@@ -484,7 +492,7 @@ sudo reboot
 ### 2-2-4. (NUC) Pi 환경 확인
 
 이전 과정에서 Pi에 `openssh-server`를 설치하였기 때문에, 외부에서 SSH를 통해 Pi에 접근할 수 있습니다.  
-(즉, 이제부터 모니터, 마우스, 키보드를 일일이 뽑고 꽂을 필요 없이, NUC에서 SSH로 Pi에 접근하면 됩니다.)
+(즉, 이제부터 모니터, 키보드를 일일이 뽑고 꽂을 필요 없이, NUC에서 SSH로 Pi에 접근하면 됩니다.)
 
 이를 확인하기 위해, NUC의 터미널에서 SSH를 통해 Pi에 접근하겠습니다.  
 NUC으로 돌아와, 다음과 같이 입력해주십시오.
@@ -877,18 +885,11 @@ cd ~/SmartX-Mini/SmartX-Box/raspbian-flume
 
 `Dockerfile`을 열어 내용이 하단과 동일한지 확인해주십시오.
 
-> [!caution]
->
-> 만약 Image가 `FROM balenalib/rpi-raspbian:stretch`로 지정된 경우, 반드시 이를 `FROM balenalib/rpi-raspbian:buster`로 수정하시기 바랍니다.
->
-> `stretch` 이미지에 포함된 APT 레포지토리 서버 중 일부가 운영을 중단하였기 때문에 404 Error와 함께 Build 과정이 실패하게 됩니다.
-
 ```dockerfile
 FROM balenalib/rpi-raspbian:buster
 LABEL "maintainer"="Seungryong Kim <srkim@nm.gist.ac.kr>"
 
-# (Optional; to speed-up the build procedure) Change apt repository to kaist mirror server.
-RUN sed -i 's@archive.raspbian.org@ftp.kaist.ac.kr/raspbian@g' /etc/apt/sources.list
+RUN sed -i 's@archive.raspbian.org@legacy.raspbian.org@g' /etc/apt/sources.list
 
 #Update & Install wget, vim
 RUN sudo apt update

@@ -397,7 +397,7 @@ flash -u hypriotos-init.yaml -F network-config -d <Your SD Card Directory> hypri
 
 Now, eject the SD card, insert it into the Pi, and power it on. The default login credentials are (ID: `pi`, Password: `1234`).
 
-Next, connect a keyboard, mouse, and monitor to the **Pi** to proceed with the setup.
+Next, connect a keyboard, and monitor to the **Pi** to proceed with the setup.
 
 First, verify that the network interface is configured correctly by entering the following command in the shell:
 
@@ -493,7 +493,7 @@ sudo reboot
 ### 2-2-4. (NUC) Check Pi Setup
 
 Since `openssh-server` has been installed on the Pi, you can now access the Pi via SSH from external devices.  
-(From now on, there's no need to repetitively unplug and plug in the monitor, mouse, and keyboard. You can access the Pi via SSH from the NUC.)
+(From now on, there's no need to repetitively unplug and plug in the monitor, and keyboard. You can access the Pi via SSH from the NUC.)
 
 To verify this, I will access the Pi via SSH from the terminal on the NUC.  
 Return to the NUC and enter the following command:
@@ -903,8 +903,7 @@ Open the `Dockerfile` and ensure the contents match the following configuration:
 FROM balenalib/rpi-raspbian:buster
 LABEL "maintainer"="Seungryong Kim <srkim@nm.gist.ac.kr>"
 
-# (Optional; to speed-up the build procedure) Change apt repository to KAIST mirror server.
-RUN sed -i 's@archive.raspbian.org@ftp.kaist.ac.kr/raspbian@g' /etc/apt/sources.list
+RUN sed -i 's@archive.raspbian.org@legacy.raspbian.org@g' /etc/apt/sources.list
 
 #Update & Install wget, vim
 RUN sudo apt update
