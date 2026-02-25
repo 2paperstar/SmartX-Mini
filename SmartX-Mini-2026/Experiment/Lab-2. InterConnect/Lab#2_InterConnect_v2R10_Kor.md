@@ -218,7 +218,7 @@ sudo apt install -y git
 curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
 sudo apt install -y git-lfs
 git lfs install
-git clone https://github.com/SmartX-Labs/SmartX-Mini.git
+git clone --depth=1 https://github.com/SmartX-Labs/SmartX-Mini.git
 cd ~/SmartX-Mini/SmartX-Mini-2026/Experiment/Lab-2.\ InterConnect/deploy/hypirotos
 ```
 
