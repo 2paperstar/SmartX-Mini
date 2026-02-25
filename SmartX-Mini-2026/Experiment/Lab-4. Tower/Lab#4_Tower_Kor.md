@@ -53,7 +53,7 @@ Chronograf는 InfluxDB 시계열 데이터를 웹에서 조회하고 시각화�
 
 ## 1-1. InfluxDB 2.8 Container 생성 및 실행 ( in NUC )
 
-기존에 실행 중인 `influxdb` 컨테이너(1.x)가 있다면 먼저 정리합니다.
+기존에 실행 중인 `influxdb` 컨테이너가 있다면 먼저 정리합니다.
 
 ```bash
 sudo docker rm -f influxdb 2>/dev/null || true
@@ -280,13 +280,6 @@ sudo docker run -it --rm \
 ```bash
 vim ~/SmartX-Mini/SmartX-Mini-2026/Experiment/Lab-4. Tower/deploy/ubuntu-kafkatodb/broker_to_influxdb.py
 ```
-
-이 파일에서 아래 3개 항목을 수정해주세요.
-
-1. Kafka Bootstrap Server를 KRaft Broker로 변경
-2. InfluxDB write URL에 v1 인증 파라미터 추가 (스크립트는 `INFLUXDB_V1_USER`, `INFLUXDB_V1_PASSWORD` 환경변수 사용)
-3. InfluxDB 2.8에서 사전 생성한 bucket을 사용하도록 `CREATE DATABASE` 호출 제거
-4. Lab 2의 Fluentd는 JSON 메시지를 전송하므로, `str2[10]` 같은 고정 인덱스 파싱 대신 키 기반 파싱을 사용
 
 ```python
 # before
