@@ -192,6 +192,16 @@ If an issue related to booting occurs, follow these steps.
 
 ## 2-2. NUC: Network Configuration using Virtual Switch
 
+> [!WARNING]
+> Before proceeding on Ubuntu Desktop 24.04, check the following points first:
+>
+> 1. Running `sudo apt-get purge netplan.io` may cause abnormal network behavior after reboot.
+> 2. If NetworkManager and ifupdown control interfaces at the same time, IP conflicts or link flapping can occur.
+> 3. If the `ovs-docker` script is missing, the `add-port` step can fail.
+> 4. If `kvm` is unavailable, use `qemu-system-x86_64` instead.
+
+<!-- -->
+
 > [!CAUTION]  
 > **⚠️(Important: If a window appears asking whether to update Ubuntu after logging in, make sure to select “Don’t Upgrade”!)⚠️**
 
@@ -234,16 +244,18 @@ If an issue related to booting occurs, follow these steps.
 
    ![Ovs Vsctl Show](./img/ovs_vsctl_show.png)
 
-5. Disable netplan
+5. Change default network manager (Ubuntu 24.04)
+   - In Ubuntu 24.04, disable the default network managers first to avoid conflicts with OVS + ifupdown manual settings.
+   - These commands may temporarily disconnect networking, so run them on the **local console (directly on the NUC screen)**.
 
-- To use manual network management with Open vSwitch (OVS), disable and remove systemd-networkd and Netplan.
-
-  ```bash
-  sudo systemctl stop systemd-networkd.socket systemd-networkd networkd-dispatcher systemd-networkd-wait-online
-  sudo systemctl disable systemd-networkd.socket systemd-networkd networkd-dispatcher systemd-networkd-wait-online
-  sudo systemctl mask systemd-networkd.socket systemd-networkd networkd-dispatcher systemd-networkd-wait-online
-  sudo apt --assume-yes purge netplan.io
-  ```
+```bash
+sudo systemctl stop systemd-networkd.socket systemd-networkd networkd-dispatcher systemd-networkd-wait-online
+sudo systemctl disable systemd-networkd.socket systemd-networkd networkd-dispatcher systemd-networkd-wait-online
+sudo systemctl mask systemd-networkd.socket systemd-networkd networkd-dispatcher systemd-networkd-wait-online
+sudo systemctl stop NetworkManager
+sudo systemctl disable NetworkManager
+sudo apt --assume-yes purge netplan.io
+```
 
 - DNS configuration
 
@@ -415,11 +427,13 @@ sudo systemctl restart networking
   sudo apt install -y qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils
   # upgrade KVM
   # qemu is open-source emulator
+  # If the distributed filename is ubuntu-24.04.x-live-server-amd64.iso,
+  # update this command and the -cdrom value below to match the actual filename.
 
   wget https://ftp.lanet.kr/ubuntu-releases/24.04.4/ubuntu-24.04.4-live-server-amd64.iso
   ```
 
-  <!-- TODO: lanet.kr, ubuntu.com, kakao.com 중에서 어떤 것이 빠른지 실험실에서 테스트 필요 -->
+  <!-- TODO: test in the lab whether lanet.kr or ubuntu.com is faster -->
   <!-- https://launchpad.net/ubuntu/+cdmirrors 경우에 따라 이쪽에 있는 목록을 여러개 나열하는 것도 도움 될 수 있음 -->
 
 - Prepare for Ubuntu VM
@@ -625,6 +639,10 @@ Pressing ctrl + p, q allows you to exit the container without stopping it.
 
 Execute the following command outside of Docker. **(on the host machine)**  
 This command uses **Open vSwitch(OVS)** to add a specific network interface (veno1) to a Docker container (c1) and connect it to a virtual bridge (br0).
+
+> [!CAUTION]
+> On Ubuntu 24.04, this command may fail if `ovs-docker` is not available.
+> Check with `which ovs-docker` first, and if it is missing, use `/usr/share/openvswitch/scripts/ovs-docker`.
 
 ```bash
 sudo docker start c1

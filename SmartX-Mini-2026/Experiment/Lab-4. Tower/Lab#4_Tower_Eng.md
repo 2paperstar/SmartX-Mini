@@ -4,22 +4,22 @@
 
 ![overall objective](https://user-images.githubusercontent.com/82452337/160807997-9caadb51-b363-4e82-bbb2-e1f5888b08b3.png)
 
-**The goal of this Lab is to build a Tower (monitoring system) that can monitor a system and visualize the monitored data.**
+**The goal of this Lab is to build a Tower (monitoring system) that monitors system status and visualizes collected data.**
 
 ## 0-1. Lab Goal
 
 - Real-time system status monitoring
 - Storage and analysis of large-scale time-series data
 - Intuitive understanding of system data through visualization
-- Workflow: Data collection via Kafka → Storage in InfluxDB → Visualization via Chronograf
+- Workflow: Kafka-based data collection -> InfluxDB storage -> Chronograf visualization
 
-We will use the Kafka cluster built in **Lab#2 (InterConnect Lab)**.
+We use the Kafka cluster built in **Lab#2 (InterConnect Lab)**.
 
 ## 0-2. Why is a monitoring system necessary?
 
-Real-time monitoring is essential to maintain system performance and stability. It enables fast detection and response to system failures and allows performance optimization and capacity planning based on analysis of time-series data. Especially in distributed systems, it is crucial to collectively analyze data collected from various nodes, which requires a system that can effectively store and visualize the data.
+Real-time monitoring is essential for maintaining system performance and stability. It allows fast detection and response to failures, and supports performance optimization and capacity planning through time-series analysis. In distributed systems, data from multiple nodes must be analyzed together, so an effective storage and visualization system is required.
 
-In this Lab, we will learn how to build such a monitoring system using `Flume` and `Kafka` for data collection, `InfluxDB` for time-series storage, and `Chronograf` for visualization.
+In this Lab, you will build a monitoring pipeline using `Fluentd` and `Kafka` for data collection, `InfluxDB` for time-series storage, and `Chronograf` for visualization.
 
 ## 0-3. TSDB (Time Series Database)
 
@@ -27,253 +27,337 @@ In this Lab, we will learn how to build such a monitoring system using `Flume` a
 
 ![time-series-data](./img/time-series-data.png)
 
-Time-series data refers to data that changes over time, where each data point represents a value at a specific timestamp. Examples include server CPU usage, network traffic, IoT sensor data, and financial market data. A **Time Series Database** is optimized to efficiently store and query such data, allowing fast lookup, real-time analysis, and long-term trend detection.
+Time-series data represents values measured over time, where each data point is associated with a timestamp. Examples include server CPU usage, network traffic, IoT sensor data, and financial market data. A **Time Series Database** is optimized for efficiently storing and querying this type of data, enabling fast lookup, real-time analysis, and long-term trend analysis.
 
 ## 0-4. InfluxDB
 
 ![influxdb](./img/influxdb.png)
 
-**InfluxDB** is an open-source time-series database developed by InfluxData.  
-Written in the Go programming language, it is used in various domains to store and retrieve time-series data such as operational monitoring, application metrics, IoT sensor data, and real-time analytics.
+**InfluxDB** is an open-source Time Series Database (TSDB) developed by InfluxData.
+Written in Go, it is widely used to store and query time-series data for operational monitoring, application metrics, IoT sensors, and real-time analytics.
 
-> [!note]
+> [!NOTE]
 >
-> **Most of the IT companies you'd think of use InfluxDB to handle time-series data.**
+> **Most major IT companies use InfluxDB for time-series workloads.**
 
 ## 0-5. Chronograf
 
 ![chronograf icon](./img/chronograf-icon.png)
 
-### Simple monitoring system architecture using InfluxDB and Chronograf
+### Simple monitoring architecture with InfluxDB and Chronograf
 
 ![chronograf components](./img/chronograf-arch.png)
 
-Chronograf is the user interface (UI) and administrative component used with InfluxDB 1.x.  
-It provides an easy way to browse stored data in InfluxDB, create queries and alerts, and quickly build dashboards using templates and libraries for real-time visualization.
+Chronograf is a web UI for browsing and visualizing InfluxDB time-series data.
+In this Lab, we use InfluxDB 2.8 and also configure InfluxDB v1 compatibility (`Labs.autogen`) so existing practice code continues to work.
 
 # 1. Practice
 
-## 1-1. Create and Run InfluxDB Container ( in NUC )
+## 1-1. Create and Run InfluxDB 2.8 Container ( in NUC )
+
+If an old `influxdb` container is already running, remove it first.
 
 ```bash
-sudo docker run -d --net host --name influxdb influxdb:1.7
+sudo docker rm -f influxdb 2>/dev/null || true
 ```
 
-Now **InfluxDB** is running. It uses **port 8086**, and because we used `--net host`, we can access it via `localhost:8086` or `<NUC IP>:8086`.
+Define the InfluxDB admin password and admin token as environment variables.
+
+```bash
+export INFLUXDB_ADMIN_PASSWORD='SxMiniAdmin!2026'
+export INFLUXDB_ADMIN_TOKEN="$(openssl rand -hex 32)"
+```
+
+Run the **InfluxDB 2.8** container.
+
+```bash
+sudo docker run -d \
+  --net host \
+  --name influxdb \
+  -v influxdb2-data:/var/lib/influxdb2 \
+  -e DOCKER_INFLUXDB_INIT_MODE=setup \
+  -e DOCKER_INFLUXDB_INIT_USERNAME=admin \
+  -e DOCKER_INFLUXDB_INIT_PASSWORD="$INFLUXDB_ADMIN_PASSWORD" \
+  -e DOCKER_INFLUXDB_INIT_ORG=GIST \
+  -e DOCKER_INFLUXDB_INIT_BUCKET=Labs \
+  -e DOCKER_INFLUXDB_INIT_ADMIN_TOKEN="$INFLUXDB_ADMIN_TOKEN" \
+  influxdb:2.8
+```
+
+InfluxDB uses **port 8086**. Because we use `--net host`, access it via `localhost:8086` or `<NUC IP>:8086`.
+
+### 1-1-1. Configure InfluxDB v1 compatibility (for Chronograf / Python consumer)
+
+To keep using existing `broker_to_influxdb.py` and Chronograf queries (`Labs.autogen`), add v1 compatibility settings.
+
+First, get the `Labs` bucket ID and store it in an environment variable.
+
+```bash
+LABS_BUCKET_ID=$(sudo docker exec influxdb influx bucket list --name Labs | awk 'NR==2 {print $1}')
+```
+
+Create a DBRP mapping using `LABS_BUCKET_ID`.
+
+```bash
+sudo docker exec influxdb influx v1 dbrp create \
+  --db Labs \
+  --rp autogen \
+  --default \
+  --bucket-id $LABS_BUCKET_ID \
+  --org GIST \
+  --token $INFLUXDB_ADMIN_TOKEN
+```
+
+If DBRP mapping is created successfully, output will look similar to:
+
+```bash
+ID                      Database        Bucket ID               Retention Policy        Default Organization ID
+104bca211b4ac000        Labs            a239a82440d4728d        autogen                 true    1b30065610067f7a
+```
+
+Create a v1-compatible auth account.
+
+> [!TIP]
+>
+> `INFLUXDB_V1_PASSWORD` is used in URL query strings, so alphanumeric values are recommended.
+
+```bash
+export INFLUXDB_V1_USER=tower
+export INFLUXDB_V1_PASSWORD='SxMiniV12026'
+
+sudo docker exec influxdb influx v1 auth create \
+  --username tower \
+  --password $INFLUXDB_V1_PASSWORD \
+  --read-bucket $LABS_BUCKET_ID \
+  --write-bucket $LABS_BUCKET_ID \
+  --org GIST \
+  --token $INFLUXDB_ADMIN_TOKEN
+```
 
 ## 1-2. Create and Run Chronograf Container ( in NUC )
 
-Run the following command with the appropriate InfluxDB URL to launch the **Chronograf container**.
+Create the **Chronograf container** using the InfluxDB URL.
 
 ```bash
-sudo docker run -p 8888:8888 --name chronograf chronograf --influxdb-url http://<NUC IP>:8086
+sudo docker rm -f chronograf 2>/dev/null || true
+sudo docker run -d -p 8888:8888 --name chronograf chronograf --influxdb-url http://<NUC IP>:8086
 ```
 
-- **What does `-p 8888:8888` do?**
-  - Maps host's port 8888 to container's port 8888
-  - This means that if you access to host's port 8888, then it will be forwarded to container's 8888 port.
-  - Allows you to access the Chronograf UI via `localhost:8888` or `<NUC IP>:8888`
-  - `-p <host port>:<container port>`
+Verify Chronograf is running normally.
 
-- **Difference between `--net host` and `-p 8888:8888`?**
-  - `-p 8888:8888`
-    - More secure because only the required port (8888) of host's ports is exposed.
-    - - However, you have to explicitly map the ports each time.
-  - `--net host`
-    - Container will use host's network as is.
-    - This means that if you open port 8888 inside container, the same port 8888 will be available on host.
-    - You don't need to set a port mapping.
-
-If it appears as below, it means that the chronograph has started successfully.
+```bash
+sudo docker logs --tail 100 chronograf
+```
 
 ![chronograf_run.png](./img/chronograf_run.png)
 
-## 1-3. Install python-pip and Python packages ( in NUC )
+- **What does `-p 8888:8888` do?**
+  - Maps host port 8888 to container port 8888.
+  - Accessing host port 8888 is forwarded to Chronograf in the container.
+  - You can access the UI via `localhost:8888` or `<NUC IP>:8888`.
+  - Format: `-p <host port>:<container port>`
 
-### 1-3-1. Install python-pip
+- **Difference between `--net host` and `-p 8888:8888`**
+  - `-p 8888:8888`
+    - Exposes only required ports.
+    - Requires explicit port mapping.
+  - `--net host`
+    - Container uses host networking directly.
+    - No separate port mapping required.
 
-Open a new terminal and run the commands!
+## 1-3. Install Python venv and packages ( in NUC )
 
-> [!tip]
+### 1-3-1. Install python-pip / venv modules
+
+On Python 3.12 (Externally Managed Environment), global `pip install` may be restricted, so install `venv` together.
+
+```bash
+sudo apt-get install -y libcurl4 openssl curl python3-pip python3-venv
+```
+
+### 1-3-2. Activate virtual environment and install Python packages
+
+<!-- TODO: pip path edit, .gitignore update needed -->
+
+Activate the Python venv created in Lab 2, then install packages.
+
+```bash
+source ~/.venv/bin/activate
+python -m pip install --upgrade pip
+pip install requests kafka-python influxdb msgpack
+```
+
+Check installed versions if needed.
+
+```bash
+pip show requests kafka-python influxdb msgpack
+```
+
+> [!TIP]
 >
-> **Open new terminal in tab: `Ctrl+Shift+T`, Open new terminal: `Ctrl+Alt+T`**
+> Every time you open a new terminal, run `source ~/.venv/bin/activate` before running Python commands.
+
+## 1-4. Start Kafka Cluster (KRaft, in NUC)
+
+Restart the Kafka KRaft cluster from Lab2:
+`controller0`, `controller1`, `controller2`, `broker0`, `broker1`, `broker2`.
+
+### 1-4-1. Restart Kafka cluster containers
+
+Check current container status first.
 
 ```bash
-sudo apt-get install -y libcurl4 openssl curl python3-pip
+sudo docker ps -a --format "table {{.Names}}\t{{.Status}}" | egrep "controller|broker"
 ```
 
-<details>
-<summary>Package Versions (Expand)</summary>
-
-#### NUC
-
-|   Package   |      Version       |
-| :---------: | :----------------: |
-|  libcurl4   | 7.68.0-1ubuntu2.15 |
-|   openssl   | 1.1.1f-1ubuntu2.16 |
-|    curl     | 7.68.0-1ubuntu2.15 |
-| python3-pip | 20.0.2-5ubuntu1.7  |
-
-</details>
-
-### 1-3-2. Install Python Packages
+If stopped, start them with:
 
 ```bash
-sudo pip install requests kafka-python influxdb msgpack --break-system-packages
+sudo docker start controller0 controller1 controller2 broker0 broker1 broker2
 ```
 
-<details>
-<summary>Package Versions (Expand)</summary>
+### 1-4-2. Verify Kafka status and topic
 
-#### Python
-
-|   Package    | Version |
-| :----------: | :-----: |
-|   requests   | 2.22.0  |
-| kafka-python |  2.0.2  |
-|   influxdb   |  5.3.1  |
-|   msgpack    |  1.0.4  |
-
-</details>
-
-## 1-4. Start Kafka Cluster
-
-Use the **Kafka cluster from Lab#2** — restart **zookeeper, broker0, broker1, and broker2 containers**.
-
-### 1-4-1. Restart Kafka Cluster Containers
-
-With the command below, you can check the exited containers which are zookeeper, broker0, broker1, broker2, consumer.
+In KRaft mode, `zookeeper` is not used.
+Check controller/broker status and whether the `resource` topic exists.
 
 ```bash
-sudo docker ps -a
+sudo docker ps --format "table {{.Names}}\t{{.Status}}" | egrep "controller|broker"
+
+sudo docker exec broker0 /kafka/bin/kafka-topics.sh --list \
+  --bootstrap-server localhost:9090
 ```
 
-We need to restart the zookeeper, brokers containers. Run the command below to restart the containers.
+If `resource` does not exist, create it.
 
 ```bash
-sudo docker start zookeeper broker0 broker1 broker2
+sudo docker exec broker0 /kafka/bin/kafka-topics.sh --create \
+  --bootstrap-server localhost:9090 \
+  --replication-factor 3 \
+  --partitions 3 \
+  --topic resource
 ```
 
-### 1-4-2. Attach to Kafka Containers
-
-You can connect to the terminal of each docker container with these commands. Connect to `zookeeper`, `broker0`, `broker1`, and `broker2` in order, and perform the actions corresponding to the case below each time you connect to each container.
-
-```bash
-sudo docker attach zookeeper
-
-# at new terminal (ctrl+shift+t)
-sudo docker attach broker0
-
-# at new terminal (ctrl+shift+t)
-sudo docker attach broker1
-
-# at new terminal (ctrl+shift+t)
-sudo docker attach broker2
-```
-
-#### Case 1: `zookeeper` container
-
-Enter the command below. The `bin/zookeeper-server.start.sh` is the file that runs the zookeeper server, and the `config/zookeeper.properties` is already modified in Lab2, so no further modifications are required.
-
-```bash
-bin/zookeeper-server-start.sh config/zookeeper.properties
-```
-
-#### Case 2: `broker` container (broker0, broker1, broker2)
-
-Enter the command below. The `bin/kafka-server-start.sh` is the file that runs the broker server, and the `config/server.properties` is already modified in Lab2, so no further modifications are required.
-
-```bash
-bin/kafka-server-start.sh config/server.properties
-```
-
-## 1-5. Flume container ( in PI )
+## 1-5. Fluentd container ( in PI )
 
 ### 1-5-1. `/etc/hosts`
 
-If Pi is rebooted, previously written `/etc/hosts` entries might be lost. Add them again:
+If the PI reboots, `/etc/hosts` entries may be lost. Re-add IP/hostname entries if needed.
 
 ```bash
 sudo vim /etc/hosts
 ```
 
-If the information you previously entered is missing, please add the following two lines and save.
+If previous entries are missing, add the two lines below.
 
-> [!warning]
+> [!WARNING]
 >
-> You should replace `<>` with your information.
+> Replace `<>` with your own values.
 
 ```txt
 <NUC_IP> <NUC_HOSTNAME>
 <PI_IP> <PI_HOSTNAME>
 ```
 
-### 1-5-2. Run Flume Container
+### 1-5-2. Run Fluentd container
 
-Enter these commands to run flume container, and access the inside of the container.
-
-```bash
-# Execute Container
-sudo docker start flume
-# Access to Container
-sudo docker attach flume
-```
-
-Then run Flume:
+Use the `pi-fluentd` image created in Lab2.
 
 ```bash
-bin/flume-ng agent --conf conf --conf-file conf/flume-conf.properties --name agent -Dflume.root.logger=INFO,console
+sudo docker run -it --rm \
+  --net=host \
+  --security-opt seccomp=unconfined \
+  --name fluentd \
+  pi-fluentd
 ```
+
+> [!NOTE]
+>
+> If `pi-fluentd` does not exist, first complete Lab2 steps:
+> `2-5-2. (NUC) Fluentd image cross-build`
+> and `2-5-3. (PI) Load image and run Fluentd`.
 
 ## 1-6. Python File `broker_to_influxdb.py` ( in NUC )
 
-`broker_to_influxdb.py` receives messages from Kafka brokers and writes them to InfluxDB.
+`broker_to_influxdb.py` acts as a Kafka consumer that receives messages from Kafka brokers and writes them to InfluxDB.
 
 ### 1-6-1. Edit `broker_to_influxdb.py`
 
-> [!note]
+> [!NOTE]
 >
-> Please open a new terminal.
+> Open a new terminal first.
 
 ```bash
 vim ~/SmartX-Mini/SmartX-Box/ubuntu-kafkatodb/broker_to_influxdb.py
 ```
 
-In this file, you should replace `<NUC IP>` with your real NUC IP.
+```python
+# before
+consumer = KafkaConsumer('resource',bootstrap_servers=['<NUC_IP>:9091'])
+consumer = KafkaConsumer('resource', bootstrap_servers=['<NUC_IP>:9091'])
+cmd = "curl -XPOST 'http://localhost:8086/query' --data-urlencode 'q=CREATE DATABASE Labs'"
+cmd = "curl -i -XPOST 'http://localhost:8086/write?db=Labs' --data-binary '...'"
 
-> e.g. `172.10.109.100`
+# after
+consumer = KafkaConsumer('resource',bootstrap_servers=['localhost:9090'])
+consumer = KafkaConsumer('resource', bootstrap_servers=['localhost:9090'])
+# Labs bucket is already created in step 1-1, so remove (or comment out) CREATE DATABASE.
+# Handle write URL auth (u/p) via env vars INFLUXDB_V1_USER and INFLUXDB_V1_PASSWORD.
+cmd = "curl -sS -XPOST 'http://localhost:8086/write?db=Labs&u=<INFLUXDB_V1_USER>&p=<INFLUXDB_V1_PASSWORD>' --data-binary '...'"
+```
 
 ![broker_to_influxdb python file](https://user-images.githubusercontent.com/82452337/160814546-da543a58-e6b6-49cb-bdb1-19aa2de9c1fb.png)
 
 ### 1-6-2. Run `broker_to_influxdb.py`
 
-Enter the command below to run `broker_to_influxdb.py` with the settings for the file descriptor and handle.
+Run the script with file-descriptor settings.
 
 ```bash
 sudo sysctl -w fs.file-max=100000
 ulimit -S -n 2048
-python3 ~/SmartX-Mini/SmartX-Box/ubuntu-kafkatodb/broker_to_influxdb.py
+source ~/.venv/bin/activate
+
+# optional: verify v1 auth / DBRP mapping
+curl -sS -XPOST "http://localhost:8086/query?u=${INFLUXDB_V1_USER}&p=${INFLUXDB_V1_PASSWORD}&db=Labs" \
+  --data-urlencode "q=SHOW MEASUREMENTS"
+
+python ~/SmartX-Mini/SmartX-Box/ubuntu-kafkatodb/broker_to_influxdb.py
 ```
 
 ## 1-7. Chronograf Dashboard ( in NUC )
 
-### 1-7-1. Access Chronograf Dashboard
+### 1-7-1. Access Chronograf dashboard
 
-Open a web browser and access the Chronograf Dashboard.
+Open your web browser and access Chronograf.
 
 > **Access URL**: `http://<Your NUC IP>:8888`
 
 ![chronograf-1](./img/chronograf-1.png)
 
-### 1-7-2. Creating a Dashboard
+### 1-7-2. Config - Update Connections
+
+In Chronograf, update the default connection first and add InfluxDB auth info.
+Go to `Configuration -> Connections` and click the default connection.
+
+![chronograf-config-1](./img/chronograf-config-1.png)
+
+Enter `INFLUXDB_V1_USER` and `INFLUXDB_V1_PASSWORD` into the username/password fields.
+
+![chronograf-config-2](./img/chronograf-config-2.png)
+
+In the Dashboard setup flow, click InfluxDB and skip Kapacitor configuration.
+
+![chronograf-config-3](./img/chronograf-config-3.png)
+
+- URL: `http://<NUC IP>:8086`
+- Username: `tower`
+- Password: `<INFLUXDB_V1_PASSWORD>`
+
+### 1-7-3. Create a dashboard
 
 ![chronograf-2](./img/chronograf-2.png)
 
-### 1-7-3. Adding a Data Source
-
-![chronograf-3](./img/chronograf-3.png)
-
-### 1-7-4. Registering a Query
+### 1-7-4. Register a query
 
 ![chronograf-4](./img/chronograf-4.png)
 
@@ -281,55 +365,74 @@ Open a web browser and access the Chronograf Dashboard.
 SELECT "memory" FROM "Labs"."autogen"."labs" WHERE time > :dashboardTime:
 ```
 
-### 1-7-5. Monitoring
+> [!TIP]
+>
+> If `Submit Query` returns `received status code 401 ... unauthorized access`, check in this order:
+>
+> 1. Verify v1 auth from CLI first.
+>
+>    ```bash
+>    curl -i -XPOST "http://localhost:8086/query?db=Labs&u=tower&p=<INFLUXDB_V1_PASSWORD>" \
+>      --data-urlencode "q=SHOW MEASUREMENTS"
+>    ```
+>
+> 2. If response is `200 OK`, recreate the default connection in `Configuration -> Connections`.
+>    - URL: `http://<NUC IP>:8086`
+>    - Username: `tower`
+>    - Password: `<INFLUXDB_V1_PASSWORD>`
+> 3. Make sure the newly created config is selected at the top of the Query page, then submit again.
+>
+> ![chronograf-config-4](./img/chronograf-config-4.png)
 
-#### Memory Monitoring
+### 1-7-5. Check monitoring
 
-You can monitor the current memory usage.
+#### Memory monitoring
+
+You can monitor current memory usage.
 
 ![chronograf-5](./img/chronograf-5.png)
 
-#### CPU Monitoring
+#### CPU monitoring
 
-You can monitor the current CPU usage.
-
-![chronograf-6](./img/chronograf-6.png)
-
-#### CPU Load Test ( in PI )
-
-To verify that the monitoring system is correctly visualizing data, you can intentionally generate CPU load.
-
-First, change the field in the Chronograf Dashboard to `CPU_Usage`.
+You can monitor current CPU usage.
 
 ![chronograf-6](./img/chronograf-6.png)
 
-Then, **run the following command on the PI.**
+#### CPU load test ( in PI )
+
+To verify visualization behavior, you can intentionally generate CPU load.
+
+First, change the field in Chronograf Dashboard to `CPU_Usage`.
+
+![chronograf-6](./img/chronograf-6.png)
+
+Then run the command below on the PI.
 
 ```bash
 docker run --rm -it busybox sh -c "while true; do :; done"
 ```
 
-If you keep refreshing the dashboard, you’ll see the graph rising upward.
+While refreshing the browser, you should see the dashboard graph move upward.
 
-Once confirmed, press `Ctrl + C` to stop the CPU load ( in PI ).
+After confirmation, press `Ctrl + C` to stop the load ( in PI ).
 
 # 2. Lab Summary
 
-The goal of this Lab was to build a monitoring and data visualization system (Tower).
-To achieve this, you collected data using a Kafka cluster, stored it in InfluxDB, and visualized it through Chronograf.
+The goal of this Lab is to build a Tower system for system monitoring and data visualization.
+To do that, data was collected through Kafka, stored in InfluxDB, and visualized in Chronograf.
 
 ## (Recall) Why this lab?
 
 - Real-time system status monitoring
 - Storage and analysis of large-scale time-series data
 - Intuitive understanding of system data through visualization
-- Workflow: Kafka-based data collection → Storage in InfluxDB → Visualization with Chronograf
+- Workflow: Kafka-based data collection -> InfluxDB storage -> Chronograf visualization
 
 ## Summary of Key Steps
 
-1. Run InfluxDB container → TSDB for storing data
-2. Run Chronograf container → Web UI to visualize InfluxDB data
-3. Restart Kafka cluster → Reactivate Kafka built in previous Lab
-4. Run Flume → Start Flume agent for streaming data
-5. Run Python (Kafka) Consumer (broker_to_influxdb.py) → Consume data from Kafka Broker and store it in InfluxDB
-6. Configure Chronograf dashboard → Visually inspect InfluxDB data in the browser
+1. Run InfluxDB 2.8 container + configure v1 compatibility (DBRP/Auth) -> keep compatibility with existing code and queries.
+2. Run Chronograf container -> Web UI for InfluxDB visualization.
+3. Restart Kafka KRaft cluster -> run Lab2 controller/broker containers.
+4. Run Fluentd -> start Fluentd agent for streaming data.
+5. Run Python (Kafka) consumer (`broker_to_influxdb.py`) -> consume Kafka messages and write to InfluxDB.
+6. Configure Chronograf dashboard -> visually inspect InfluxDB data.

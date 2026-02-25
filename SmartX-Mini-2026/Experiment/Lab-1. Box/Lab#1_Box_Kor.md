@@ -26,7 +26,7 @@ Box Lab에서는 \*베어 메탈에 운영체제(OS)를 직접 설치해보고
 >
 > 1. 특정 OS 환경에서만 작동하는 application을 실행해야 하는 경우  
 >    오래 전에 개발되어 특정 OS 환경에서만 작동하는 프로그램을 실행해야 하는 경우 또는 개발자의 의도로 인해 특정 OS에서만 작동하도록 설계된 프로그램을 실행하는 경우, VM을 사용해야 합니다.
-> 2. 보안이 중요한 환경  
+> 2. 보안이 중요한 환경
 >    VM은 container와는 다르게 VM 간에 OS를 공유하지 않기 때문에, 각각의 환경 사이의 격리 수준이 더 높습니다. 금융 데이터를 다루는 서비스와 같이 높은 수준의 보안이 필요한 경우에는 container보다는 VM이 더 적절할 수 있습니다.
 >
 > 이번 Lab에서는 가상 머신을 생성하기 위해 리눅스에 기본적으로 탑재되어있는 KVM Hypervisor를 사용할 것입니다.
@@ -182,6 +182,16 @@ OS : Ubuntu Desktop 24.04 LTS(64bit)
 
 ## 2-2. NUC: Network Configuration using Virtual Switch
 
+> [!WARNING]
+> Ubuntu Desktop 24.04로 전환할 때 아래 항목에서 문제가 발생할 수 있으니 먼저 확인합니다.
+>
+> 1. `sudo apt-get purge netplan.io`를 수행하면 부팅 후 네트워크가 비정상 동작할 수 있습니다.
+> 2. NetworkManager와 ifupdown이 동시에 인터페이스를 제어하면 IP 충돌/링크 재기동이 발생할 수 있습니다.
+> 3. `ovs-docker` 스크립트가 없으면 `add-port` 단계가 실패할 수 있습니다.
+> 4. `kvm` 명령이 없는 환경에서는 `qemu-system-x86_64`로 대체해야 합니다.
+
+<!-- -->
+
 > [!CAUTION]  
 > **⚠️ (중요. 로그인 뒤에 Ubuntu를 업데이트할 것인지 묻는 창이 뜬다면 반드시 Don't Upgrade를 선택해야합니다!) ⚠️**
 
@@ -226,13 +236,16 @@ OS : Ubuntu Desktop 24.04 LTS(64bit)
 
    ![Ovs Vsctl Show](./img/ovs_vsctl_show.png)
 
-5. Disable netplan
-   - Open vSwitch(OVS)를 기반으로 수동 네트워크 관리 방법을 사용하기 위해서 systemd-networkd 및 Netplan을 비활성화하고 제거합니다.
+5. Change default network manager (Ubuntu 24.04)
+   - Ubuntu 24.04에서는 Netplan 패키지를 삭제하지 않고 유지합니다. 대신 OVS + ifupdown 수동 설정 충돌을 피하기 위해 기본 네트워크 매니저를 비활성화합니다.
+   - 아래 작업은 네트워크가 잠시 끊길 수 있으므로 **로컬 콘솔(NUC 직접 화면)**에서 진행합니다.
 
    ```bash
    sudo systemctl stop systemd-networkd.socket systemd-networkd networkd-dispatcher systemd-networkd-wait-online
    sudo systemctl disable systemd-networkd.socket systemd-networkd networkd-dispatcher systemd-networkd-wait-online
    sudo systemctl mask systemd-networkd.socket systemd-networkd networkd-dispatcher systemd-networkd-wait-online
+   sudo systemctl stop NetworkManager
+   sudo systemctl disable NetworkManager
    sudo apt --assume-yes purge netplan.io
    ```
 
@@ -406,6 +419,7 @@ sudo systemctl restart networking
   # upgrade KVM
   # qemu is open-source emulator
 
+  - 다운로드 파일명이 `ubuntu-24.04.x-live-server-amd64.iso`로 배포되는 경우, 실제 파일명에 맞게 명령어와 아래 `-cdrom` 값을 동일하게 수정합니다.
   wget https://ftp.lanet.kr/ubuntu-releases/24.04.4/ubuntu-24.04.4-live-server-amd64.iso
   ```
 
@@ -615,6 +629,9 @@ ctrl + p, q를 누르면 container를 종료하지 않고 container 밖으로 �
 
 **도커 외부에서**, 즉 Host machine에서 하단의 명령어를 실행합니다.  
 이 명령어는 **Open vSwitch(OVS)**를 사용하여 Docker container(c1)에 특정 네트워크 인터페이스(veno1)를 추가하고, 이를 가상 브리지(br0)에 연결합니다.
+
+> [!CAUTION]
+> Ubuntu 24.04 환경에서 `ovs-docker`가 없다면 아래 명령이 실패할 수 있습니다. 먼저 `which ovs-docker`로 스크립트 존재 여부를 확인하고, 없으면 `/usr/share/openvswitch/scripts/ovs-docker` 경로로 실행합니다.
 
 ```bash
 sudo docker start c1
