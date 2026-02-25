@@ -28,7 +28,9 @@ timezone: Asia/Seoul
 runcmd:
   # Pickup the hostname changes
   - "systemctl restart avahi-daemon"
-  - "sed -i 's/raspbian.raspberrypi.org/legacy.raspbian.org/g' /etc/apt/sources.list"
+
+  # Debian Buster is EOL. Repoint apt sources to the legacy repository.
+  - 'sed -i "s|raspbian.raspberrypi.org|legacy.raspbian.org|g" /etc/apt/sources.list'
 
   # Activate WiFi interface
 #  - 'ifup wlan0'

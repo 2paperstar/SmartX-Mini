@@ -1,0 +1,170 @@
+# Kafka 4.2.0 KRaft cluster (controller x3, broker x3)
+# node.id: controller0=0, controller1=1, controller2=2, broker0=3, broker1=4, broker2=5
+# Fill in .env before starting (see .env.example)
+
+x-kafka-entrypoint: &kafka-entrypoint
+  entrypoint: ["/start-kafka.sh"]
+
+x-kafka-common: &kafka-common
+  image: ubuntu-kafka
+  network_mode: host
+  restart: unless-stopped
+
+# ---------------------------------------------------------------------------
+# Controllers  (process.roles=controller, no advertised.listeners)
+# Ports: CONTROLLER 19090 / 19091 / 19092
+# ---------------------------------------------------------------------------
+services:
+
+  controller0:
+    <<: [*kafka-common, *kafka-entrypoint]
+    container_name: controller0
+    environment:
+      CLUSTER_ID: ${CLUSTER_ID}
+      HOST_HOSTNAME: ${HOST_HOSTNAME}
+      KAFKA_NODE_ID: 0
+      KAFKA_PROCESS_ROLES: controller
+      KAFKA_LISTENERS: CONTROLLER://:19090
+      KAFKA_ADVERTISED_LISTENERS: ""
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LOG_DIRS: /tmp/kraft-controller0-logs
+      CONTROLLER0_UUID: ${CONTROLLER0_UUID}
+      CONTROLLER1_UUID: ${CONTROLLER1_UUID}
+      CONTROLLER2_UUID: ${CONTROLLER2_UUID}
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'echo > /dev/tcp/localhost/19090' 2>/dev/null || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 15
+      start_period: 20s
+
+  controller1:
+    <<: [*kafka-common, *kafka-entrypoint]
+    container_name: controller1
+    environment:
+      CLUSTER_ID: ${CLUSTER_ID}
+      HOST_HOSTNAME: ${HOST_HOSTNAME}
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: controller
+      KAFKA_LISTENERS: CONTROLLER://:19091
+      KAFKA_ADVERTISED_LISTENERS: ""
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LOG_DIRS: /tmp/kraft-controller1-logs
+      CONTROLLER0_UUID: ${CONTROLLER0_UUID}
+      CONTROLLER1_UUID: ${CONTROLLER1_UUID}
+      CONTROLLER2_UUID: ${CONTROLLER2_UUID}
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'echo > /dev/tcp/localhost/19091' 2>/dev/null || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 15
+      start_period: 20s
+
+  controller2:
+    <<: [*kafka-common, *kafka-entrypoint]
+    container_name: controller2
+    environment:
+      CLUSTER_ID: ${CLUSTER_ID}
+      HOST_HOSTNAME: ${HOST_HOSTNAME}
+      KAFKA_NODE_ID: 2
+      KAFKA_PROCESS_ROLES: controller
+      KAFKA_LISTENERS: CONTROLLER://:19092
+      KAFKA_ADVERTISED_LISTENERS: ""
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LOG_DIRS: /tmp/kraft-controller2-logs
+      CONTROLLER0_UUID: ${CONTROLLER0_UUID}
+      CONTROLLER1_UUID: ${CONTROLLER1_UUID}
+      CONTROLLER2_UUID: ${CONTROLLER2_UUID}
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'echo > /dev/tcp/localhost/19092' 2>/dev/null || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 15
+      start_period: 20s
+
+# ---------------------------------------------------------------------------
+# Brokers  (process.roles=broker, no CONTROLLER listener)
+# Ports: PLAINTEXT 9090 / 9091 / 9092
+# node.id continues from controllers: 3, 4, 5
+# ---------------------------------------------------------------------------
+
+  broker0:
+    <<: [*kafka-common, *kafka-entrypoint]
+    container_name: broker0
+    depends_on:
+      controller0:
+        condition: service_healthy
+      controller1:
+        condition: service_healthy
+      controller2:
+        condition: service_healthy
+    environment:
+      CLUSTER_ID: ${CLUSTER_ID}
+      HOST_HOSTNAME: ${HOST_HOSTNAME}
+      KAFKA_NODE_ID: 3
+      KAFKA_PROCESS_ROLES: broker
+      KAFKA_LISTENERS: PLAINTEXT://:9090
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://${HOST_HOSTNAME}:9090
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_LOG_DIRS: /tmp/kraft-broker0-logs
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_DEFAULT_REPLICATION_FACTOR: 3
+      KAFKA_MIN_INSYNC_REPLICAS: 2
+      CONTROLLER0_UUID: ${CONTROLLER0_UUID}
+      CONTROLLER1_UUID: ${CONTROLLER1_UUID}
+      CONTROLLER2_UUID: ${CONTROLLER2_UUID}
+
+  broker1:
+    <<: [*kafka-common, *kafka-entrypoint]
+    container_name: broker1
+    depends_on:
+      controller0:
+        condition: service_healthy
+      controller1:
+        condition: service_healthy
+      controller2:
+        condition: service_healthy
+    environment:
+      CLUSTER_ID: ${CLUSTER_ID}
+      HOST_HOSTNAME: ${HOST_HOSTNAME}
+      KAFKA_NODE_ID: 4
+      KAFKA_PROCESS_ROLES: broker
+      KAFKA_LISTENERS: PLAINTEXT://:9091
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://${HOST_HOSTNAME}:9091
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_LOG_DIRS: /tmp/kraft-broker1-logs
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_DEFAULT_REPLICATION_FACTOR: 3
+      KAFKA_MIN_INSYNC_REPLICAS: 2
+      CONTROLLER0_UUID: ${CONTROLLER0_UUID}
+      CONTROLLER1_UUID: ${CONTROLLER1_UUID}
+      CONTROLLER2_UUID: ${CONTROLLER2_UUID}
+
+  broker2:
+    <<: [*kafka-common, *kafka-entrypoint]
+    container_name: broker2
+    depends_on:
+      controller0:
+        condition: service_healthy
+      controller1:
+        condition: service_healthy
+      controller2:
+        condition: service_healthy
+    environment:
+      CLUSTER_ID: ${CLUSTER_ID}
+      HOST_HOSTNAME: ${HOST_HOSTNAME}
+      KAFKA_NODE_ID: 5
+      KAFKA_PROCESS_ROLES: broker
+      KAFKA_LISTENERS: PLAINTEXT://:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://${HOST_HOSTNAME}:9092
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_LOG_DIRS: /tmp/kraft-broker2-logs
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_DEFAULT_REPLICATION_FACTOR: 3
+      KAFKA_MIN_INSYNC_REPLICAS: 2
+      CONTROLLER0_UUID: ${CONTROLLER0_UUID}
+      CONTROLLER1_UUID: ${CONTROLLER1_UUID}
+      CONTROLLER2_UUID: ${CONTROLLER2_UUID}
