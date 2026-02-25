@@ -93,37 +93,52 @@ Let's take a close look at the overall structure.
 > For students who have installed the OS in the Playground Lab, the OS Installation section can be skipped.
 
 The Host OS to be used in the Lab is as follows. Use the provided installation USB to install the OS.  
-OS : Ubuntu Desktop 22.04 LTS(64bit)  
-Reference: Download Site - <https://releases.ubuntu.com/22.04/>
+OS : Ubuntu Desktop 24.04 LTS(64bit)  
+Reference: Download Site - <https://releases.ubuntu.com/24.04/>
 
 ### 2-1-1. Boot Configuration
 
 1. While the NUC is powered off, connect the USB for OS installation and then turn on the NUC.
-2. When the boot process begins, press F10 to enter the boot device selection screen.
-3. From the boot device list, select the USB device (e.g., UEFI: SanDisk …).
+2. When the power is turned on, press F10 key repeatedly to enter the boot device selection screen. If the boot device selection screen is not entered, turn off the power and try again.
+3. Use the direction keys to select the USB device from the boot device list (e.g., UEFI: SanDisk …).
 4. Choose “Try or Install Ubuntu” to proceed.
 
 ### 2-1-2. Installation
 
-1. Select “Install Ubuntu” (Do not choose “Try Ubuntu”). The installation should be done in English.
-2. In the Keyboard layout step, select “English (US)”.
-3. If the Wireless tab appears, select “I don’t want to connect to a Wi-Fi network right now” and proceed.
-4. In the Updates and other software step, under “What apps would you like to install to start with?”, choose “Minimal installation” and proceed to the next step.
-5. In the Installation type step, select “Erase disk and install Ubuntu”, then click “Install Now”.
-6. When the “Write the changes to disks?” prompt appears, click “Continue” to proceed.
-7. On the Location settings screen, select "Seoul".
-8. In the “Who are you?” step, enter the User and Computer information as follows.
+1. "Welcome to Ubuntu" screen appears, continue to proceed.
+   You can simply click Next for all settings.
+   - Choose your language: English
+   - Accessibility in Ubuntu: Don't configure (Next)
+   - Select your keyboard layout: English (US)
+   - Connect to the internet: Use wired connection
+   - What do you want to do with Ubuntu?: Install Ubuntu
+   - How would you like to install Ubuntu?: Interactive installation
+   - What apps would you like to install to start with?: Default selection
+   - Install recommended proprietary software?: Don't select anything (Next)
+2. In "How do you want to install Ubuntu?" screen, select **<ins>Erase disk and install Ubuntu</ins>**.
+3. In "Create your account" step, enter the User and Computer information as follows.
    - Your name: gist
    - Your computer's name: nuc<The last three digits of the NUC’s IP address.>  
      -> If the IP address is XXX.XXX.XXX.109, then the hostname should be nuc109.
-   - Pick a username: gist
+   - Your username: gist
    - For the password, follow the instructions provided by the TAs.
-
-9. Once all settings are complete, click the button to proceed with the final installation.
-10. Once the installation is complete, click the “Restart Now” button to reboot the NUC.
-11. During the restart process, if you see the message “Please remove the installation medium, then press ENTER”, remove the installation USB and press ENTER.
+4. On the Location settings screen, select "Seoul".
+5. In "Review your choices" screen, you should see the following. Click the green "Install" button to proceed.
+   - General
+     - Disk setup: Erase disk and Install Ubuntu
+     - Installation disk: nvme0n1
+     - Applications: Default selection
+   - Security & more
+     - Disk encryption: None
+     - Proprietary software: None
+   - Partitions
+     - partition nvme0n1p1 formatted as fat32 used for /boot/efi
+     - partition nvme0n1p2 formatted as ext4 used for /
+6. Once the installation is complete, click the green "Restart Now" button to reboot the NUC.
+7. During the restart process, if you see the message “Please remove the installation medium, then press ENTER”, remove the installation USB and press ENTER.
 
   <details>
+    <!-- TODO: outdated -->
     <summary>
       Refer to this section in case of an error. (If the installation was successful, you can skip this part)
     </summary>
@@ -163,10 +178,10 @@ If an issue related to booting occurs, follow these steps.
 
   ![Network Configuration](./img/network_configuration.png)
 
-- Click on the upper right corner of the screen and select “Ethernet (enp88s0 or enp89s0) Connected”. Then, click “Wired Settings”.
+- Click on the upper right corner of the screen and select "Wired". Then, click "Wired Settings".
   ![network setting 1](./img/network_setting1.png)
 
-- In the Ethernet section, click the gear icon on the right to enter the settings tab.
+- In the Wired section, click the gear icon on the right to enter the settings tab.
   ![network setting 2](./img/network_setting2.png)
 
 - Switch to the IPv4 tab and enter the assigned network information.
@@ -182,7 +197,8 @@ If an issue related to booting occurs, follow these steps.
 
 1. apt Update & Upgrade
    - In this lab, we will use apt, the package manager. To install the necessary packages, first, update the package list to the latest version and then upgrade any available packages.
-   - To execute a command, open the terminal. You can do this by clicking the app list icon located at the bottom left of the screen and selecting the terminal icon from the list.
+   - To execute a below command, open the terminal. You can do this by clicking the app list icon located at the bottom left of the screen and selecting the terminal icon from the list, or by pressing Ctrl+Alt+T.
+   - When the password prompt `[sudo] password for gist:` appears, enter your password. Note that the password is not visible on the screen, so enter it without hesitation.
 
    ```bash
    sudo apt update
@@ -191,6 +207,7 @@ If an issue related to booting occurs, follow these steps.
 
 2. Install vim text editor
    - We will use the Vim editor to modify file contents. Install Vim with the following command.
+   - When the prompt `Do you want to continue? [Y/n]` appears, enter Y and press Enter. (The default value is Y, so you can simply press Enter.)
 
    ```bash
    sudo apt install vim
@@ -225,7 +242,7 @@ If an issue related to booting occurs, follow these steps.
   sudo systemctl stop systemd-networkd.socket systemd-networkd networkd-dispatcher systemd-networkd-wait-online
   sudo systemctl disable systemd-networkd.socket systemd-networkd networkd-dispatcher systemd-networkd-wait-online
   sudo systemctl mask systemd-networkd.socket systemd-networkd networkd-dispatcher systemd-networkd-wait-online
-  sudo apt-get --assume-yes purge nplan netplan.io
+  sudo apt --assume-yes purge netplan.io
   ```
 
 - DNS configuration
@@ -388,7 +405,7 @@ sudo systemctl restart networking
 
 - Install required packages to set up and manage KVM
 
-  Install the dependencies required to set up and manage KVM, and download the Ubuntu 22.04.5 image for use inside the VM.
+  Install the dependencies required to set up and manage KVM, and download the Ubuntu 24.04.4 image for use inside the VM.
   - qemu-kvm: Provides KVM (Kernel-based Virtualization) support based on QEMU (Quick Emulator).
   - libvirt-daemon-system: Runs the libvirtd daemon, enabling the management of virtual machines.
   - libvirt-clients: Provides command-line tools for managing virtual machines.
@@ -399,15 +416,18 @@ sudo systemctl restart networking
   # upgrade KVM
   # qemu is open-source emulator
 
-  wget https://ftp.lanet.kr/ubuntu-releases/22.04.5/ubuntu-22.04.5-live-server-amd64.iso
+  wget https://ftp.lanet.kr/ubuntu-releases/24.04.4/ubuntu-24.04.4-live-server-amd64.iso
   ```
+
+  <!-- TODO: lanet.kr, ubuntu.com, kakao.com 중에서 어떤 것이 빠른지 실험실에서 테스트 필요 -->
+  <!-- https://launchpad.net/ubuntu/+cdmirrors 경우에 따라 이쪽에 있는 목록을 여러개 나열하는 것도 도움 될 수 있음 -->
 
 - Prepare for Ubuntu VM
 
   To Make a virtual disk image, enter this command.
 
   ```bash
-  sudo qemu-img create vFunction22.img -f qcow2 10G
+  sudo qemu-img create vFunction24.img -f qcow2 10G
   ```
 
   Enter the following command to start the VM in background mode.
@@ -419,8 +439,8 @@ sudo systemctl restart networking
   -smp cpus=4,maxcpus=4 \
   -device virtio-net-pci,netdev=net0 \
   -netdev tap,id=net0,ifname=vport_vFunction,script=no \
-  -boot d vFunction22.img \
-  -cdrom ubuntu-22.04.5-live-server-amd64.iso \
+  -boot d vFunction24.img \
+  -cdrom ubuntu-24.04.4-live-server-amd64.iso \
   -vnc :5 -daemonize \
   -monitor telnet:127.0.0.1:3010,server,nowait,ipv4 \
   -cpu host
@@ -445,12 +465,13 @@ sudo systemctl restart networking
   ![Install Ubuntu](./img/install_ubuntu.png)
 
   Installation Steps (Control using the 'Enter key' and the 'arrow keys'.)
-  1. On the language selection screen, set the language to English.
-  2. On the “Keyboard configuration” screen, set all options to English (US).
-  3. On the “Choose the type of installation” screen, ensure that “Ubuntu Server” is selected (marked with an (X)), then click Done.
-  4. Enter the “Network configuration” screen and click “Edit IPv4” as shown below.
+  1. Select "Try or Install Ubuntu Server".
+  2. On the language selection screen, set the language to English.
+  3. On the "Keyboard configuration" screen, set all options to English (US).
+  4. On the "Choose the type of installation" screen, ensure that “Ubuntu Server” is selected (marked with an (X)), then click Done.
+  5. Enter the "Network configuration" screen and click “Edit IPv4” as shown below.
      ![Ubuntu Network](./img/ubuntu_network.png)
-  5. Configure the settings based on the information below. (Use the Extra IP address written on the paper as the VM IP.)
+  6. Configure the settings based on the information below. (Use the Extra IP address written on the paper as the VM IP.)
 
      > IPv4 Method → Manual
      >
@@ -463,21 +484,21 @@ sudo systemctl restart networking
 
      Also, when writing `< VM IP(Extra IP) >`, remove the brackets and use the format 172.29.0.X.
 
-  6. On the “Proxy configuration” screen, leave it blank and proceed to the next step.
-  7. On the “Ubuntu archive mirror configuration” screen, simply click Done to proceed.
-  8. ⚠️ **(Important)** On the “Installer update available” screen, select “Continue without updating”.
-  9. On the "Guided storage configuration", “Storage configuration” screens, proceed without making any changes by continuously clicking Done. When the “Confirm destructive action” prompt appears, click Continue to proceed.
-  10. On the “Profile configuration” screen, enter the following details as shown below.
+  7. On the “Proxy configuration” screen, leave it blank and proceed to the next step.
+  8. On the "Ubuntu archive mirror configuration" screen, simply click Done to proceed.
+  9. ⚠️ **(Important)** On the “Installer update available” screen, select “Continue without updating”.
+  10. On the "Guided storage configuration", “Storage configuration” screens, proceed without making any changes by continuously clicking Done. When the “Confirm destructive action” prompt appears, click Continue to proceed.
+  11. On the “Profile configuration” screen, enter the following details as shown below.
       - Your name: vm
       - Your servers name: vm<The last three digits of the VM’s IP address>  
         -> For example, if the IP address is XXX.XXX.XXX.179, then the hostname should be vm179.
       - Pick a username: vm
       - Set the password to be the same as the NUC’s password.
-  11. On the “Upgrade to Ubuntu Pro” screen, ensure that “Skip for now” is selected (marked with an (X)), then proceed.
-  12. On the “SSH configuration” screen, make no changes and click Done to proceed.
-  13. On the “Featured server snaps” screen, do not select anything and click Done to proceed.
-  14. A screen displaying the installation progress will appear.
-  15. Once the installation is complete, the following screen will appear with a “Reboot Now” button. However, ⚠️ **do not press the button yet;** instead, follow the instructions below.
+  12. On the "Upgrade to Ubuntu Pro" screen, ensure that “Skip for now” is selected (marked with an (X)), then proceed.
+  13. On the "SSH configuration" screen, make no changes and click Done to proceed.
+  14. On the "Featured server snaps" screen, do not select anything and click Done to proceed.
+  15. A screen displaying the installation progress will appear.
+  16. Once the installation is complete, the following screen will appear with a "Reboot Now" button. However, ⚠️ **do not press the button yet;** instead, follow the instructions below.
       ![Ubuntu Network](./img/ubuntu-installation-done.png)
 
 - Installation Completed
@@ -498,7 +519,7 @@ sudo kvm -m 1024 -name tt \
 -smp cpus=2,maxcpus=2 \
 -device virtio-net-pci,netdev=net0 \
 -netdev tap,id=net0,ifname=vport_vFunction,script=no \
--boot d vFunction22.img
+-boot d vFunction24.img
 ```
 
 ## 2-4. OVS connects with KVM
@@ -521,19 +542,21 @@ sudo apt install -y ca-certificates curl gnupg lsb-release
 Add Docker’s official GPG key.
 
 ```bash
-sudo mkdir -p /etc/apt/keyrings
-
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | \
-    sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
 ```
 
 Add the Docker repository to the apt source list.
 
 ```bash
-echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-  $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
-  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo tee /etc/apt/sources.list.d/docker.sources <<EOF
+Types: deb
+URIs: https://download.docker.com/linux/ubuntu
+Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
+Components: stable
+Signed-By: /etc/apt/keyrings/docker.asc
+EOF
 ```
 
 Install Docker
@@ -562,6 +585,8 @@ EOF
 
 Create /etc/systemd/system/docker.service.d
 
+<!-- NOTE: 직접 daemon 만들어줄 필요 없음 -->
+
 ```bash
 sudo mkdir -p /etc/systemd/system/docker.service.d
 sudo systemctl daemon-reload
@@ -584,10 +609,10 @@ If it works correctly, the following output will be displayed.
 
 ## 2-7. Make Container
 
-Create a container named c1. This container will be based on the ubuntu:22.04 image and will run /bin/bash upon its initial execution. The --net=none option is used to ensure that the container is not connected to any network.
+Create a container named c1. This container will be based on the ubuntu:24.04 image and will run /bin/bash upon its initial execution. The --net=none option is used to ensure that the container is not connected to any network.
 
 ```bash
-sudo docker run -it --net=none --name c1 ubuntu:22.04 /bin/bash
+sudo docker run -it --net=none --name c1 ubuntu:24.04 /bin/bash
 ```
 
 Pressing ctrl + p, q allows you to exit the container without stopping it.

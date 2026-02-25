@@ -1,7 +1,7 @@
 FROM balenalib/rpi-raspbian:buster
 LABEL "maintainer"="Seungryong Kim <srkim@nm.gist.ac.kr>"
 
-RUN sed -i 's@archive.raspbian.org@ftp.kaist.ac.kr/raspbian@g' /etc/apt/sources.list
+RUN sed -i 's@archive.raspbian.org@legacy.raspbian.org@g' /etc/apt/sources.list
 
 #Update & Install wget, vim
 RUN sudo apt update
