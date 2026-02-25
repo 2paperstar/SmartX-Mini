@@ -118,7 +118,7 @@ OS : Ubuntu Desktop 24.04 LTS(64bit)
      -> ex. XXX.XXX.XXX.109의 경우, nuc109
    - Your username: gist
    - 비밀번호의 경우, 조교의 안내에 따라 설정을 진행합니다.
-4. Location 설정 화면에서 "Seoul"을 선택합니다.
+4. Location 설정 화면에서 "Seoul"을 선택합니다. (지도에서 대한민국 클릭)
 5. Review your choices 화면에서 아래와 같이 나타나면 문제없이 진행 된 것입니다. 초록색 Install을 눌러 계속합니다.
    - General
      - Disk setup: Erase disk and Install Ubuntu

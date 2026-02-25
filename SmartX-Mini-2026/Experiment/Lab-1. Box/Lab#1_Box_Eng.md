@@ -122,7 +122,7 @@ Reference: Download Site - <https://releases.ubuntu.com/24.04/>
      -> If the IP address is XXX.XXX.XXX.109, then the hostname should be nuc109.
    - Your username: gist
    - For the password, follow the instructions provided by the TAs.
-4. On the Location settings screen, select "Seoul".
+4. On the Location settings screen, select "Seoul". (Click on Korea in the map)
 5. In "Review your choices" screen, you should see the following. Click the green "Install" button to proceed.
    - General
      - Disk setup: Erase disk and Install Ubuntu
