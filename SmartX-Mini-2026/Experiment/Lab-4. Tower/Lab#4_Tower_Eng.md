@@ -55,7 +55,7 @@ In this Lab, we use InfluxDB 2.8 and also configure InfluxDB v1 compatibility (`
 
 ## 1-1. Create and Run InfluxDB 2.8 Container ( in NUC )
 
-If an old `influxdb` container (1.x) is already running, remove it first.
+If an old `influxdb` container is already running, remove it first.
 
 ```bash
 sudo docker rm -f influxdb 2>/dev/null || true
@@ -291,13 +291,6 @@ sudo docker run -it --rm \
 ```bash
 vim ~/SmartX-Mini/SmartX-Box/ubuntu-kafkatodb/broker_to_influxdb.py
 ```
-
-Update the following items in this file:
-
-1. Change Kafka bootstrap server to a KRaft broker.
-2. Add v1 auth parameters to the InfluxDB write URL (use `INFLUXDB_V1_USER`, `INFLUXDB_V1_PASSWORD` env vars in the script).
-3. Remove `CREATE DATABASE` because InfluxDB 2.8 uses the pre-created bucket.
-4. Lab2 Fluentd sends JSON messages, so replace fixed-index parsing (such as `str2[10]`) with key-based parsing.
 
 ```python
 # before
