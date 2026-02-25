@@ -89,37 +89,52 @@ Box Lab에서는 \*베어 메탈에 운영체제(OS)를 직접 설치해보고
 > 수강생들 중, Playground Lab에서 OS를 설치한 경우에는 OS Installation 부분을 생략합니다.
 
 Lab에서 사용할 Host OS는 다음과 같습니다. 제공받은 설치 USB를 사용하여 OS를 설치하면 됩니다.  
-OS : Ubuntu Desktop 22.04 LTS(64bit)  
-참고: Download Site - <https://releases.ubuntu.com/22.04/>
+OS : Ubuntu Desktop 24.04 LTS(64bit)  
+참고: Download Site - <https://releases.ubuntu.com/24.04/>
 
 ### 2-1-1. Boot Configuration
 
 1. NUC의 전원이 꺼진 상태에서 OS 설치를 위한 USB를 NUC에 연결한 뒤에, NUC의 전원을 켭니다.
-2. 부팅이 시작되면 F10 키를 눌러서 Boot device를 선택하는 화면에 진입합니다.
-3. Boot device 리스트에서 USB에 해당하는 것을 선택합니다. (ex. UEFI: SanDisk ...)
-4. Try or install ubuntu를 선택하여 실행합니다.
+2. 전원을 켜자마자 F10 키를 연타해서 Boot device를 선택하는 화면에 진입합니다. Boot device 화면 진입에 실패한 경우에는 전원을 끄고 다시 시도합니다.
+3. 방향키를 사용해서 Boot device 목록 중 USB에 해당하는 것을 선택합니다. (ex. UEFI: SanDisk ...)
+4. Try or Install Ubuntu를 선택하여 실행합니다.
 
 ### 2-1-2. Installation
 
-1. Install Ubuntu를 선택합니다. (Try Ubuntu X) 언어는 English로 진행해야합니다.
-2. Keyboard layout 설정 단계에서도 "English(US)"로 설정합니다.
-3. Wireless 탭이 뜨면, "I don't want to connect to a Wi-Fi network right now"를 선택하고 넘어갑니다.
-4. Updates and other software 단계에서 "What apps would you like to install to start with?" 영역에서 "Minimal installation"을 선택하고 다음 단계로 넘어갑니다.
-5. Installation type 단계에서 "Erase disk and install Ubuntu"를 선택하고 "Install now" 버튼을 누릅니다.
-6. Write the changes to disks? 창이 뜨면 Continue를 눌러 계속 진행합니다.
-7. Location 설정 화면에서 "Seoul"을 선택합니다.
-8. User 정보와 Computer 정보를 입력하는 "Who are you" 단계에 진입했다면 다음과 같이 설정합니다.
+1. Welcome to Ubuntu 화면이 뜨면 계속해서 진행합니다.
+   별다른 설정 필요없이 Next만 누르면 됩니다.
+   - Choose your language: English
+   - Accessibility in Ubuntu: 설정 안 함 (Next)
+   - Select your keyboard layout: English (US)
+   - Connect to the internet: Use wired connection
+   - What do you want to do with Ubuntu?: Install Ubuntu
+   - How would you like to install Ubuntu?: Interactive installation
+   - What apps would you like to install to start with?: Default selection
+   - Install recommended proprietary software?: 선택 안 함 (Next)
+2. How do you want to install Ubuntu? 화면에서 **<ins>Erase disk and Install Ubuntu</ins>**를 선택합니다.
+3. User 정보와 Computer 정보를 입력하는 "Create your account" 단계에 진입했다면 다음과 같이 설정합니다.
    - Your name: gist
    - Your computer's name: nuc<NUC IP주소의 마지막 3자리 숫자>  
      -> ex. XXX.XXX.XXX.109의 경우, nuc109
-   - Pick a username: gist
+   - Your username: gist
    - 비밀번호의 경우, 조교의 안내에 따라 설정을 진행합니다.
-
-9. 모든 설정이 완료되었다면 버튼을 눌러 최종 설치를 진행합니다.
-10. 설치가 완료되면, "Restart now" 버튼을 눌러 NUC을 다시 시작합니다.
-11. 재시작 과정에서 "Please remove the installation medium, then press ENTER" 메세지가 보이면, 설치 USB를 제거한 뒤에 ENTER 키를 누릅니다.
+4. Location 설정 화면에서 "Seoul"을 선택합니다.
+5. Review your choices 화면에서 아래와 같이 나타나면 문제없이 진행 된 것입니다. 초록색 Install을 눌러 계속합니다.
+   - General
+     - Disk setup: Erase disk and Install Ubuntu
+     - Installation disk: nvme0n1
+     - Applications: Default selection
+   - Security & more
+     - Disk encryption: None
+     - Proprietary software: None
+   - Partitions
+     - partition nvme0n1p1 formatted as fat32 used for /boot/efi
+     - partition nvme0n1p2 formatted as ext4 used for /
+6. 설치가 완료되면, 초록색 "Restart now" 버튼을 눌러 NUC을 다시 시작합니다.
+7. 재시작 과정에서 "Please remove the installation medium, then press ENTER" 메세지가 보이면, 설치 USB를 뽑은 뒤에 ENTER 키를 누릅니다.
 
   <details>
+    <!-- TODO: outdated -->
     <summary>에러 발생 시 참고(정상 설치가 되었다면 이 부분은 생략합니다.)</summary>
 
 - Select ‘Something else’
@@ -153,10 +168,10 @@ OS : Ubuntu Desktop 22.04 LTS(64bit)
 
   ![Network Configuration](./img/network_configuration.png)
 
-- 화면 우측 상단을 클릭하여 "Ethernet(enp88s0 or enp89s0) Connected" 부분을 선택합니다. 그리고 "Wired Settings"를 누릅니다.
+- 화면 우측 상단을 클릭하여 "Wired" 부분을 선택합니다. 그리고 "Wired Settings"를 누릅니다.
   ![network setting 1](./img/network_setting1.png)
 
-- Ethernet 부분에서 오른쪽에 있는 톱니바퀴 아이콘을 눌러 설정 탭에 들어갑니다.
+- Wired 부분에서 오른쪽에 있는 톱니바퀴 아이콘을 눌러 설정 탭에 들어갑니다.
   ![network setting 2](./img/network_setting2.png)
 
 - IPv4 탭으로 전환하고, 각자 할당받은 네트워크 정보를 입력합니다.
@@ -172,7 +187,9 @@ OS : Ubuntu Desktop 22.04 LTS(64bit)
 
 1. apt Update & Upgrade
    - Lab에서는 패키지 관리자인 apt를 사용합니다. 앞으로 사용할 패키지들을 설치하기 위해 패키지 목록을 최신으로 업데이트하고, 업데이트 가능한 패키지를 실제로 업데이트합니다.
-   - 명령어를 실행하기 위해 터미널을 엽니다. 터미널은 화면 좌하단에 위치한 앱 리스트 아이콘을 누르고, 리스트에서 터미널 아이콘을 눌러 실행할 수 있습니다.
+   - 아래 명령어를 실행하기 위해 터미널을 엽니다. 터미널은 화면 좌하단에 위치한 앱 리스트 아이콘을 누르고, 리스트에서 터미널 아이콘을 누르거나 Ctrl+Alt+T 키를 눌러 실행할 수 있습니다.
+   - 비밀번호를 입력하는 `[sudo] password for gist:`가 뜨면 비밀번호를 입력합니다.
+     이때 입력되는 비밀번호는 터미널에 보이지 않기 때문에 보이지 않더라도 무시하고 입력합니다.
 
    ```bash
    sudo apt update
@@ -181,13 +198,15 @@ OS : Ubuntu Desktop 22.04 LTS(64bit)
 
 2. Install vim text editor
    - 앞으로 vim editor를 사용하여 파일의 내용을 수정하겠습니다. vim을 설치합니다.
+   - 설치하겠냐고 물어보는 `Do you want to continue? [Y/n]`에서 Y를 입력하고 엔터를 누릅니다. (기본값은 Y여서 바로 엔터를 눌러도 됩니다.)
 
    ```bash
    sudo apt install vim
    ```
 
 3. Install net-tools & ifupdown
-   - network 관련 유틸리티를 실행하기 위해 net-tools와 ifupdown을 설치합니다. 그리고 `ifconfig -a` 명령어를 통해 network interface 정보를 확인합니다.
+   - network 관련 유틸리티를 실행하기 위해 net-tools와 ifupdown을 설치합니다.
+     그리고 `ifconfig -a` 명령어를 통해 network interface 정보를 확인합니다.
 
    ```bash
    sudo apt install -y net-tools ifupdown
@@ -214,7 +233,7 @@ OS : Ubuntu Desktop 22.04 LTS(64bit)
    sudo systemctl stop systemd-networkd.socket systemd-networkd networkd-dispatcher systemd-networkd-wait-online
    sudo systemctl disable systemd-networkd.socket systemd-networkd networkd-dispatcher systemd-networkd-wait-online
    sudo systemctl mask systemd-networkd.socket systemd-networkd networkd-dispatcher systemd-networkd-wait-online
-   sudo apt-get --assume-yes purge nplan netplan.io
+   sudo apt --assume-yes purge netplan.io
    ```
 
    - DNS configuration
@@ -376,7 +395,7 @@ sudo systemctl restart networking
 
 - Install required packages to set up and manage KVM
 
-  KVM을 설정하고 관리하기 위한 dependency를 설치하고, VM 안에서 사용할 Ubuntu 22.04.5 image를 다운받습니다.
+  KVM을 설정하고 관리하기 위한 dependency를 설치하고, VM 안에서 사용할 Ubuntu 24.04.4 image를 다운받습니다.
   - qemu-kvm: QEMU(Quick Emulator) 기반으로 KVM(커널 기반 가상화)을 지원합니다.
   - libvirt-daemon-system: libvirtd 데몬을 실행하여 가상 머신을 관리할 수 있도록 지원합니다.
   - libvirt-clients: VM 관리 명령어를 제공합니다.
@@ -387,15 +406,18 @@ sudo systemctl restart networking
   # upgrade KVM
   # qemu is open-source emulator
 
-  wget https://ftp.lanet.kr/ubuntu-releases/22.04.5/ubuntu-22.04.5-live-server-amd64.iso
+  wget https://ftp.lanet.kr/ubuntu-releases/24.04.4/ubuntu-24.04.4-live-server-amd64.iso
   ```
+
+  <!-- TODO: lanet.kr, ubuntu.com 중에서 어떤 것이 빠른지 실험실에서 테스트 필요 -->
+  <!-- https://launchpad.net/ubuntu/+cdmirrors 경우에 따라 이쪽에 있는 목록을 여러개 나열하는 것도 도움 될 수 있음 -->
 
 - Prepare for Ubuntu VM
 
   VM에서 사용할 가상 디스크 image를 만들기 위해, 아래의 명령어를 실행합니다.
 
   ```bash
-  sudo qemu-img create vFunction22.img -f qcow2 10G
+  sudo qemu-img create vFunction24.img -f qcow2 10G
   ```
 
   아래의 명령어를 입력하여 VM을 백그라운드 모드로 실행합니다.
@@ -407,8 +429,8 @@ sudo systemctl restart networking
   -smp cpus=4,maxcpus=4 \
   -device virtio-net-pci,netdev=net0 \
   -netdev tap,id=net0,ifname=vport_vFunction,script=no \
-  -boot d vFunction22.img \
-  -cdrom ubuntu-22.04.5-live-server-amd64.iso \
+  -boot d vFunction24.img \
+  -cdrom ubuntu-24.04.4-live-server-amd64.iso \
   -vnc :5 -daemonize \
   -monitor telnet:127.0.0.1:3010,server,nowait,ipv4 \
   -cpu host
@@ -433,12 +455,13 @@ sudo systemctl restart networking
   ![Install Ubuntu](./img/install_ubuntu.png)
 
   설치 단계 (Enter키와 방향키를 사용하여 설치를 진행합니다.)
-  1. 언어 설정 화면에서 English로 설정합니다.
-  2. "Keyboard configuration" 화면에서는 모든 부분을 English(US)로 설정합니다.
-  3. "Choose the type of installation" 화면에서는 "Ubuntu Server" 부분에 (X) 표시가 되어있는지 확인하고 Done을 누릅니다.
-  4. "Network configuration" 화면에 진입하여 아래와 같이 "Edit IPv4"를 눌러줍니다.
+  1. Try or Install Ubuntu Server를 선택합니다.
+  2. 언어 설정 화면에서 English로 설정합니다.
+  3. "Keyboard configuration" 화면에서는 모든 부분을 English(US)로 설정합니다.
+  4. "Choose the type of installation" 화면에서는 "Ubuntu Server" 부분에 (X) 표시가 되어있는지 확인하고 Done을 누릅니다.
+  5. "Network configuration" 화면에 진입하여 아래와 같이 "Edit IPv4"를 눌러줍니다.
      ![Ubuntu Network](./img/ubuntu_network.png)
-  5. 아래 내용을 참고하여 설정해줍니다.(VM IP로 종이에 적힌 Extra IP 주소를 사용합니다.)
+  6. 아래 내용을 참고하여 설정해줍니다.(VM IP로 종이에 적힌 Extra IP 주소를 사용합니다.)
 
      > IPv4 Method → Manual
      >
@@ -451,21 +474,21 @@ sudo systemctl restart networking
 
      그리고 위의 `< VM IP(Extra IP) >` 작성 시에 **괄호는 지우고** 172.29.0.X의 형식으로 작성해야 합니다.
 
-  6. "Proxy configuration" 화면에서는 아무것도 입력하지 않고 넘어갑니다.
-  7. "Ubuntu archive mirror configuration" 화면에서도 Done을 눌러 넘어갑니다.
-  8. ⚠️ **(중요)** "Installer update available" 화면에서는 "Continue without updating"을 선택합니다.
-  9. "Guided storage configuration", "Storage configuration" 화면에서도 내용을 수정하지 않고 Done을 계속 눌러서 넘어갑니다. 마지막에 "Confirm destructive action" 창이 뜨면 Continue를 눌러 넘어갑니다.
-  10. "Profile configuration" 화면에서는 아래와 같이 입력합니다.
+  7. "Proxy configuration" 화면에서는 아무것도 입력하지 않고 넘어갑니다.
+  8. "Ubuntu archive mirror configuration" 화면에서도 Done을 눌러 넘어갑니다.
+  9. ⚠️ **(중요)** "Installer update available" 화면에서는 "Continue without updating"을 선택합니다.
+  10. "Guided storage configuration", "Storage configuration" 화면에서도 내용을 수정하지 않고 Done을 계속 눌러서 넘어갑니다. 마지막에 "Confirm destructive action" 창이 뜨면 Continue를 눌러 넘어갑니다.
+  11. "Profile configuration" 화면에서는 아래와 같이 입력합니다.
       - Your name: vm
       - Your servers name: vm<VM IP주소의 마지막 3자리 숫자>  
         -> ex. XXX.XXX.XXX.179의 경우, vm179
       - Pick a username: vm
       - 비밀번호의 경우, NUC의 비밀번호와 동일하게 설정합니다.
-  11. "Upgrade to Ubuntu Pro" 화면이 나오면 "Skip for now"에 (X) 표시가 되어있는지 확인하고 넘어갑니다.
-  12. "SSH configuration" 화면이 나오면 아무것도 수정하지 않고 Done을 눌러 넘어갑니다.
-  13. "Featured server snaps" 화면이 나오면 아무것도 선택하지 않고 Done을 눌러 넘어갑니다.
-  14. 설치 진행 상황을 볼 수 있는 화면이 나옵니다.
-  15. 설치가 완료되어 아래와 같이 화면이 나오면 `Reboot Now` 버튼이 보일 것입니다. 그러나, ⚠️ **버튼을 누르지 않고 아래의 내용을 따라주시길 바랍니다**.
+  12. "Upgrade to Ubuntu Pro" 화면이 나오면 "Skip for now"에 (X) 표시가 되어있는지 확인하고 넘어갑니다.
+  13. "SSH configuration" 화면이 나오면 아무것도 수정하지 않고 Done을 눌러 넘어갑니다.
+  14. "Featured server snaps" 화면이 나오면 아무것도 선택하지 않고 Done을 눌러 넘어갑니다.
+  15. 설치 진행 상황을 볼 수 있는 화면이 나옵니다.
+  16. 설치가 완료되어 아래와 같이 화면이 나오면 `Reboot Now` 버튼이 보일 것입니다. 그러나, ⚠️ **버튼을 누르지 않고 아래의 내용을 따라주시길 바랍니다**.
       ![Ubuntu Network](./img/ubuntu-installation-done.png)
 
 - Installation Completed
@@ -486,7 +509,7 @@ sudo kvm -m 1024 -name tt \
 -smp cpus=2,maxcpus=2 \
 -device virtio-net-pci,netdev=net0 \
 -netdev tap,id=net0,ifname=vport_vFunction,script=no \
--boot d vFunction22.img
+-boot d vFunction24.img
 ```
 
 ## 2-4. OVS connects with KVM
@@ -509,19 +532,21 @@ sudo apt install -y ca-certificates curl gnupg lsb-release
 Docker 공식 GPG Key를 추가합니다.
 
 ```bash
-sudo mkdir -p /etc/apt/keyrings
-
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | \
-    sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
 ```
 
 apt source list에 Docker 저장소를 추가합니다.
 
 ```bash
-echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-  $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
-  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo tee /etc/apt/sources.list.d/docker.sources <<EOF
+Types: deb
+URIs: https://download.docker.com/linux/ubuntu
+Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
+Components: stable
+Signed-By: /etc/apt/keyrings/docker.asc
+EOF
 ```
 
 Docker를 설치합니다.
@@ -550,6 +575,8 @@ EOF
 
 /etc/systemd/system/docker.service.d 디렉터리를 생성합니다.
 
+<!-- NOTE: 직접 daemon 만들어줄 필요 없음 -->
+
 ```bash
 sudo mkdir -p /etc/systemd/system/docker.service.d
 sudo systemctl daemon-reload
@@ -572,10 +599,10 @@ sudo docker run hello-world
 
 ## 2-7. Make Container
 
-c1이라는 이름의 container를 생성해봅니다. 이 container는 ubuntu:22.04 이미지를 바탕으로 생성되며, 최초 실행 시, /bin/bash가 실행되도록 합니다. `--net=none` 옵션을 사용하여 container가 네트워크에 연결되지 않도록 합니다.
+c1이라는 이름의 container를 생성해봅니다. 이 container는 ubuntu:24.04 이미지를 바탕으로 생성되며, 최초 실행 시, /bin/bash가 실행되도록 합니다. `--net=none` 옵션을 사용하여 container가 네트워크에 연결되지 않도록 합니다.
 
 ```bash
-sudo docker run -it --net=none --name c1 ubuntu:22.04 /bin/bash
+sudo docker run -it --net=none --name c1 ubuntu:24.04 /bin/bash
 ```
 
 ctrl + p, q를 누르면 container를 종료하지 않고 container 밖으로 나올 수 있습니다.

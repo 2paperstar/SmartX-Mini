@@ -94,7 +94,7 @@ sudo docker run -p 8888:8888 --name chronograf chronograf --influxdb-url http://
 
 > [!tip]
 >
-> **새로운 터미널 열기 `Ctrl+Shift+t`**
+> **새로운 터미널 열기(탭) `Ctrl+Shift+T`, 새로운 터미널 열기(창) `Ctrl+Alt+T`**
 
 ```bash
 sudo apt-get install -y libcurl4 openssl curl python3-pip
@@ -117,7 +117,7 @@ sudo apt-get install -y libcurl4 openssl curl python3-pip
 ### 1-3-2. Python Packages 설치
 
 ```bash
-sudo pip install requests kafka-python influxdb msgpack
+sudo pip install requests kafka-python influxdb msgpack --break-system-packages
 ```
 
 <details>
