@@ -171,9 +171,9 @@ sudo apt-get install -y libcurl4 openssl curl python3-pip python3-venv
 
 ### 1-3-2. 가상환경 생성 및 Python Packages 설치
 <!-- pip path edit, .gitignore 추가 필요 -->
+Lab 2에서 생성한 python venv를 실행하고 package를 설치합니다.
 ```bash
-python3 -m venv ~/venvs/smartx-mini
-source ~/venvs/smartx-mini/bin/activate
+source ~/.venv/bin/activate
 python -m pip install --upgrade pip
 pip install requests kafka-python influxdb msgpack
 ```
@@ -186,7 +186,7 @@ pip show requests kafka-python influxdb msgpack
 
 > [!tip]
 >
-> 새 터미널을 열 때마다 `source ~/venvs/smartx-mini/bin/activate`를 먼저 실행한 뒤 Python 명령을 사용하세요.
+> 새 터미널을 열 때마다 `source ~/.venv/bin/activate`를 먼저 실행한 뒤 Python 명령을 사용하세요.
 
 <br>
 
@@ -278,7 +278,7 @@ sudo docker run -it --rm \
 > 새로운 터미널을 열고 진행해주세요!
 
 ```bash
-vim ~/SmartX-Mini/SmartX-Box/ubuntu-kafkatodb/broker_to_influxdb.py
+vim ~/SmartX-Mini/SmartX-Mini-2026/Experiment/Lab-4. Tower/deploy/ubuntu-kafkatodb/broker_to_influxdb.py
 ```
 
 이 파일에서 아래 3개 항목을 수정해주세요.
@@ -312,14 +312,14 @@ cmd = "curl -sS -XPOST 'http://localhost:8086/write?db=Labs&u=<INFLUXDB_V1_USER>
 ```bash
 sudo sysctl -w fs.file-max=100000
 ulimit -S -n 2048
-source ~/venvs/smartx-mini/bin/activate
+source ~/.venv/bin/activate
 
 
 # optional: v1 인증/DBRP 매핑 확인
 curl -sS -XPOST "http://localhost:8086/query?u=${INFLUXDB_V1_USER}&p=${INFLUXDB_V1_PASSWORD}&db=Labs" \
   --data-urlencode "q=SHOW MEASUREMENTS"
 
-python ~/SmartX-Mini/SmartX-Box/ubuntu-kafkatodb/broker_to_influxdb.py
+python ~/SmartX-Mini/SmartX-Mini-2026/Experiment/Lab-4. Tower/deploy/ubuntu-kafkatodb/broker_to_influxdb.py
 ```
 
 ## 1-7. Chronograf 대시보드 ( in NUC )
