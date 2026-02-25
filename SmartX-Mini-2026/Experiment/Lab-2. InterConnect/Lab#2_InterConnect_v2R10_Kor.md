@@ -84,6 +84,8 @@ Net-SNMP는 리눅스 시스템에 SNMP Manager와 SNMP Agent 역할을 수행�
 > [!note]
 > 수집될 상태 정보는 실습 과정 중 Fluentd 배치 때 확인할 `fluent.conf` 파일의 `command` 항목에 기록된 OID를 통해 확인 가능합니다.
 
+<!--  -->
+
 > [!tip]
 > SNMP를 더 자세히 알고 싶다면 [GeeksForGeeks](https://www.geeksforgeeks.org/simple-network-management-protocol-snmp/)를 참고해주세요.
 
@@ -94,11 +96,12 @@ Fluentd는 다양한 소스에서 로그 및 이벤트 데이터를 수집, 변�
 Fluentd의 Data Flow Model은 하단의 그림과 같으며, 크게 3가지 요소로 구성됩니다.
 
 ![Fluentd](./img/fluentd.png)
-|Component|Description|
-|---|---|
-|Input / Filter| 외부 시스템이나 명령어 실행 결과 등으로부터 데이터를 수집하고, 변환·필터링한다.<br>파일, HTTP, 명령어 실행(`exec`) 등 다양한 방식을 지원한다. |
-|Output| 처리된 데이터를 외부 시스템(Kafka, Elasticsearch, S3 등)으로 전송한다. |
-|Buffer| stage(chunk 적재)와 queue(전송 대기) 구조로 데이터를 안전하게 버퍼링한다. Chunk 단위로 묶어 전송함으로써 신뢰성 있는 데이터 전달을 보장한다. |
+
+| Component      | Description                                                                                                                                  |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Input / Filter | 외부 시스템이나 명령어 실행 결과 등으로부터 데이터를 수집하고, 변환·필터링한다. 파일, HTTP, 명령어 실행(`exec`) 등 다양한 방식을 지원한다.   |
+| Output         | 처리된 데이터를 외부 시스템(Kafka, Elasticsearch, S3 등)으로 전송한다.                                                                       |
+| Buffer         | stage(chunk 적재)와 queue(전송 대기) 구조로 데이터를 안전하게 버퍼링한다. Chunk 단위로 묶어 전송함으로써 신뢰성 있는 데이터 전달을 보장한다. |
 
 이번 실습에서는 Flume은 `snmpd`로부터 상태 정보를 받아 Kafka로 전달하는 데에 사용됩니다. 실습에서는 Source를 `snmpd`로 설정하여 SNMP를 통해 상태 정보를 수집하며, 이를 Kafka에게 넘겨주게 됩니다.
 이번 실습에서는 Fluentd가 `snmpd`로부터 상태 정보를 주기적으로 수집(`exec` Input)하여 Kafka로 전달하는 데에 사용됩니다. `snmpget` 명령어를 통해 SNMP로 상태 정보를 수집하고, 이를 JSON 형식으로 가공하여 Kafka Topic에 전송합니다.
@@ -143,7 +146,7 @@ HypriotOS 설치를 위해 Micro SD 카드를 리더기에 삽입한 뒤, NUC에
 
 > [!caution]
 >
->  SD 카드 분리 전, **반드시 Pi가 __완전히 종료되었는지__ 확인합니다.**
+> SD 카드 분리 전, **반드시 Pi가 _완전히 종료되었는지_ 확인합니다.**
 >
 > Raspberry Pi는 SD카드를 저장장치로 사용합니다.
 > 만약 정상 종료 전에 SD 카드를 강제로 제거할 경우, SD 카드 내 데이터가 오염되어 치명적인 오류를 일으킬 수 있습니다.
@@ -245,16 +248,18 @@ ls -alh # Check all files
 
 `network-config`는 Pi에서 사용할 네트워크 설정이 저장되어 있습니다. 이 파일을 열어 설정을 변경하겠습니다.
 
->  [!caution]
+> [!caution]
 >
 > `network-config` 파일의 이름을 <ins>**절대로**</ins> 변경하시면 안됩니다.
 >
-> `network-config`는 시스템이 부팅될 때 초기화를 담당하는 `cloud-init`에게 네트워크 설정을 전달하기 위해 사용되는 파일로, 파일 이름을 기준으로 해당 파일 탐색을 시도합니다.
-> `flash`를 통해 HypriotOS를 설치할 경우 `cloud-init`에 의해 관리되도록 구성되며, 부팅 시 네트워크 설정 초기화를 위해 먼저 로컬 파일시스템(`/boot` 등)에 위치한 `network-config` 파일을 탐색하도록 설정되어있습니다.
-> 만약 파일 이름을 변경하실 경우 `cloud-init`이 네트워크 설정을 찾지 못해 default setting이 반영됩니다.
+> `network-config`는 시스템이 부팅될 때 초기화를 담당하는 `cloud-init`에게 네트워크 설정을 전달하기 위해 사용되는 파일로, 파일 이름을 기준으로 해당 파일 탐색을 시도합니다.  
+> `flash`를 통해 HypriotOS를 설치할 경우 `cloud-init`에 의해 관리되도록 구성되며, 부팅 시 네트워크 설정 초기화를 위해 먼저 로컬 파일시스템(`/boot` 등)에 위치한 `network-config` 파일을 탐색하도록 설정되어있습니다.  
+> 만약 파일 이름을 변경하실 경우 `cloud-init`이 네트워크 설정을 찾지 못해 default setting이 반영됩니다.  
 > 즉, 후술할 네트워크 설정이 반영되지 않을 뿐더러, 재설정을 위해 OS를 재설치하거나 네트워크 설정 파일을 찾아 직접 네트워크 인터페이스 설정을 수정해야 하므로 <ins>**절대로 파일의 명칭을 변경하면 안됩니다.**</ins>
 >
-> 참조: https://cloudinit.readthedocs.io/en/stable/reference/datasources/nocloud.html#source-files
+> 참조: <https://cloudinit.readthedocs.io/en/stable/reference/datasources/nocloud.html#source-files>
+
+<!--  -->
 
 > [!note]
 >
@@ -276,9 +281,8 @@ ls -alh # Check all files
 >
 > 이러한 동작이 모두 마무리되면, 사용자가 시스템에 접근하여 활용할 수 있는 여건이 마련됩니다.
 >
-> 참고1: https://cloudinit.readthedocs.io/en/latest/explanation/introduction.html
->
-> 참고2: https://cloudinit.readthedocs.io/en/stable/reference/datasources/nocloud.html
+> 참고1: <https://cloudinit.readthedocs.io/en/latest/explanation/introduction.html>  
+> 참고2: <https://cloudinit.readthedocs.io/en/stable/reference/datasources/nocloud.html>
 
 ```bash
 pwd # 현재 Directory가 "SmartX-Mini/SmartX-Mini-2026/Experiment/Lab-2. InterConnect/"인지 확인
@@ -371,8 +375,8 @@ flash -u hypriotos-init.yaml -F network-config -d <Your SD Card Directory> hypri
 >
 > `hypriotos-init.yaml` 파일에 관하여
 >
-> `hypriotos-init.yaml`은 HypriotOS의 `/boot/user-data` 파일로 사용됩니다.
-> `/boot/user-data` 파일은 사용자 정의 설정을 인스턴스에게 제공할 때 사용되는 파일로, 사용자 생성, Hostname 설정, `/etc/hosts` 자동 초기화 여부 등을 결정합니다.
+> `hypriotos-init.yaml`은 HypriotOS의 `/boot/user-data` 파일로 사용됩니다.  
+> `/boot/user-data` 파일은 사용자 정의 설정을 인스턴스에게 제공할 때 사용되는 파일로, 사용자 생성, Hostname 설정, `/etc/hosts` 자동 초기화 여부 등을 결정합니다.  
 > 초기 계정 정보 또한 이곳에서 정의되므로, 설치 전 초기 계정 정보를 변경하거나, ID/PW를 잊어버렸을 때 이를 참고합니다.
 >
 > 참고: <https://cloudinit.readthedocs.io/en/stable/explanation/format.html>
@@ -447,7 +451,7 @@ sudo apt install -y git vim rdate openssh-server
 
 ### 2-2-3. (PI) 시간 동기화를 위한 `crontab` 설정
 
-라즈베리 파이는 RTC가 없는 관계로, 전원 종료 후 약 17분 동안만 시스템 시간이 유지됩니다.
+라즈베리 파이는 RTC가 없는 관계로, 전원 종료 후 약 17분 동안만 시스템 시간이 유지됩니다.  
 부팅 후 시간을 동기화하기 위해 `crontab`을 이용하여 부팅 완료 후 1분 뒤 `rdate`를 실행하도록 설정하겠습니다.
 
 먼저, 다음의 명령어를 입력하여 `crontab` 설정을 수정하도록 하겠습니다.
@@ -456,7 +460,7 @@ sudo apt install -y git vim rdate openssh-server
 sudo crontab -e
 ```
 
-`crontab`을 처음 설정하는 경우, 화면에 어떤 편집기를 사용할 것인지 설정할 수 있습니다.
+`crontab`을 처음 설정하는 경우, 화면에 어떤 편집기를 사용할 것인지 설정할 수 있습니다.  
 해당 화면에서 원하는 편집기를 정한 뒤, 설정 파일의 맨 아래에 다음을 입력합니다. (주석은 제외합니다.)
 
 ![crontab editor](./img/crontab_editor_selection.png)
@@ -476,10 +480,10 @@ sudo reboot
 
 ### 2-2-4. (NUC) Pi 환경 확인
 
-이전 과정에서 Pi에 `openssh-server`를 설치하였기 때문에, 외부에서 SSH를 통해 Pi에 접근할 수 있습니다.
+이전 과정에서 Pi에 `openssh-server`를 설치하였기 때문에, 외부에서 SSH를 통해 Pi에 접근할 수 있습니다.  
 (즉, 이제부터 모니터, 마우스, 키보드를 일일이 뽑고 꽂을 필요 없이, NUC에서 SSH로 Pi에 접근하면 됩니다.)
 
-이를 확인하기 위해, NUC의 터미널에서 SSH를 통해 Pi에 접근하겠습니다.
+이를 확인하기 위해, NUC의 터미널에서 SSH를 통해 Pi에 접근하겠습니다.  
 NUC으로 돌아와, 다음과 같이 입력해주십시오.
 
 ```bash
@@ -494,15 +498,15 @@ ssh pi@<PI_IP>  # Simple Format: ssh <ID>@<Target IP or Hostname>
 >
 > 해당 오류는 접근할 IP 주소와 이와 연결된 SSH Key의 정보가 접근하려는 SSH Server의 Key와 다른 경우에 발생합니다. (e.g. `openssh-server` 재설치 이후 접근 시도)
 >
-> 각 SSH Server는 고유의 SSH Key를 갖고 있습니다.
-> 해당 Key는 SSH Client가 Server에 접근하였을 때 전달받으며, Client는 `~/.ssh/known_hosts`에 이를 IP와 함께 저장합니다.
-> (하단의 이미지가 이 과정에 해당합니다.)
+> 각 SSH Server는 고유의 SSH Key를 갖고 있습니다.  
+> 해당 Key는 SSH Client가 Server에 접근하였을 때 전달받으며, Client는 `~/.ssh/known_hosts`에 이를 IP와 함께 저장합니다.  
+> (하단의 이미지가 이 과정에 해당합니다.)  
 > ![ssh initial access](./img/ssh_initial_access.png)
 >
-> Client는 해당 Server에 다시 접근할 때, `~/.ssh/known_hosts`에 저장된 데이터를 이용하여, 접근하려는 Server가 이전에 접근했던 Server와 동일한지 확인합니다. (이는 중간자 공격 보안 위협을 방지하기 위한 정책입니다.)
+> Client는 해당 Server에 다시 접근할 때, `~/.ssh/known_hosts`에 저장된 데이터를 이용하여, 접근하려는 Server가 이전에 접근했던 Server와 동일한지 확인합니다. (이는 중간자 공격 보안 위협을 방지하기 위한 정책입니다.)  
 > 하지만 접근하려는 Server가 이전에 접근했었던 Server와 다를 경우, `ssh`는 위와 같은 오류를 출력하며 접근을 강제로 끊습니다.
 >
-> 위의 오류를 해결하기 위해, 다음의 방법을 통해 이전의 Fingerprint를 삭제합니다.
+> 위의 오류를 해결하기 위해, 다음의 방법을 통해 이전의 Fingerprint를 삭제합니다.  
 > 이후 다시 SSH 연결을 시도합니다.
 >
 > ```bash
@@ -548,6 +552,7 @@ sudo vim /etc/hosts
 ```
 
 파일의 맨 아래에 Pi의 IP 주소와 Hostname을 다음과 같이 추가합니다.
+
 <!--
   Pi IP만 적는 것으로 수정합니다.
   REF: Issue #98
@@ -557,7 +562,7 @@ sudo vim /etc/hosts
 172.29.0.XX        <PI_HOSTNAME>
 ```
 
->  [!Caution]
+> [!Caution]
 >
 > `/etc/hosts`에 기입하는 Pi와 NUC의 Hostname은 실제 Hostname과 일치해야 합니다.
 >
@@ -581,7 +586,7 @@ sudo vim /etc/hosts
 >
 > 수정 이후, `/etc/hosts`에 기록된 NUC의 Hostname도 새로운 Hostname으로 수정해야 합니다.
 >
-> Pi의 경우, `cloud-init`으로 인해 영구적 변경을 위해 추가적인 절차를 거쳐야합니다.
+> Pi의 경우, `cloud-init`으로 인해 영구적 변경을 위해 추가적인 절차를 거쳐야합니다.  
 > 방법은 별도로 설명하지 않으며, <https://repost.aws/ko/knowledge-center/linux-static-hostname-rhel7-centos7>을 참고해주십시오.
 
 ### 2-3-2. (PI) Hostname preparation for Kafka
@@ -591,6 +596,7 @@ sudo vim /etc/hosts
 ```bash
 sudo vim /etc/hosts
 ```
+
 <!--
   NUC IP만 적는 것으로 수정합니다.
   REF: Issue #98
@@ -602,14 +608,16 @@ sudo vim /etc/hosts
 
 > [!warning]
 >
-> Pi의 `/etc/hosts`는 `cloud-init`에 의해 부팅 과정에서 초기화됩니다.
+> Pi의 `/etc/hosts`는 `cloud-init`에 의해 부팅 과정에서 초기화됩니다.  
 > 만약 종료 이후에도 `/etc/hosts`를 유지하고 싶을 경우, 후술할 참고 영역을 따릅니다.
 
->  [!tip]
+<!--  -->
+
+> [!tip]
 >
->  Pi의 `/etc/hosts` 영구 보존
+> Pi의 `/etc/hosts` 영구 보존
 >
-> `cloud-init`은 부팅 과정에서 사전 정의된 hosts 템플릿 파일을 이용하여 `/etc/hosts`를 재생성합니다.
+> `cloud-init`은 부팅 과정에서 사전 정의된 hosts 템플릿 파일을 이용하여 `/etc/hosts`를 재생성합니다.  
 > 이 과정에서 이전에 기록되었던 기록은 삭제됩니다.
 >
 > 영구적으로 반영하기 위해, 다음의 3개 방법 중 하나를 사용할 수 있습니다.
@@ -617,7 +625,7 @@ sudo vim /etc/hosts
 > 1. OS 설치에 사용한 `hypriotos-init.yaml` 파일에서 `manage_etc_hosts`의 값을 `false`로 수정한 뒤 재설치합니다.
 > 2. Pi 내부에서 `/etc/cloud/templates/hosts.debian.tmpl` 파일을 `/etc/hosts`를 수정했던 방법과 동일한 방법으로 수정합니다.
 > 3. `/etc/cloud/cloud.cfg`에서 `cloud_init_modules`의 `- update_etc_hosts`를 주석처리 합니다. 해당 모듈이 `/etc/hosts`의 재생성을 담당합니다.
->
+
 <!-- 2025.02.27: 이유는 모르겠지만 HypriotOS 내부에서 /boot/user-data를 직접 수정해도 Data가 날아감. 아마 cloud-init을 제대로 이해하지 못했기 때문이라고 생각한다. 추후에 근본 원인을 찾아낸다면 수정을 부탁한다. -->
 
 ### 2-3-3. (PI, NUC) Hostname 적용 확인
@@ -646,14 +654,14 @@ NUC과 Pi가 Hostname을 이용하여 정상적으로 통신할 수 있게 되�
 
 이번 실습에서는 Apache Kafka 4.2.0을 KRaft 모드로 배치합니다. KRaft 모드에서는 기존의 Zookeeper 없이, Controller가 클러스터 메타데이터 관리를 직접 담당합니다. NUC에 Controller 3개와 Broker 3개를 Docker Compose로 배치하며, 이들은 모두 Host 네트워크를 공유합니다.
 
-| Container 이름 | 역할       | Node ID | Listening Port |
+| Container 이름 |    역할    | Node ID | Listening Port |
 | :------------: | :--------: | :-----: | :------------: |
 |  controller0   | Controller |    0    |     19090      |
 |  controller1   | Controller |    1    |     19091      |
 |  controller2   | Controller |    2    |     19092      |
-|    broker0     | Broker     |    3    |      9090      |
-|    broker1     | Broker     |    4    |      9091      |
-|    broker2     | Broker     |    5    |      9092      |
+|    broker0     |   Broker   |    3    |      9090      |
+|    broker1     |   Broker   |    4    |      9091      |
+|    broker2     |   Broker   |    5    |      9092      |
 
 ### 2-4-1. (NUC) 디렉토리 이동 및 Dockerfile 확인
 
@@ -677,9 +685,7 @@ RUN wget -q https://downloads.apache.org/kafka/4.2.0/kafka_2.13-4.2.0.tgz -O - |
     mv kafka_2.13-4.2.0 /kafka
 
 WORKDIR /kafka
-```
 
-```
 COPY start-kafka.sh /kafka/start-kafka.sh
 RUN chmod +x /kafka/start-kafka.sh
 ```
@@ -798,6 +804,8 @@ sudo docker ps
 > **`start-kafka.sh`의 역할**
 >
 > `docker-compose.yml`에 작성된 환경변수 설정들을 컨테이너 내부에 주입하고, 각 노드의 역할(Controller/Broker)에 맞는 설정 파일을 자동으로 생성한 뒤 Kafka를 시작합니다.
+
+<!--  -->
 
 > [!tip]
 >
@@ -928,9 +936,12 @@ sudo docker run -it --rm \
 >
 > `--security-opt seccomp=unconfined` 옵션은 HypriotOS의 커널(4.19)에서 seccomp 정책이 일부 시스템 콜을 차단하는 문제를 우회하기 위해 필요합니다.
 
+<!--  -->
+
 > [!note]
 >
 > 만약 연결 오류가 발생하였을 경우, 다음 3개 값이 모두 일치하는지 확인해주십시오.
+>
 > 1. Pi의 `/etc/hosts`에 입력된 NUC의 hostname
 > 2. Pi의 `fluent.conf`에 입력된 Broker의 hostname (`brokers` 항목)
 > 3. NUC의 hostname (`hostname`으로 확인되는 값)
@@ -975,5 +986,5 @@ sudo docker run -it --rm \
 위의 질문을 생각해보며, Physical Interconnect와 Data Interconnect에 대해 고민해볼 수 있는 시간을 가져보시기 바랍니다.
 
 > [!important]
-> 실습에 참여하시느라 고생 많으셨습니다.
+> 실습에 참여하시느라 고생 많으셨습니다.  
 > 참여해주셔서 감사합니다.
