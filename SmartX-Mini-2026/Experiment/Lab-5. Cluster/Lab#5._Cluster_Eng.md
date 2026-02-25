@@ -11,9 +11,9 @@ The 3 NUC machines will play the following roles in the Kubernetes cluster:
 - 1 Master Node (Control Plane) → NUC1
 - 2 Worker Nodes → NUC2, NUC3
 
-### What is the Master-Worker Architecture?
+## What is the Master-Worker Architecture?
 
-<img src='img/master-worker.png' alt='master-worker pattern' width="675">
+![master-worker pattern](img/master-worker.png)
 
 The Master-Worker pattern is a software architecture pattern where one master manages the entire system, and multiple workers perform individual tasks. This pattern maximizes performance through parallel processing and supports excellent scalability by allowing dynamic addition or removal of worker nodes.
 
@@ -25,15 +25,15 @@ Thanks to these characteristics, the master-worker architecture is widely used i
 
 ## 1-1. Docker Containers
 
-<img src='img/docker.png' alt='docker icon' width='225'>
+![docker icon](img/docker.png)
 
-<b>Docker</b> is an open-source platform that uses container technology to simplify the development, deployment, and execution of applications. Docker packages applications with their dependencies and runtime into a single unit (container), enabling deployment independent of the operating system environment.
+**Docker** is an open-source platform that uses container technology to simplify the development, deployment, and execution of applications. Docker packages applications with their dependencies and runtime into a single unit (container), enabling deployment independent of the operating system environment.
 
 ### Differences Between Docker Containers and Virtual Machines (VMs)
 
 Compared to Virtual Machines, Docker containers offer a lighter and faster runtime environment and more efficient resource usage.
 
-<img src='img/docker-diagram.png' alt='docker diagram' width='1125'>
+![docker diagram](img/docker-diagram.png)
 
 ### Left Side of the Image
 
@@ -45,16 +45,13 @@ Compared to Virtual Machines, Docker containers offer a lighter and faster runti
 Docker operates based on a client-server architecture and consists of the following components:
 
 1. Developer(docker client) runs Docker commands:
-
    - Uses commands like `docker build`, `docker pull`, and `docker run`.
 
 2. Docker Daemon(Server) handles the operations:
-
    - Creates and manages containers and Docker images.
    - Actually executes the commands issued by the developer.
 
 3. Image Registry:
-
    - Container images for applications are stored in remote registries like `Docker Hub`.
    - Cloud-based registries like AWS ECR or private registries can also be used.
 
@@ -65,11 +62,9 @@ As container technology became widely used, there arose a need for a system that
 ### Why Is Container Orchestration Necessary?
 
 1. **Increased Number of Containers to Manage**
-
    - Managing a few containers on a single server is simple, but in large-scale applications involving **hundreds or thousands of containers**, it becomes challenging.
 
 2. **Automation and Management Efficiency**
-
    - Functions like automated deployment, network configuration, load balancing, monitoring, and self-healing upon failure are essential.
 
 3. **High Availability & Scalability**
@@ -78,30 +73,26 @@ As container technology became widely used, there arose a need for a system that
 Key features include:
 
 1. **Automated Deployment and Updates**
-
    - Automatically deploy containers and perform gradual updates (Rolling Update) when a new version is released.
 
 2. **Load Balancing & Service Discovery**
-
    - Distributes traffic across multiple containers and automatically sets up communication between containers.
 
 3. **Self-healing**
-
    - Detects and replaces failed containers to prevent service disruption.
 
 4. **Cluster Resource Optimization**
-
    - Efficient scheduling of containers to utilize CPU, memory, and other cluster resources.
 
-<img src='img/container-orch.png' alt='container orchestration tool' width="900">
+![container orchestration tool](img/container-orch.png)
 
-The image above shows popular container orchestration tools. <b>Kubernetes(K8s)</b> is currently the most widely adopted.
+The image above shows popular container orchestration tools. **Kubernetes(K8s)** is currently the most widely adopted.
 
 It’s also known as K8s, where the 'K' is the first letter, 's' is the last, and '8' stands for the number of letters in between.
 
 ## 1-3. Kubernetes
 
-<img src='img/k8s-arch.png' alt='k8s arch' width='900'>
+![k8s arch](img/k8s-arch.png)
 
 [**Kubernetes**](https://kubernetes.io/) is an **open-source orchestration system** that automates the deployment, scaling, and management of containerized applications.
 
@@ -112,7 +103,7 @@ It’s also known as K8s, where the 'K' is the first letter, 's' is the last, an
 - **Service Discovery & Load Balancing**: Assigns each container a unique IP and enables DNS-based service discovery. Also provides load balancing to distribute traffic.
 - **Storage Orchestration**: Easily mounts local or cloud storage (NFS, Ceph, AWS EBS, GCP Persistent Disk, etc.) to containers.
 
-Kubernetes is the most widely used container orchestration tool in both <b>cloud environments (AWS, GCP, Azure) and on-premises environments</b>.
+Kubernetes is the most widely used container orchestration tool in both **cloud environments (AWS, GCP, Azure) and on-premises environments**.
 
 # 2. Lab Preparation
 
@@ -238,7 +229,7 @@ ssh <nuc3 username>@nuc03
 sudo reboot
 ```
 
-# From now on, all tasks will be performed from the seat assigned to NUC1. Students using NUC2 and NUC3 should move to the NUC1 seat and work together.
+# From now on, all tasks will be performed from the seat assigned to NUC1. Students using NUC2 and NUC3 should move to the NUC1 seat and work together
 
 ## 2-2. Preparations for Clustering
 
@@ -265,11 +256,11 @@ ssh <NUC3 username>@nuc03
 >
 > The shortcut to open a new terminal tab is `Ctrl + Shift + T`.
 >
-> <img src='img/screen-setup.png' alt='screen setup'>
+> ![screen setup](img/screen-setup.png)
 
 ## 2-3. Kubernetes Installation (For All NUCs)
 
-![Kubernets Installation](img/nuc-prep.png)
+![Kubernetes Installation](img/nuc-prep.png)
 
 - NUC 1 : Master
 - NUC 2 : Worker 1
@@ -368,7 +359,7 @@ sudo kubeadm init --pod-network-cidr=10.244.0.0/16
 >
 > ⚠️ **If a preflight error occurs, follow the instructions below:**
 >
-> <img src='img/preflight-error.png' alt='preflight error' width='900'>
+> ![preflight error](img/preflight-error.png)
 >
 > **Cause of Error**
 >
@@ -387,7 +378,7 @@ sudo kubeadm init --pod-network-cidr=10.244.0.0/16
 
 If the `kubeadm` command runs successfully, it will generate a command including a token to allow other nodes to join the cluster. Save this command in a text file or somewhere secure so it doesn't get lost.
 
-<img src='img/kubeadm-init.png' alt='kubeadm init'>
+![kubeadm init](img/kubeadm-init.png)
 
 Now run the following commands on NUC1:
 
@@ -414,7 +405,7 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
 Now join the Worker Nodes to the Kubernetes cluster.
 
-<img src='img/kubeadm-init-2.png' alt='kubeadm init'>
+![kubeadm init](img/kubeadm-init-2.png)
 
 Copy the command inside the red box and prepend `sudo` when running it on <ins>NUC2 and NUC3</ins>.
 
@@ -431,15 +422,15 @@ Copy the command inside the red box and prepend `sudo` when running it on <ins>N
 kubectl get node
 ```
 
-<img src='img/get-node-notready.png' alt='get node notreay'>
+![get node not ready](img/get-node-notready.png)
 
-In the above image, nuc02 and nuc03 are in a NotReady state because the <b>network plugin (CNI)</b> is not yet installed, or the worker nodes did not join properly. Kubernetes does not mark nodes as Ready until networking is configured. We'll install the CNI plugin next to resolve this.
+In the above image, nuc02 and nuc03 are in a NotReady state because the **network plugin (CNI)** is not yet installed, or the worker nodes did not join properly. Kubernetes does not mark nodes as Ready until networking is configured. We'll install the CNI plugin next to resolve this.
 
 ## 2-5. Kubenetes Network Plugin Installation at NUC1
 
 ### What is CNI?
 
-<b>CNI(Container Network Interface)</b> is a standard interface used by Kubernetes to configure and manage container networking. Kubernetes does not provide networking capabilities by itself, so it relies on CNI plugins to enable communication between Pods.
+**CNI(Container Network Interface)** is a standard interface used by Kubernetes to configure and manage container networking. Kubernetes does not provide networking capabilities by itself, so it relies on CNI plugins to enable communication between Pods.
 
 ### What is Flannel?
 
@@ -457,7 +448,7 @@ kubectl get nodes
 
 After installing Flannel CNI, wait a moment and run the above command. You should now see the worker nodes’ status change to Ready.
 
-<img src='img/get-node-ready.png' alt='get node notreay'>
+![get node ready](img/get-node-ready.png)
 
 ```shell
 # At NUC1 -> Check all Pods in the kube-system namespace
@@ -471,16 +462,14 @@ kubectl get po -n kube-system -o wide
 > `kubectl get po -n kube-system -o wide`
 >
 > - `kubectl get po` → Lists Pods currently running in the cluster.
->
 > - `-n kube-system` → Only queries Pods in the `kube-system` namespace.
->
 > - `-o wide` → Displays additional details like Pod IP and node location.
 >
 > This shows the state of Kubernetes system components like Flannel, DNS, and Scheduler.
 >
 > For more details, refer to the [official Kubernetes documentation](https://kubernetes.io/ko/docs/concepts/overview/components/).
 
-<img src='img/kube-system.png' alt='kube-system' width='900'>
+![kube-system](img/kube-system.png)
 
 With this, the Kubernetes cluster's network is fully configured. Pods can now communicate with each other using Flannel, and we are ready to deploy applications in the cluster.
 
@@ -494,7 +483,7 @@ All steps will be executed on **NUC1**.
 
 The service architecture to be deployed in **Section 3** is as follows. A `Service` receives external requests and routes traffic to one of the `Pods` managed by a `Deployment`.
 
-<img src='img/simple-app/my-simple-app-arch.png' alt='my-simple-app architectur' width='675'>
+![my-simple-app architecture](img/simple-app/my-simple-app-arch.png)
 
 ## 3-2. Application Code (v1) Overview
 
@@ -515,7 +504,7 @@ def home():
     return f"Hello from {pod_name}! <br> This is the simple-app version 1. <br>"
 
 if __name__ == '__main__':
-    # You need to acces the port 5000
+    # You need to access the port 5000
     app.run(host='0.0.0.0', port=5000)
 ```
 
@@ -576,7 +565,7 @@ Typically, one Pod contains one container, and Kubernetes manages applications a
    kubectl get pod -o wide
    ```
 
-    <img src='img/simple-app/simple-1.png' alt='simple 1'>
+   ![simple 1](img/simple-app/simple-1.png)
 
 4. After checking the Pod's IP address, access it via web browser:
 
@@ -584,7 +573,7 @@ Typically, one Pod contains one container, and Kubernetes manages applications a
    http://<POD_IP>:5000
    ```
 
-    <img src='img/simple-app/simple-2.png' alt='simple 2'>
+   ![simple 2](img/simple-app/simple-2.png)
 
 5. Delete the Pod:
 
@@ -593,7 +582,7 @@ Typically, one Pod contains one container, and Kubernetes manages applications a
    kubectl get pods
    ```
 
-    <img src='img/simple-app/simple-3.png' alt='simple 3'>
+   ![simple 3](img/simple-app/simple-3.png)
 
 6. Refresh the browser to confirm that the service has been terminated.
 
@@ -647,7 +636,7 @@ It supports managing multiple Pods, scaling, rolling updates, and recovery.
    kubectl get pods -o wide # Check that the multiple pods are running
    ```
 
-   <img src='img/simple-app/simple-4.png' alt='simple 4'>
+   ![simple 4](img/simple-app/simple-4.png)
 
 2. Check each Pod's IP address and verify in the browser that the response differs for each Pod.
 
@@ -655,9 +644,9 @@ It supports managing multiple Pods, scaling, rolling updates, and recovery.
    http://<POD_IP>:5000
    ```
 
-   <img src='img/simple-app/simple-5.png' alt='simple 5' width='250'>
-   <img src='img/simple-app/simple-6.png' alt='simple 6' width='250'>
-   <img src='img/simple-app/simple-7.png' alt='simple 7' width='250'>
+   ![simple 5](img/simple-app/simple-5.png)
+   ![simple 6](img/simple-app/simple-6.png)
+   ![simple 7](img/simple-app/simple-7.png)
 
 ## 3-4-1. Self-healing of `Deployment`
 
@@ -682,7 +671,7 @@ The commands below will show that even if you manually delete a specific Pod, **
   kubectl get pod
 ```
 
-<img src='img/simple-app/k8s-healing.png' alt='self-healing'>
+![self-healing](img/simple-app/k8s-healing.png)
 
 ## 3-5. Connect `Service` with `Deployment`
 
@@ -726,7 +715,7 @@ In other words, the Deployment manages the Pods, and the Service provides **reli
    kubectl get svc # Check the Cluster IP
    ```
 
-    <img src='img/simple-app/simple-8.png' alt='simple 8'>
+   ![simple 8](img/simple-app/simple-8.png)
 
 2. Open a browser and access the following address:
 
@@ -734,7 +723,7 @@ In other words, the Deployment manages the Pods, and the Service provides **reli
    http://<Cluster IP>
    ```
 
-   <img src='img/simple-app/simple-9.png' alt='simple 9'>
+   ![simple 9](img/simple-app/simple-9.png)
 
 You’ll see the `Pod Name` change every time you refresh the page.
 
@@ -753,10 +742,9 @@ Suppose the number of users suddenly increases, and you need more than 3 Pods. K
    kubectl get pods # Check the increasing pods
    ```
 
-    <img src='img/simple-app/simple-10.png' alt='simple 10'>
+   ![simple 10](img/simple-app/simple-10.png)
 
 3. Refresh the browser:
-
    - You’ll now see Pod Names that didn’t appear before.
    - These new Pods were created when the replica count was increased
 
@@ -770,33 +758,33 @@ Instead of updating all Pods at once, it updates a few Pods at a time, making th
 
 **Steps to perform a Rolling Update:**
 
-1.  Check the website:
-    The currently deployed application version is v1 (displayed on the page).
+1. Check the website:
+   The currently deployed application version is v1 (displayed on the page).
 
-    At this time, let's change to v2. We will use pre-built docker image.
+   At this time, let's change to v2. We will use pre-built docker image.
 
-2.  Change the application version from v1 to v2:
+2. Change the application version from v1 to v2:
 
-    ```shell
-    kubectl set image deployment/simple-app-deployment simple-app=cheolhuikim/my-simple-app:v2
-    ```
+   ```shell
+   kubectl set image deployment/simple-app-deployment simple-app=cheolhuikim/my-simple-app:v2
+   ```
 
-    After running the above command, the Deployment settings will be updated as shown below.
+   After running the above command, the Deployment settings will be updated as shown below.
 
-     <img src='img/simple-app/simple-11.png' alt='simple 11'>
+   ![simple 11](img/simple-app/simple-11.png)
 
-3.  Check the Rolling Update status:
+3. Check the Rolling Update status:
 
-    ```shell
-    kubectl rollout status deployment/simple-app-deployment
-    kubectl get pods
-    ```
+   ```shell
+   kubectl rollout status deployment/simple-app-deployment
+   kubectl get pods
+   ```
 
-    <img src='img/simple-app/simple-12.png' alt='simple 12'>
+   ![simple 12](img/simple-app/simple-12.png)
 
-4.  After deployment, refresh the website to confirm the version is now v2.
+4. After deployment, refresh the website to confirm the version is now v2.
 
-    <img src='img/simple-app/simple-13.png' alt='simple 13'>
+   ![simple 13](img/simple-app/simple-13.png)
 
 Thanks to Kubernetes, application version updates are quick and easy.
 
@@ -826,15 +814,15 @@ Kubernetes makes rollback **easy and reliable**, with **zero downtime**.
    kubectl get pods
    ```
 
-   <img src='img/simple-app/simple-14.png' alt='simple 14'>
+   ![simple 14](img/simple-app/simple-14.png)
 
 3. Refresh the browser:
 
    You’ll see that the app has successfully returned to version v1.
 
-   <img src='img/simple-app/simple-15.png' alt='simple 15'>
+   ![simple 15](img/simple-app/simple-15.png)
 
-   <b>Now scale in the Pods back to 3 and confirm that the number of running Pods decreases. (Do it yourself!)</b>
+   **Now scale in the Pods back to 3 and confirm that the number of running Pods decreases. (Do it yourself!)**
 
 So far, you've practiced deploying and updating applications in Kubernetes using Pods, Deployment, and Service.
 
@@ -865,23 +853,19 @@ In this lab, you learned how container orchestration solves these challenges thr
 ## Summary of Key Steps
 
 1. **Built a Kubernetes Cluster**
-
    - Set NUC1 as the Master Node and NUC2/NUC3 as Worker Nodes.
    - Used kubeadm to initialize the cluster and join nodes.
    - Installed Flannel CNI to enable networking between containers.
 
 2. **Deployed an Application with a Pod**
-
    - Deployed a single Pod to observe basic orchestration behavior.
 
 3. **Managed Multiple Pods Using a Deployment**
-
    - Created and managed 3 Pods with a Deployment.
    - Scaled Pods easily using `replicas` (3 → 10).
    - Verified the Self-healing feature (auto-recovery after Pod deletion).
 
 4. **Used a Service to Manage Network Access**
-
    - Solved the dynamic IP issue by exposing Pods through a ClusterIP Service.
    - Understood how multiple Pods share the same endpoint.
    - Verified load balancing by observing distributed requests.

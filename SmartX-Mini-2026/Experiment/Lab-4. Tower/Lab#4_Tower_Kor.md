@@ -2,7 +2,7 @@
 
 # 0. Objective
 
-<img width="450" alt="overall objective" src="https://user-images.githubusercontent.com/82452337/160807997-9caadb51-b363-4e82-bbb2-e1f5888b08b3.png">
+![overall objective](https://user-images.githubusercontent.com/82452337/160807997-9caadb51-b363-4e82-bbb2-e1f5888b08b3.png)
 
 **이번 Lab의 목표는 시스템을 모니터링하고 모니터링된 정보를 시각화할 수 있는 Tower(관제 시스템)을 구축하는 것입니다.**
 
@@ -23,13 +23,13 @@
 
 ### Time Series Data의 시각화, 모니터링
 
-<img src="./img/time-series-data.png" alt="InfluxDB" width="450">
+![time-series-data](./img/time-series-data.png)
 
 시계열 데이터(Time Series Data)는 시간에 따라 변화하는 데이터를 저장하고 분석하는 방식으로, 각 데이터 포인트가 특정 시점의 값을 나타냅니다. 예를 들어, 서버의 CPU 사용률, 네트워크 트래픽, IoT 센서 데이터, 금융 시장 데이터 등이 시계열 데이터에 해당합니다. **Time Series Database**는 이러한 데이터를 효율적으로 저장하고 쿼리할 수 있도록 설계된 데이터베이스로, 빠른 조회, 실시간 분석, 장기적인 추세 파악에 최적화되어 있습니다.
 
 ## 0-4. InfluxDB
 
-<img src="./img/influxdb.png" alt="InfluxDB" width="225">
+![influxdb](./img/influxdb.png)
 
 **InfluxDB**는 InfluxData에서 개발한 오픈소스 시계열 데이터베이스(TSDB)입니다.
 Go 프로그래밍 언어로 작성되었으며, 운영 모니터링, 애플리케이션 메트릭, 사물인터넷(IoT) 센서 데이터 및 실시간 분석과 같은 다양한 분야에서 시계열 데이터를 저장하고 검색하는 데 사용됩니다.
@@ -40,11 +40,11 @@ Go 프로그래밍 언어로 작성되었으며, 운영 모니터링, 애플리�
 
 ## 0-5. Chronograf
 
-<img src="./img/chronograf-icon.png" alt="chronograf icon" width="225">
+![chronograf icon](./img/chronograf-icon.png)
 
 ### InfluxDB, Chronograf를 사용한 간단한 모니터링 시스템 아키텍쳐
 
-<img src="./img/chronograf-arch.png" alt="chronograf comoponents" width="450">
+![chronograf components](./img/chronograf-arch.png)
 
 Chronograf는 InfluxDB 1.x 버전에서 사용되는 사용자 인터페이스(UI) 및 관리 컴포넌트입니다.
 Chronograf를 사용하면 InfluxDB에 저장된 데이터를 빠르게 확인하고, 쿼리 및 알림을 생성할 수 있습니다. 사용이 간편하며 여러 템플릿 및 라이브러리를 제공해 실시간 데이터를 시각화하는 대시보드를 빠르게 구축할 수 있습니다.
@@ -68,7 +68,6 @@ sudo docker run -p 8888:8888 --name chronograf chronograf --influxdb-url http://
 ```
 
 - **`-p 8888:8888`의 역할**
-
   - host의 8888번 port를 container의 8888번 port과 mapping해줍니다.
   - 즉, host의 8888번 port에 접근하면, container의 8888번 port로 forwarding됨을 의미합니다.
   - 이 설정 덕분에, host에서 `localhost:8888`또는 `<NUC IP>:8888`로 접속하면 container 내부에서 실행 중인 Chronograf의 Web UI를 사용할 수 있게 됩니다.
@@ -134,8 +133,6 @@ sudo pip install requests kafka-python influxdb msgpack
 |   msgpack    |  1.0.4  |
 
 </details>
-
-<br>
 
 ## 1-4. Kafka Cluster 실행
 
@@ -204,7 +201,7 @@ sudo vim /etc/hosts
 >
 > `<>`는 본인에게 해당되는 정보로 교체해야함
 
-```
+```txt
 <NUC_IP> <NUC_HOSTNAME>
 <PI_IP> <PI_HOSTNAME>
 ```
@@ -244,7 +241,7 @@ vim ~/SmartX-Mini/SmartX-Box/ubuntu-kafkatodb/broker_to_influxdb.py
 
 > e.g. `<NUC IP>`를 `203.237.53.100`로 수정
 
-<img alt="broker_to_influxdb python file" src="https://user-images.githubusercontent.com/82452337/160814546-da543a58-e6b6-49cb-bdb1-19aa2de9c1fb.png" width="650">
+![broker_to_influxdb python file](https://user-images.githubusercontent.com/82452337/160814546-da543a58-e6b6-49cb-bdb1-19aa2de9c1fb.png)
 
 ### 1-6-2. `broker_to_influxdb.py` 실행
 
@@ -264,37 +261,37 @@ python3 ~/SmartX-Mini/SmartX-Box/ubuntu-kafkatodb/broker_to_influxdb.py
 
 > **접근 주소**: `http://<Your NUC IP>:8888`
 
-<img src="./img/chronograf-1.png" alt="chronograf-1">
+![chronograf-1](./img/chronograf-1.png)
 
-### 1-7-1. 대시보드 생성하기
+### 1-7-2. 대시보드 생성하기
 
-<img src="./img/chronograf-2.png" alt="chronograf-2">
+![chronograf-2](./img/chronograf-2.png)
 
-### 1-7-2. 데이터 Source 추가하기
+### 1-7-3. 데이터 Source 추가하기
 
-<img src="./img/chronograf-3.png" alt="chronograf-3">
+![chronograf-3](./img/chronograf-3.png)
 
-### 1-7-3. 쿼리 등록하기
+### 1-7-4. 쿼리 등록하기
 
-<img src="./img/chronograf-4.png" alt="chronograf-4">
+![chronograf-4](./img/chronograf-4.png)
 
 ```sql
 SELECT "memory" FROM "Labs"."autogen"."labs" WHERE time > :dashboardTime:
 ```
 
-### 1-7-4. 모니터링 확인하기
+### 1-7-5. 모니터링 확인하기
 
 #### Memory 모니터링
 
 Memory의 현재 상태를 모니터링할 수 있습니다.
 
-<img src="./img/chronograf-5.png" alt="chronograf-5">
+![chronograf-5](./img/chronograf-5.png)
 
 #### CPU 모니터링
 
 CPU의 현재 상태를 모니터링할 수 있습니다.
 
-<img src="./img/chronograf-6.png" alt="chronograf-6">
+![chronograf-6](./img/chronograf-6.png)
 
 #### CPU 부하 테스트 ( in PI )
 
@@ -302,7 +299,7 @@ CPU의 현재 상태를 모니터링할 수 있습니다.
 
 우선, Chronograf Dashboard의 Fields를 `CPU_Usage`로 변경합니다
 
-<img src="./img/chronograf-6.png" alt="chronograf-6">
+![chronograf-6](./img/chronograf-6.png)
 
 그 다음, **PI에서 다음의 명령어를 입력해보세요**.
 

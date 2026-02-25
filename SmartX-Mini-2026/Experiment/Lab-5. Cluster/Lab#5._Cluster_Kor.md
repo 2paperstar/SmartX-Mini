@@ -11,9 +11,9 @@
 - 1개의 Master 노드(Control Plane) → NUC1
 - 2개의 Worker 노드 → NUC2, NUC3
 
-### Master-Worker 구조란?
+## Master-Worker 구조란?
 
-<img src='img/master-worker.png' alt='master-worker pattern' width="675">
+![master-worker pattern](img/master-worker.png)
 
 Master-Worker 패턴은 하나의 Master가 전체 시스템을 관리하고, 여러 Worker가 개별 작업을 수행하는 소프트웨어 아키텍처 패턴입니다. 이 패턴은 병렬 처리를 통해 성능을 극대화하고, Worker 노드를 동적으로 추가하거나 제거할 수 있어 확장성이 뛰어납니다.
 
@@ -25,15 +25,15 @@ Master-Worker 패턴은 하나의 Master가 전체 시스템을 관리하고, �
 
 ## 1-1. Docker Containers
 
-<img src='img/docker.png' alt='docker icon' width='225'>
+![docker icon](img/docker.png)
 
-<b>도커(Docker)</b>는 컨테이너 기술을 활용하여 애플리케이션을 보다 쉽게 개발, 배포, 실행할 수 있도록 도와주는 오픈소스 플랫폼입니다. 도커를 사용하면 애플리케이션과 해당 애플리케이션이 의존하는 라이브러리, 실행 환경을 하나의 단위(컨테이너)로 패키징하여 운영체제(OS) 환경에 독립적인 배포가 가능합니다.
+**도커(Docker)**는 컨테이너 기술을 활용하여 애플리케이션을 보다 쉽게 개발, 배포, 실행할 수 있도록 도와주는 오픈소스 플랫폼입니다. 도커를 사용하면 애플리케이션과 해당 애플리케이션이 의존하는 라이브러리, 실행 환경을 하나의 단위(컨테이너)로 패키징하여 운영체제(OS) 환경에 독립적인 배포가 가능합니다.
 
 ### 컨테이너(도커)와 가상 머신(VM)의 차이
 
 컨테이너(도커)는 기존의 가상 머신(Virtual Machine)과 비교하여 더 가볍고 빠른 실행 환경을 제공하고, 효율적인 자원 사용을 가능케 합니다.
 
-<img src='img/docker-diagram.png' alt='docker diagram' width='1125'>
+![docker diagram](img/docker-diagram.png)
 
 ### 사진 좌측
 
@@ -45,16 +45,13 @@ Master-Worker 패턴은 하나의 Master가 전체 시스템을 관리하고, �
 도커는 클라이언트(Client)-서버(Server) 아키텍쳐를 기반으로 동작하며, 다음으로 구성되어 있습니다.
 
 1. 개발자(docker client)가 도커 명령어 실행
-
    - `docker build`, `docker pull`, `docker run` 등의 명령어를 통해 도커 활용
 
 2. Docker Daemon (서버) 처리
-
    - 컨테이너와 도커 이미지 등을 생성하고 관리
    - 개발자가 입력한 명령어를 실질적으로 실행하는 역할
 
 3. Image Registry (이미지 저장소)
-
    - 애플리케이션의 컨테이너 이미지는 `Docker Hub`와 같은 원격 저장소에서 관리됩니다.
    - AWS ECR과 같은 클라우드형 이미지 Registry나 사설 Registry를 사용할 수도 있습니다.
 
@@ -74,30 +71,26 @@ Master-Worker 패턴은 하나의 Master가 전체 시스템을 관리하고, �
 대표적으로 다음과 같은 기능을 제공합니다.
 
 1. **자동화된 배포 및 업데이트**
-
    - 컨테이너를 자동으로 배포하고, 새로운 버전이 나오면 점진적으로 업데이트 진행 (Rolling Update)
 
 2. **로드 밸런싱 & 서비스 디스커버리**
-
    - 트래픽을 여러 컨테이너로 분산하여 부하를 최소화하고, 컨테이너 간 통신을 자동으로 설정
 
 3. **자가 복구(Self-healing)**
-
    - 장애가 발생한 컨테이너를 자동으로 감지하고, 새로운 컨테이너로 대체하여 서비스 중단 방지
 
 4. **클러스터 리소스 최적화**
-
    - 컨테이너가 클러스터의 CPU, 메모리 등을 효율적으로 활용할 수 있도록 스케줄링
 
-<img src='img/container-orch.png' alt='container orchestration tool' width="900">
+![container orchestration tool](img/container-orch.png)
 
-위 사진은 대표적인 컨테이터 오케스트레이션 도구입니다. 현재는 <b>Kubernetes(K8s)</b>가 가장 널리 사용되고 있습니다.
+위 사진은 대표적인 컨테이터 오케스트레이션 도구입니다. 현재는 **Kubernetes(K8s)**가 가장 널리 사용되고 있습니다.
 
 맨 앞(K)과 뒤(s), 그리고 나머지 알파벳의 개수 '8'을 사용하여 K8s라고도 부릅니다.
 
 ## 1-3. 쿠버네티스(Kubernetes)
 
-<img src='img/k8s-arch.png' alt='k8s arch' width='900'>
+![k8s arch](img/k8s-arch.png)
 
 [**Kubernetes**](https://kubernetes.io/)는 컨테이너화된 애플리케이션의 배포, 스케일링, 관리를 자동화하는 **오픈소스 오케스트레이션 시스템**입니다.
 
@@ -108,7 +101,7 @@ Master-Worker 패턴은 하나의 Master가 전체 시스템을 관리하고, �
 - **서비스 검색 및 로드 밸런싱(Service Discovery & Load Balancing)**: 각 컨테이너에 고유한 IP를 부여하고, 클러스터 DNS 기반 서비스 검색을 할 수 있는 Service Discovery 기능을 제공합니다. 또한 Load Balancing을 사용해 여러 컨테이너에 트래픽을 분산할 수 있습니다.
 - **스토리지 오케스트레이션(Storage Orchestration)**: 로컬 스토리지, 퍼블릭 클라우드 스토리지(NFS, Ceph, AWS EBS, GCP Persistent Disk 등) 등의 다양한 스토리지를 손쉽게 컨테이너에 마운트(Mount)하여 사용할 수 있습니다.
 
-쿠버네티스는 현재 <b>클라우드 환경(AWS, GCP, Azure) 및 온프레미스(자체 서버)</b>에서 가장 널리 사용되는 컨테이너 오케스트레이션 도구입니다.
+쿠버네티스는 현재 **클라우드 환경(AWS, GCP, Azure) 및 온프레미스(자체 서버)**에서 가장 널리 사용되는 컨테이너 오케스트레이션 도구입니다.
 
 # 2. Lab Preparation
 
@@ -118,7 +111,7 @@ Master-Worker 패턴은 하나의 Master가 전체 시스템을 관리하고, �
 
 ### 2-1-1. hostname 설정
 
-`sudo hostname <name>`은 해당 명령어를 입력하는 노드(머신)의 hostname을 임시로 <name>으로 지정합니다. 다만 해당 설정은 현재 로그인된 세션에서만 적용되기 때문에, 새로운 터미널을 열거나 노드를 reboot할 경우에는 기존 hostname으로 돌아가게 됩니다. 이번 Lab에서는 쿠버네티스 클러스터 구성 편의를 위해, 각 NUC에 설정된 hostname을 변경합니다.
+`sudo hostname <name>`은 해당 명령어를 입력하는 노드(머신)의 hostname을 임시로 `<name>`으로 지정합니다. 다만 해당 설정은 현재 로그인된 세션에서만 적용되기 때문에, 새로운 터미널을 열거나 노드를 reboot할 경우에는 기존 hostname으로 돌아가게 됩니다. 이번 Lab에서는 쿠버네티스 클러스터 구성 편의를 위해, 각 NUC에 설정된 hostname을 변경합니다.
 
 \*조교의 안내를 받아 nuc01, nuc02, nuc03의 역할을 부여 받으시기 바랍니다.
 
@@ -232,7 +225,7 @@ ssh <nuc3 username>@nuc03
 sudo reboot
 ```
 
-# 지금부터 NUC1 학생 자리에서 모든 작업을 시작합니다. NUC2, NUC3 학생은 NUC1자리로 가서 함께 작업을 진행합니다.
+# 지금부터 NUC1 학생 자리에서 모든 작업을 시작합니다. NUC2, NUC3 학생은 NUC1자리로 가서 함께 작업을 진행합니다
 
 ## 2-2. Preparations for Clustering
 
@@ -259,11 +252,11 @@ ssh <NUC3 username>@nuc03
 >
 > 새로운 터미널 탭을 띄우는 단축키는 `Ctrl + Shift + T`입니다.
 >
-> <img src='img/screen-setup.png' alt='screen setup'>
+> ![screen setup](img/screen-setup.png)
 
 ## 2-3. 쿠버네티스 설치(For All NUCs)
 
-![Kubernets Installation](img/nuc-prep.png)
+![Kubernetes Installation](img/nuc-prep.png)
 
 - NUC 1 : Master
 - NUC 2 : Worker 1
@@ -271,7 +264,7 @@ ssh <NUC3 username>@nuc03
 
 ### 2-3-1. Swapoff
 
-<b>스왑 메모리(Swap Memory)</b>는 물리적 RAM이 부족할 때, 디스크 공간의 일부를 가상 메모리처럼 사용하는 기능입니다. 하지만 Kubernetes는 노드의 메모리 사용량을 정확히 파악하고 스케줄링해야 하기 때문에, 스왑을 사용하면 예측 불가능한 성능 문제가 발생할 수 있습니다. 특히, 컨테이너의 메모리 제한이 제대로 적용되지 않거나, 스왑으로 인해 응답 속도가 느려지는 문제가 발생할 수 있어, 안정적인 클러스터 운영을 위해 Kubernetes에서는 스왑을 비활성화해야 합니다.
+**스왑 메모리(Swap Memory)**는 물리적 RAM이 부족할 때, 디스크 공간의 일부를 가상 메모리처럼 사용하는 기능입니다. 하지만 Kubernetes는 노드의 메모리 사용량을 정확히 파악하고 스케줄링해야 하기 때문에, 스왑을 사용하면 예측 불가능한 성능 문제가 발생할 수 있습니다. 특히, 컨테이너의 메모리 제한이 제대로 적용되지 않거나, 스왑으로 인해 응답 속도가 느려지는 문제가 발생할 수 있어, 안정적인 클러스터 운영을 위해 Kubernetes에서는 스왑을 비활성화해야 합니다.
 
 ```shell
 # From All NUCs
@@ -364,7 +357,7 @@ sudo kubeadm init --pod-network-cidr=10.244.0.0/16
 >
 > ⚠️ **만약 preflight 오류가 발생했다면 다음의 작업을 진행해주세요**
 >
-> <img src='img/preflight-error.png' alt='preflight error' width='900'>
+> ![preflight error](img/preflight-error.png)
 >
 > **오류 원인**
 >
@@ -383,7 +376,7 @@ sudo kubeadm init --pod-network-cidr=10.244.0.0/16
 
 kubeadm 명령어가 정상적으로 실행됐다면, 아래 사진과 같이 쿠버네티스 클러스터에 Join할 수 있는 토큰을 포함한 명령어가 생성됩니다. 해당 명령어를 별도의 텍스트 파일로 저장하거나, 사라지지 않도록 해주시기 바랍니다.
 
-<img src='img/kubeadm-init.png' alt='kubeadm init'>
+![kubeadm init](img/kubeadm-init.png)
 
 NUC1에서 다음의 명령어를 실행합니다.
 
@@ -410,7 +403,7 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
 이제 Worker Nodes를 쿠버네티스 클러스터에 Join합니다.
 
-<img src='img/kubeadm-init-2.png' alt='kubeadm init'>
+![kubeadm init](img/kubeadm-init-2.png)
 
 빨간 칸 안에 있는 명령어를 복사하고, 앞에 `sudo`를 붙여 <ins>NUC2와 NUC3</ins>에 입력합니다.
 
@@ -427,15 +420,15 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 kubectl get node
 ```
 
-<img src='img/get-node-notready.png' alt='get node notreay'>
+![get node not ready](img/get-node-notready.png)
 
-위 사진에서 nuc02와 nuc03이 NotReady 상태인 이유는 <b>네트워크 플러그인(CNI)</b>이 아직 설치되지 않았거나, 워커 노드가 마스터 노드에 정상적으로 조인되지 않았기 때문입니다. Kubernetes에서는 클러스터 내 네트워크가 설정되지 않으면 노드를 Ready 상태로 만들지 않으며, kubeadm join이 제대로 실행되지 않은 경우에도 NotReady 상태가 유지됩니다. 이를 해결하려면 CNI를 설치하고, 워커 노드가 정상적으로 조인되었는지 확인해야 합니다. 바로 이어지는 section에서 CNI를 설치해보겠습니다.
+위 사진에서 nuc02와 nuc03이 NotReady 상태인 이유는 **네트워크 플러그인(CNI)**이 아직 설치되지 않았거나, 워커 노드가 마스터 노드에 정상적으로 조인되지 않았기 때문입니다. Kubernetes에서는 클러스터 내 네트워크가 설정되지 않으면 노드를 Ready 상태로 만들지 않으며, kubeadm join이 제대로 실행되지 않은 경우에도 NotReady 상태가 유지됩니다. 이를 해결하려면 CNI를 설치하고, 워커 노드가 정상적으로 조인되었는지 확인해야 합니다. 바로 이어지는 section에서 CNI를 설치해보겠습니다.
 
 ## 2-5. Kubenetes Network Plugin Installation at NUC1
 
 ### CNI란?
 
-<b>CNI(Container Network Interface)</b>는 쿠버네티스 클러스터에서 컨테이너 간 네트워크를 설정하고 관리하는 표준 인터페이스입니다. 쿠버네티스는 기본적으로 네트워크 기능을 자체적으로 제공하지 않으며, CNI 플러그인을 사용해 각 `Pod`들이 서로 통신할 수 있도록 합니다.
+**CNI(Container Network Interface)**는 쿠버네티스 클러스터에서 컨테이너 간 네트워크를 설정하고 관리하는 표준 인터페이스입니다. 쿠버네티스는 기본적으로 네트워크 기능을 자체적으로 제공하지 않으며, CNI 플러그인을 사용해 각 `Pod`들이 서로 통신할 수 있도록 합니다.
 
 ### Flannel이란?
 
@@ -453,7 +446,7 @@ kubectl get nodes
 
 Flannel CNI 설치 후 약간의 시간이 지나고 위 명령어를 입력하면, 아래와 같이 각 worker node의 status가 Ready로 변경된 것을 확인할 수 있습니다.
 
-<img src='img/get-node-ready.png' alt='get node notreay'>
+![get node ready](img/get-node-ready.png)
 
 ```shell
 # At NUC1 -> kube-system 네임스페이스의 모든 Pod 확인
@@ -476,7 +469,7 @@ kubectl get po -n kube-system -o wide
 >
 > 더 자세한 내용은 공식 [Kubernetes 문서](https://kubernetes.io/ko/docs/concepts/overview/components/)에서 확인할 수 있으며, 이번 실습에서는 자세히 다루지 않습니다.
 
-<img src='img/kube-system.png' alt='kube-system' width='900'>
+![kube-system](img/kube-system.png)
 
 이로써 쿠버네티스 클러스터의 네트워크 구성이 완료되었습니다. Flannel을 통해 Pod 간 네트워크 통신이 가능해졌으며, 이제 클러스터 내부에서 여러 애플리케이션을 배포할 수 있습니다.
 
@@ -490,7 +483,7 @@ kubectl get po -n kube-system -o wide
 
 이번 **Section 3**에서 배포할 서비스의 아키텍처는 다음과 같습니다. `Service`가 외부 요청을 받고, `Deployment`로 관리되는 `Pod` 중 **하나에게 트래픽을 전달하는 구조**입니다.
 
-<img src='img/simple-app/my-simple-app-arch.png' alt='my-simple-app architectur' width='675'>
+![my-simple-app architecture](img/simple-app/my-simple-app-arch.png)
 
 ## 3-2. Application Code(v1) 살펴보기
 
@@ -572,7 +565,7 @@ Pod는 **쿠버네티스에서 가장 작은 배포 단위**로, 컨테이너를
    kubectl get pod -o wide
    ```
 
-    <img src='img/simple-app/simple-1.png' alt='simple 1'>
+   ![simple 1](img/simple-app/simple-1.png)
 
 4. Pod의 IP 주소 확인 후 웹 브라우저에서 접속
 
@@ -580,7 +573,7 @@ Pod는 **쿠버네티스에서 가장 작은 배포 단위**로, 컨테이너를
    http://<POD_IP>:5000
    ```
 
-    <img src='img/simple-app/simple-2.png' alt='simple 2'>
+   ![simple 2](img/simple-app/simple-2.png)
 
 5. Pod 삭제
 
@@ -589,7 +582,7 @@ Pod는 **쿠버네티스에서 가장 작은 배포 단위**로, 컨테이너를
    kubectl get pods
    ```
 
-    <img src='img/simple-app/simple-3.png' alt='simple 3'>
+   ![simple 3](img/simple-app/simple-3.png)
 
 6. 브라우저에서 새로고침하여 서비스가 종료되었는지 확인
 
@@ -645,7 +638,7 @@ Deployment는 Pod의 생성 및 관리를 자동화하는 쿠버네티스의 컨
    kubectl get pods -o wide # 여러 개의 Pod 확인
    ```
 
-   <img src='img/simple-app/simple-4.png' alt='simple 4'>
+   ![simple 4](img/simple-app/simple-4.png)
 
 2. 각 Pod의 IP 주소를 확인한 후 웹 브라우저에서 접속해 Pod마다 응답 값이 다른지 확인
 
@@ -653,9 +646,9 @@ Deployment는 Pod의 생성 및 관리를 자동화하는 쿠버네티스의 컨
    http://<POD_IP>:5000
    ```
 
-   <img src='img/simple-app/simple-5.png' alt='simple 5' width='250'>
-   <img src='img/simple-app/simple-6.png' alt='simple 6' width='250'>
-   <img src='img/simple-app/simple-7.png' alt='simple 7' width='250'>
+   ![simple 5](img/simple-app/simple-5.png)
+   ![simple 6](img/simple-app/simple-6.png)
+   ![simple 7](img/simple-app/simple-7.png)
 
 ## 3-4-1. Self-healing of `Deployment`
 
@@ -681,7 +674,7 @@ Deployment의 `Self-healing(자가 복구)` 기능은 쿠버네티스가 애플�
   kubectl get pod
 ```
 
-<img src='img/simple-app/k8s-healing.png' alt='self-healing'>
+![self-healing](img/simple-app/k8s-healing.png)
 
 ## 3-5. Connect `Service` with `Deployment`
 
@@ -727,7 +720,7 @@ Deployment는 Pod을 생성하고 관리하는 역할을 하지만, 생성된 Po
    kubectl get svc # Cluster IP 확인
    ```
 
-    <img src='img/simple-app/simple-8.png' alt='simple 8'>
+   ![simple 8](img/simple-app/simple-8.png)
 
 2. 브라우저에서 아래 주소에 접속
 
@@ -735,7 +728,7 @@ Deployment는 Pod을 생성하고 관리하는 역할을 하지만, 생성된 Po
    http://<Cluster IP>
    ```
 
-   <img src='img/simple-app/simple-9.png' alt='simple 9'>
+   ![simple 9](img/simple-app/simple-9.png)
 
 새로고침할 때마다 Pod Name에 해당하는 부분의 값이 다른 것을 알 수 있습니다.
 
@@ -754,10 +747,9 @@ Deployment는 Pod을 생성하고 관리하는 역할을 하지만, 생성된 Po
    kubectl get pods # Pod 개수 증가 확인
    ```
 
-    <img src='img/simple-app/simple-10.png' alt='simple 10'>
+   ![simple 10](img/simple-app/simple-10.png)
 
 3. 웹사이트 새로고침
-
    - 기존에 보이지 않던 Pod Name을 확인할 수 있습니다. 해당 Pod Name은 replicas를 10으로 증가시키면서 새롭게 생성된 Pod의 Name입니다.
 
 ## 3-7. Rolling Update
@@ -768,35 +760,35 @@ Rolling Update는 기존 Pod을 점진적으로 새로운 버전으로 교체하
 
 모든 Pod을 한 번에 교체하는 것이 아니라, 일부 Pod을 새 버전으로 변경한 후 점진적으로 전체 교체가 진행됩니다.
 
-**Rolling Update 실행**
+#### Rolling Update 실행
 
-1.  웹사이트 확인
-    현재 배포된 애플리케이션의 버전은 v1입니다. 화면에서도 v1인 것을 알 수 있습니다.
+1. 웹사이트 확인
+   현재 배포된 애플리케이션의 버전은 v1입니다. 화면에서도 v1인 것을 알 수 있습니다.
 
-    이번에는 v2로 애플리케이션의 버전을 수정해보겠습니다. v2는 사전에 만들어진 이미지를 사용합니다.
+   이번에는 v2로 애플리케이션의 버전을 수정해보겠습니다. v2는 사전에 만들어진 이미지를 사용합니다.
 
-2.  배포된 애플리케이션의 버전을 v2로 변경
+2. 배포된 애플리케이션의 버전을 v2로 변경
 
-    ```shell
-    kubectl set image deployment/simple-app-deployment simple-app=cheolhuikim/my-simple-app:v2
-    ```
+   ```shell
+   kubectl set image deployment/simple-app-deployment simple-app=cheolhuikim/my-simple-app:v2
+   ```
 
-    위 명령어를 입력하면 simple-app-deployment의 설정이 아래 사진과 같이 변경됩니다.
+   위 명령어를 입력하면 simple-app-deployment의 설정이 아래 사진과 같이 변경됩니다.
 
-     <img src='img/simple-app/simple-11.png' alt='simple 11'>
+   ![simple 11](img/simple-app/simple-11.png)
 
-3.  Rolling update 진행 상태 확인
+3. Rolling update 진행 상태 확인
 
-    ```shell
-    kubectl rollout status deployment/simple-app-deployment
-    kubectl get pods
-    ```
+   ```shell
+   kubectl rollout status deployment/simple-app-deployment
+   kubectl get pods
+   ```
 
-    <img src='img/simple-app/simple-12.png' alt='simple 12'>
+   ![simple 12](img/simple-app/simple-12.png)
 
-4.  새 버전 배포 후 웹사이트 새로고침하여 v2로 변경된 것 확인
+4. 새 버전 배포 후 웹사이트 새로고침하여 v2로 변경된 것 확인
 
-    <img src='img/simple-app/simple-13.png' alt='simple 13'>
+   ![simple 13](img/simple-app/simple-13.png)
 
 이처럼 쿠버네티스는 쉽고 빠르게 애플리케이션의 버전을 업데이트할 수 있습니다.
 
@@ -812,7 +804,7 @@ Rolling Update는 기존 Pod을 점진적으로 새로운 버전으로 교체하
 
 **Kubernetes에서는 단 한 줄의 명령어로 손쉽게 이전 버전으로 되돌릴 수 있으며, 롤백 시에도 다운타임 없이 안정적인 서비스 운영이 가능합니다.**
 
-**Rollback 실행**
+#### Rollback 실행
 
 1. 배포된 애플리케이션(v2)을 이전 버전(v1)으로 롤백
 
@@ -826,15 +818,15 @@ Rolling Update는 기존 Pod을 점진적으로 새로운 버전으로 교체하
    kubectl get pods
    ```
 
-   <img src='img/simple-app/simple-14.png' alt='simple 14'>
+   ![simple 14](img/simple-app/simple-14.png)
 
 3. 웹사이트 새로고침
 
    이전 버전(v1)으로 정상적으로 복구되었는지 확인
 
-   <img src='img/simple-app/simple-15.png' alt='simple 15'>
+   ![simple 15](img/simple-app/simple-15.png)
 
-   <b>이제 Pod의 개수를 3개로 Scale-in하고, Pod의 개수가 줄어든 것을 확인해주세요! (스스로 해보세요!)</b>
+   **이제 Pod의 개수를 3개로 Scale-in하고, Pod의 개수가 줄어든 것을 확인해주세요! (스스로 해보세요!)**
 
 지금까지, 쿠버네티스에서 Pod, Deployment, Service를 활용한 애플리케이션 배포 및 업데이트를 실습했습니다.
 
@@ -865,29 +857,24 @@ Rolling Update는 기존 Pod을 점진적으로 새로운 버전으로 교체하
 ## 주요 과정 요약
 
 1. 쿠버네티스 클러스터 구축
-
    - NUC1을 Master 노드, NUC2/NUC3을 Worker 노드로 설정
    - kubeadm을 사용하여 클러스터 초기화 및 노드 연결
    - Flannel CNI를 설치하여 컨테이너 간 네트워크 활성화
 
 2. Pod을 통한 애플리케이션 배포
-
    - 단일 Pod을 배포하여 컨테이너 오케스트레이션의 기본 동작 확인
 
 3. Deployment를 활용한 다중 Pod 관리
-
    - Deployment를 사용하여 3개의 Pod을 생성 및 관리
    - `replicas` property 조절로 손쉬운 Scaling-up 수행(3 → 10)
    - Deployment의 Self-healing 기능 확인 (Pod을 삭제해도 자동으로 복구)
 
 4. Service를 이용한 네트워크 관리
-
    - Pod의 IP가 동적으로 변경되는 문제를 해결하기 위해 ClusterIP 타입의 Service 생성
    - 여러 Pod이 동일한 서비스 엔드포인트를 공유하는 구조 이해
    - 로드 밸런싱 확인: 여러 Pod에서 요청이 분배되는지 확인
    - 브라우저에서 Service IP를 사용하여 요청을 보내고, 각 요청이 다른 Pod으로 전달되는지 확인
 
 5. Rolling Update와 Rollback를 통한 버전 업데이트 및 롤백
-
    - v1에서 v2로 애플리케이션 버전 업데이트
    - 문제가 발생한 v2를 v1으로 손쉽게 롤백
