@@ -180,6 +180,9 @@ OS : Ubuntu Desktop 24.04 LTS(64bit)
   - Netmask와 Gateway, DNS 정보도 입력합니다. (조교의 안내를 바탕으로 설정합니다.)
     ![network setting 3](./img/network_setting3.png)
 
+- 보이는 것처럼 Connected가 되면 성공입니다.
+  ![network setting 4](./img/network_setting4.png)
+
 ## 2-2. NUC: Network Configuration using Virtual Switch
 
 > [!WARNING]

@@ -190,6 +190,9 @@ If an issue related to booting occurs, follow these steps.
   - Enter the Netmask, Gateway, and DNS information as well. (Configure it based on the TA’s instructions.)
     ![network setting 3](./img/network_setting3.png)
 
+- As shown, if Connected is displayed, the configuration is successful.
+  ![network setting 4](./img/network_setting4.png)
+
 ## 2-2. NUC: Network Configuration using Virtual Switch
 
 > [!WARNING]
