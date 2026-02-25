@@ -110,7 +110,7 @@ Reference: Download Site - <https://releases.ubuntu.com/24.04/>
    - Choose your language: English
    - Accessibility in Ubuntu: Don't configure (Next)
    - Select your keyboard layout: English (US)
-   - Connect to the internet: Use wired connection
+   - Connect to the internet: Do not connect to the internet
    - What do you want to do with Ubuntu?: Install Ubuntu
    - How would you like to install Ubuntu?: Interactive installation
    - What apps would you like to install to start with?: Default selection

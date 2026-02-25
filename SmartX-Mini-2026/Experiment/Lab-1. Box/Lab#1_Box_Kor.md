@@ -106,7 +106,7 @@ OS : Ubuntu Desktop 24.04 LTS(64bit)
    - Choose your language: English
    - Accessibility in Ubuntu: 설정 안 함 (Next)
    - Select your keyboard layout: English (US)
-   - Connect to the internet: Use wired connection
+   - Connect to the internet: Do not connect to the internet
    - What do you want to do with Ubuntu?: Install Ubuntu
    - How would you like to install Ubuntu?: Interactive installation
    - What apps would you like to install to start with?: Default selection
