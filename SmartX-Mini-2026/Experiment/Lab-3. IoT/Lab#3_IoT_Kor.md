@@ -55,25 +55,9 @@ Node.js는 오픈 소스, 크로스 플랫폼을 지원하는 백엔드 JavaScri
 
 ## 2-1. Node.js 웹 서버를 위한 Docker Container 실행 ( in NUC )
 
-### 2-1-1. Docker Container 실행
+### 2-1-1. 웹 서버 코드 확인
 
-아래의 준비된 도커 컨테이너 이미지를 띄워주세요.
-
-```bash
-sudo docker run -it --net host --dns 203.237.32.100 --name webserver cheolhuikim/smartx-box-mini
-```
-
-컨테이너 내부에 진입하면 아래 명령어를 실행해주세요.
-
-```bash
-apt-get update
-
-apt-get install vim
-```
-
-## 2-2. 웹 서버 코드 확인 ( in NUC container )
-
-아래 명령어를 이력해 웹서버 코드를 확인해보세요. (별도의 수정은 필요하지 않습니다.)
+빌드 전에 웹서버 코드를 확인해보세요. (별도의 수정은 필요하지 않습니다.)
 
 이 웹서버는 요청의 path에 따라
 
@@ -81,16 +65,46 @@ apt-get install vim
 2. 저장된 정보를 json 형식으로 반환해주는 역할을 합니다.
 
 ```bash
-vim /SmartX-Mini/IoT-labs/webserver.js
+vim ~/SmartX-Mini-2026/Experiment/'Lab-3. IoT'/deploy/webserver/webserver.js
 ```
 
 ![webserver code](./img/webserver.png)
 
-## 2-3. 온습도 센서 테스트 ( in PI )
+### 2-1-2. Docker Image 빌드
+
+webserver 디렉토리로 이동한 뒤 Docker 이미지를 빌드합니다.
+
+```bash
+cd ~/SmartX-Mini-2026/Experiment/'Lab-3. IoT'/deploy/webserver
+
+sudo docker build -t webserver .
+```
+
+### 2-1-3. Pi로 파일 전송
+
+Pi에서 사용할 파일들을 압축하여 scp로 전송합니다.
+
+```bash
+cd ~/SmartX-Mini-2026/Experiment/'Lab-3. IoT'/deploy
+
+tar -czf pi.tar.gz pi/
+
+scp pi.tar.gz pi@<PI_IP>:~/
+```
+
+### 2-1-4. Docker Container 실행
+
+빌드한 이미지를 백그라운드로 실행합니다. 컨테이너가 시작되면 웹서버가 자동으로 실행됩니다.
+
+```bash
+sudo docker run -d --net host --name webserver webserver
+```
+
+## 2-2. 온습도 센서 테스트 ( in PI )
 
 이제 라즈베리파이에 연결된 온습도 센서가 제대로 동작하는지 확인하겠습니다.
 
-### 2-3-1. Install package
+### 2-2-1. Install package
 
 아래 명령어를 입력해 필요한 파일들을 다운로드 해주세요
 
@@ -169,7 +183,7 @@ sudo pip3 install .
 
 </details>
 
-### 2-3-2. 온습도 센서 테스트 ( in PI )
+### 2-2-2. 온습도 센서 테스트 ( in PI )
 
 예제 폴더로 이동합니다.
 
@@ -213,11 +227,11 @@ sudo ./AdafruitDHT.py 11 4
 
 ![result](https://user-images.githubusercontent.com/63437430/160829118-04bae048-2cf3-4c3f-8cd9-4b9295b019d0.png)
 
-## 2-4. 센서 데이터 수집과 전송 ( in PI )
+## 2-3. 센서 데이터 수집과 전송 ( in PI )
 
 이번에는 라즈베리파이에서 수집한 센서 데이터를 NUC으로 전달하기 위해, 관련 코드를 수정하겠습니다.
 
-### 2-4-1. 필요한 패키지 설치
+### 2-3-1. 필요한 패키지 설치
 
 ```bash
 sudo apt-get update
@@ -239,48 +253,45 @@ sudo apt-get install -y mercurial
 
 </details>
 
-### 2-4-2. 센서 데이터 수집 코드
+### 2-3-2. 센서 데이터 수집 코드
 
-아래 명령어를 입력해 센서 데이터 전송 코드를 확인해보세요. (별도의 수정은 필요하지 않습니다.)
+NUC에서 전송받은 파일의 압축을 해제합니다.
+
+```bash
+cd ~
+tar -xzf pi.tar.gz
+```
+
+아래 명령어를 입력해 센서 데이터 수집 코드를 확인해보세요. (별도의 수정은 필요하지 않습니다.)
 
 **이 코드는 라즈베리파이에서 실행되며, 센서로부터 데이터를 읽어와 파일에 저장하는 역할을 합니다.**
 
 ```bash
-vim ~/SmartX-Mini/SmartX-Box/IoT-labs/RPI_capture.py
+vim ~/pi/RPI_capture.py
 ```
 
 ![rpi capture code](./img/rpi_capture.png)
 
-### 2-4-3. 센서 데이터 전송 코드
+### 2-3-3. 센서 데이터 전송 코드
 
 저장된 센서 데이터를 전송하는 코드를 열고, `<NUC IP>`를 여러분의 NUC IP로 수정합니다.
 
 ```bash
-vim ~/SmartX-Mini/SmartX-Box/IoT-labs/RPI_transfer.py
+vim ~/pi/RPI_transfer.py
 ```
 
 ![rpi transfer code](./img/rpi_transfer.png)
 
-## 2-5. IoT Web Service 실행하기
+## 2-4. IoT Web Service 실행하기
 
 이제 지금까지 작업한 내용을 바탕으로 간단한 IoT Web Service를 실행하도록 하겠습니다.
 
-### 2-5-1. Web Server 실행하기 ( in NUC container )
-
-NUC에서 실행했던 **도커 컨테이너 내부**에서 다음의 명령어를 실행해주세요. 다음의 명령어는 `webserver.js`라는 웹서버 코드를 실행합니다.
-
-```bash
-cd /SmartX-Mini/IoT-labs
-
-nodejs webserver.js
-```
-
-### 2-5-2. 센서 데이터를 수집하고 전송하기 ( in PI )
+### 2-4-1. 센서 데이터를 수집하고 전송하기 ( in PI )
 
 다음의 명령어를 실행해주세요. `process.sh`는 방금 전 살펴본 `RPI_capture.py`와 `RPI_transfer.py` 파일을 반복적으로 실행합니다.
 
 ```bash
-cd ~/SmartX-Mini/SmartX-Box/IoT-labs
+cd ~/pi
 
 # 실행 권한 부여
 chmod +x process.sh
@@ -288,7 +299,7 @@ chmod +x process.sh
 sudo ./process.sh
 ```
 
-### 2-5-3. IoT Web Service 접속하기 ( in NUC )
+### 2-4-2. IoT Web Service 접속하기 ( in NUC )
 
 NUC에서 웹브라우저를 열고 `http://<NUC IP>`에 접속해주세요.
 
