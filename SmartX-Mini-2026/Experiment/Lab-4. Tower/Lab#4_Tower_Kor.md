@@ -163,14 +163,14 @@ sudo docker logs --tail 100 chronograf
 
 ### 1-3-1. python-pip / venv 모듈 설치
 
-Python 3.12 환경(Externally Managed Environment)에서는 시스템 전역에 `pip install`이 제한될 수 있으므로, 아래처럼 `venv`를 함께 설치합니다.
+Python 3.12 환경(Externally Managed Environment)에서는 시스템 전역에 `pip install`이 제한되므로, 아래처럼 `venv`를 함께 설치합니다.
 
 ```bash
 sudo apt-get install -y libcurl4 openssl curl python3-pip python3-venv
 ```
 
 ### 1-3-2. 가상환경 생성 및 Python Packages 설치
-
+<!-- pip path edit, .gitignore 추가 필요 -->
 ```bash
 python3 -m venv ~/venvs/smartx-mini
 source ~/venvs/smartx-mini/bin/activate
