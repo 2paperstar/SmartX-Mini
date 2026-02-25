@@ -96,7 +96,7 @@ Open a new terminal and run the commands!
 
 > [!tip]
 >
-> **Open new terminal: `Ctrl+Shift+T`, Open new terminal: `Ctrl+Alt+T`**
+> **Open new terminal in tab: `Ctrl+Shift+T`, Open new terminal: `Ctrl+Alt+T`**
 
 ```bash
 sudo apt-get install -y libcurl4 openssl curl python3-pip
