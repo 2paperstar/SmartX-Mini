@@ -249,39 +249,40 @@ OS : Ubuntu Desktop 24.04 LTS(64bit)
 > 이후 단계에서 본 가이드 문서를 참고해야 하므로, **지금 바로 GitHub 웹 페이지를 브라우저에서 미리 열어두세요.**
 > `2-2`섹션 마지막 부분에 **인터넷 연결 지점**이 있습니다.
 
-   ```bash
-   sudo systemctl stop systemd-networkd.socket systemd-networkd networkd-dispatcher systemd-networkd-wait-online
-   sudo systemctl disable systemd-networkd.socket systemd-networkd networkd-dispatcher systemd-networkd-wait-online
-   sudo systemctl mask systemd-networkd.socket systemd-networkd networkd-dispatcher systemd-networkd-wait-online
-   sudo systemctl stop NetworkManager
-   sudo systemctl disable NetworkManager
-   sudo apt --assume-yes purge netplan.io
-   ```
+```bash
+sudo systemctl stop systemd-networkd.socket systemd-networkd networkd-dispatcher systemd-networkd-wait-online
+sudo systemctl disable systemd-networkd.socket systemd-networkd networkd-dispatcher systemd-networkd-wait-online
+sudo systemctl mask systemd-networkd.socket systemd-networkd networkd-dispatcher systemd-networkd-wait-online
+sudo systemctl stop NetworkManager
+sudo systemctl disable NetworkManager
+sudo apt --assume-yes purge netplan.io
+```
 
-   - DNS configuration
+- DNS configuration
 
-   ```bash
-   sudo vim /etc/systemd/resolved.conf
-   ```
+```bash
+sudo vim /etc/systemd/resolved.conf
+```
 
-   **파일의 내용 중, DNS 왼편에 있는 주석표시 (#) 를 제거해주고 DNS 주소를 명시합니다.**  
-   **(주의! DNS 주소 값 사이에는 공백 한 칸이 있습니다.)**  
-    (참고: 실습 환경에 따라 `DNS`의 값이 달라질 수 있습니다.)
+**파일의 내용 중, DNS 왼편에 있는 주석표시 (#) 를 제거해주고 DNS 주소를 명시합니다.**  
+ **(주의! DNS 주소 값 사이에는 공백 한 칸이 있습니다.)**  
+ (참고: 실습 환경에 따라 `DNS`의 값이 달라질 수 있습니다.)
 
-   > …
-   >
-   > DNS=203.237.32.100 203.237.32.101
-   >
-   > …
-   - Network interface configuration
+> …
+>
+> DNS=203.237.32.100 203.237.32.101
+>
+> …
 
-   /etc/network/interfaces 파일을 엽니다.
+- Network interface configuration
 
-   ```bash
-   sudo vim /etc/network/interfaces
-   ```
+/etc/network/interfaces 파일을 엽니다.
 
-   `vport_vFunction`을 TAP 인터페이스로 설정하고 VM에 연결합니다.
+```bash
+sudo vim /etc/network/interfaces
+```
+
+`vport_vFunction`을 TAP 인터페이스로 설정하고 VM에 연결합니다.
 
 > [!NOTE]
 > TAP 인터페이스는 VM과 Host 사이의 네트워크 통신이 가능하도록 합니다. TAP 인터페이스를 이용하면, VM이 마치 물리적 네트워크 인터페이스를 가진 것처럼 동작하게 만들 수 있으며, 네트워크 브리지와 결합하여 외부의 네트워크와 통신할 수 있도록 합니다.
@@ -301,6 +302,7 @@ OS : Ubuntu Desktop 24.04 LTS(64bit)
  **NUC에 이더넷 포트가 두 개 있는 경우 `eno1`이라는 인터페이스가 없습니다. `ifconfig` 명령으로 네트워크에 연결된 인터페이스(`enp88s0` 또는 `enp89s0`)를 확인합니다. (예를 들어, 터미널에 `ifconfig -a` 명령어를 입력하고 RX 및 TX 패킷이 0이 아닌 인터페이스를 선택합니다.) 그리고 아래 텍스트의 `eno1`을 모두 `enp88s0` 또는 `enp89s0`으로 변경합니다.**
 
 아래의 내용을 추가합니다.(참고: 실습 환경에 따라 `address`, `netmask`, `gateway`, `dns-nameservers`의 값이 달라질 수 있습니다.)
+
 > `<your NIC name>`에 위에서 `ifconfig` 명령으로 확인한 네트워크에 연결된 인터페이스 이름(`eno1`, `enp88s0`, `enp89s0`...)을 입력합니다.
 
 ```text
